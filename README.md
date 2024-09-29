@@ -119,8 +119,7 @@
                 <p>Any problems?:</p>
             </li>
         </ul>
-
-         <p>Alex:</p>
+        <p>Alex:</p>
         <ul>
             <li>
                 <p>What did you do yesterday?:</p>
@@ -132,8 +131,7 @@
                 <p>Any problems?:</p>
             </li>
         </ul>
-
-         <p>Ethan:</p>
+        <p>Ethan:</p>
         <ul>
             <li>
                 <p>What did you do yesterday?:</p>
@@ -145,8 +143,7 @@
                 <p>Any problems?:</p>
             </li>
         </ul>
-
-         <p>Max:</p>
+        <p>Max:</p>
         <ul>
             <li>
                 <p>What did you do yesterday?:</p>
@@ -158,8 +155,7 @@
                 <p>Any problems?:</p>
             </li>
         </ul>
-
-         <p>Nico:</p>
+        <p>Nico:</p>
         <ul>
             <li>
                 <p>What did you do yesterday?:</p>
