@@ -151,13 +151,13 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Organize inital Trello board setup & burndown chart connectivity. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Receive client feedback on mockup. </p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: Nope. </p>
             </li>
         </ul>
         <p>Nico:</p>
@@ -214,13 +214,13 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Worked on HTML home page banner. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Troubleshoot spacing issues with Modal. </p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: Nope. </p>
             </li>
         </ul>
         <p>Nico:</p>
@@ -277,10 +277,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Updated burndown chart & uploaded to S1 README.md. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Organize Milestone 0 system service request document. </p>
             </li>
             <li>
                 <p>Any problems?:</p>
