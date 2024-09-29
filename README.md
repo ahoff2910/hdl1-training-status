@@ -103,7 +103,7 @@
 <p>Day 7 9/29</p>
 
 <h3>GitHub</h3>
-<p>Public Repo URL:</p>
+<a href="">Public Repo URL</a>
 
 <h3>Sprint Meeting Logs</h3>
 
