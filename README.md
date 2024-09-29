@@ -10,6 +10,7 @@
     <th>Corresponding Story Number</th>
     <th>Duration</th>
     <th>Priority</th>
+    <th>Complexity</th>
     <th>Lead Person</th>
   </tr>
   <tr>
