@@ -103,8 +103,15 @@
 <p>Day 7 9/29</p>
 
 <h3>GitHub</h3>
-<a href="">Public Repo URL</a>
+<a href="https://github.com/ahoff2910/hdl1-training-status">Public Repo URL</a>
 
 <h3>Sprint Meeting Logs</h3>
 
 <h3>Sprint Review</h3>
+<p>1. We learned that the most important part of the sprint is the planning part. We met as a group for multiple hours to develop our plan for the sprint and break down the tasks that we needed to complete over the duration of the sprint. Although the planning seemed tedious at the time, it helped to align the team with the goals of the sprint. 
+</p>
+<p>2. Our time management and completion of our sprint goals went well. We did a good job budgeting our time over the week.</p>
+<p>3. We could have taken on more tasks during the sprint. </p>
+<p>4. </p>
+<p>5. We are satisfied with what we have completed, it is in line with the mockup we created and is an accurate representation of what the client requested in the product.</p>
+<p>6. </p>
