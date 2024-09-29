@@ -768,10 +768,42 @@
       </div>
     </section>
 
+<!-- color key modal -->
+<div class="modal" id="colormodal">
+  <div class="modal-background" id="modalbg2"></div>
+  <div class="modal-content has-background-white p-4">
+    <table class="table is-bordered is-narrow is-hoverable is-fullwidth" id="keytable">
+      <tbody>
+        <tr></tr>
+          <th>Blue</th>
+          <th>Green</th>
+          <th>Red</th>
+          <th>Orange</th>
+        </tr>
+        <tr>
+          <td class="has-background-info-light has-text-weight-bold px-3 py-2" id="bluekey">
+            Has been reviewed within the past 2 months
+          </td>
+          <td class="has-background-success-light has-text-weight-bold px-3 py-2" id="greenkey">
+            Indicated Training too easy
+          </td>
+          <td class="has-background-danger-light has-text-weight-bold px-3 py-2" id="redkey">
+            Attendance or performance concerns - DO NOT TRAIN
+          </td>
+          <td class="has-background-warning-light has-text-weight-bold px-3 py-2" id="orangekey">
+            Agent is departing/on hiatus
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- end of color key modal -->
+
     <!-- Footer Section -->
     <footer class="footer">
       <div class="content has-text-centered">
-        <button class="button is-light">View Color Key</button>
+        <button id="colorBtn" class="button is-light">View Color Key</button>
       </div>
     </footer>
   </script>
