@@ -110,13 +110,13 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Created mockups for the client on Justinmind.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Get client feedback on mockup.</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: none.</p>
             </li>
         </ul>
         <p>Alex:</p>
@@ -171,13 +171,13 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Updated trello borad and burndown charts.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Edit home page, work on adding more bulma to homepage.</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: none.</p>
             </li>
         </ul>
         <p>Alex:</p>
@@ -232,13 +232,13 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Add sign in modal and added javascript.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Work on README document. </p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: none.</p>
             </li>
         </ul>
         <p>Alex:</p>
