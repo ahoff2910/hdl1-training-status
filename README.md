@@ -106,6 +106,20 @@
 <a href="https://github.com/ahoff2910/hdl1-training-status">Public Repo URL</a>
 
 <h3>Sprint Meeting Logs</h3>
+<h4>Day 5: Daily Scrum Meeting</h4>
+        <p>Hannah:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?</p>
+            </li>
+            <li>
+                <p>Any problems?</p>
+            </li>
+        </ul>
+
 
 <h3>Sprint Review</h3>
 <p>1. We learned that the most important part of the sprint is the planning part. We met as a group for multiple hours to develop our plan for the sprint and break down the tasks that we needed to complete over the duration of the sprint. Although the planning seemed tedious at the time, it helped to align the team with the goals of the sprint. 
