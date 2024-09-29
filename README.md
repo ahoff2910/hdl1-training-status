@@ -167,6 +167,128 @@
                 <p>Any problems?:</p>
             </li>
         </ul>
+<h4>Day 5: Daily Scrum Meeting</h4>
+        <p>Hannah:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Alex:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Ethan:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Max:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Nico:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+<h4>Day 7: Daily Scrum Meeting</h4>
+        <p>Hannah:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Alex:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Ethan:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Max:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
+        <p>Nico:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:</p>
+            </li>
+        </ul>
 
 
 <h3>Sprint Review</h3>
