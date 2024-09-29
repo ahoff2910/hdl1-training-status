@@ -137,13 +137,15 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?:Created outline for the color key modal.
+</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?:Create color key modal functionality.
+</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?:N/A</p>
             </li>
         </ul>
         <p>Max:</p>
@@ -198,13 +200,15 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?:Add table to modal and button functionality.
+</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?:Work on CSS for modal.
+</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?:N/A</p>
             </li>
         </ul>
         <p>Max:</p>
@@ -259,13 +263,15 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?:Fill out color key table with information from client site.
+</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?:Convert CSS to Bulma.
+</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?:N/A</p>
             </li>
         </ul>
         <p>Max:</p>
