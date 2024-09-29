@@ -94,3 +94,17 @@
         <td>Alex</td>
     </tr>
 </table>
+
+<h3>Burndown Chart Screenshots</h3>
+<p>Day 2 9/24</p>
+
+<p>Day 5 9/27</p>
+
+<p>Day 7 9/29</p>
+
+<h3>GitHub</h3>
+<p>Public Repo URL:</p>
+
+<h3>Sprint Meeting Logs</h3>
+
+<h3>Sprint Review</h3>
