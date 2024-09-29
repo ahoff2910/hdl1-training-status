@@ -97,10 +97,13 @@
 
 <h3>Burndown Chart Screenshots</h3>
 <p>Day 2 9/24</p>
+![Alt text](images/9-24.png)
 
 <p>Day 5 9/27</p>
+![Alt text](images/9-27.png)
 
 <p>Day 7 9/29</p>
+![Alt text](images/9-29.png)
 
 <h3>GitHub</h3>
 <a href="https://github.com/ahoff2910/hdl1-training-status">Public Repo URL</a>
