@@ -125,13 +125,13 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Studied previous material on HTML, CSS, and Bulma</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Begin coding the basic HTML and CSS elements of the home page.</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: None</p>
             </li>
         </ul>
         <p>Ethan:</p>
@@ -188,13 +188,13 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Continued to work on HTML and CSS for home page</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Begin adding bulma columns/table to home page</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: Struggling to determine spacing issues for homepage columns</p>
             </li>
         </ul>
         <p>Ethan:</p>
@@ -251,10 +251,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Added bulma elements to home page instead of CSS</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Review spacing/resizing issues with homepage columns</p>
             </li>
             <li>
                 <p>Any problems?:</p>
