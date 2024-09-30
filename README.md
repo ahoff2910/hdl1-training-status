@@ -163,20 +163,20 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: I studied the Excel Document for the 13 column layout. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: I will review how to build a 13 column layout in CSS and Bulma</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: None</p>
             </li>
         </ul>
 <h4>Day 5: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: Updated trello borad and burndown charts.</p>
+                <p>What did you do yesterday?: Updated trello board and burndown charts.</p>
             </li>
             <li>
                 <p>What are you planning to do today?: Edit home page, work on adding more bulma to homepage.</p>
@@ -226,13 +226,13 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: I laid out some questions for the client on how they want the columns on the homepage to be formatted</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: I will build the columns onto the homepage. </p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: None </p>
             </li>
         </ul>
 <h4>Day 7: Daily Scrum Meeting</h4>
@@ -289,22 +289,36 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: I completed the remainder of the column creation on homepage of site.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Review Group 3's site and provide feedback to them.</p>
             </li>
             <li>
-                <p>Any problems?:</p>
+                <p>Any problems?: None</p>
             </li>
         </ul>
-
 
 <h3>Sprint Review</h3>
 <p>1. We learned that the most important part of the sprint is the planning part. We met as a group for multiple hours to develop our plan for the sprint and break down the tasks that we needed to complete over the duration of the sprint. Although the planning seemed tedious at the time, it helped to align the team with the goals of the sprint. 
 </p>
 <p>2. Our time management and completion of our sprint goals went well. We did a good job budgeting our time over the week.</p>
 <p>3. We could have taken on more tasks during the sprint. </p>
-<p>4. </p>
+<p>4. I think next time we can plan ahead a little better. For our next sprint, I think we will commit to setting higher goals to be completed by the end of the sprint. This time, I think we all felt that we went under budget on our hours. </p>
 <p>5. We are satisfied with what we have completed, it is in line with the mockup we created and is an accurate representation of what the client requested in the product.</p>
-<p>6. </p>
+<p>6. Below is the feedback provided to Group 3:
+    <p>Things Group 3 did well:</p>
+    <ul>
+        <li>Their Trello board was laid out neatly and effectively</li>
+        <li>Listing out practical user stories and linking those stories to your task breakdown chart</li>
+        <li>Creating a robust task breakdown chart, and linking that to your Trello</li>
+        <li>Adding detailed descriptions in your Scrum meetings</li>
+    </ul>
+    <p>Things Group 3 could imporve on:</p>
+    <ul>
+        <li>Attaching/adjusting the margin on your burndown chart pictures</li>
+        <li>Completing your Scrum meeting notes</li>
+        <li>Incorporating CSS / JS to your website, or if they have done that, commit the changes to GitHub for review</li>
+    </ul>
+
+Great work! </p>
