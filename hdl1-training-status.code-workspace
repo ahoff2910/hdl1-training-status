@@ -1,0 +1,14 @@
+{
+  "folders": [
+	{
+		"path": "."
+	},
+	{
+		"name": "UW-Roundnet-Website",
+		"path": "../UW-Roundnet-Website"
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "UW-Roundnet-Website"
+  }
+}
