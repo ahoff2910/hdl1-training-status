@@ -80,41 +80,37 @@ function generatePass() {
   return pass;
 }
 
-r_e("signup_form").addEventListener("submit", (e) => {
-  // prevent the page from auto refresh
+r_e("signup_form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // get the email and password
+  let name = r_e("sign-up-name").value;
   let email = r_e("sign-up-email").value;
   let password = generatePass();
+  let userType = r_e("user-type-select").value;
 
-  // sign up the user
+  var secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
 
-  auth
-    .createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      auth
-        .sendPasswordResetEmail(email)
-        .then(() => {
-          r_e("sign-up-error").innerHTML = "";
-
-          configure_message_bar(
-            `Account ${auth.currentUser.email} has been created`
-          );
-
-          // reset the sign up form
-          r_e("signup_form").reset();
-
-          // close the modal
-          r_e("signupmodal").classList.remove("is-active");
-        })
-        .catch((err) => {
-          r_e("sign-up-error").innerHTML = err.message;
-        });
-    })
-    .catch((err) => {
-      r_e("sign-up-error").innerHTML = err.message;
-    });
+  try {
+    let userCredential = await secondaryApp
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(userCredential.user.uid)
+      .set({
+        name: name,
+        email: email,
+        role: userType,
+      });
+    await firebase.auth().sendPasswordResetEmail(email);
+    r_e("sign-up-error").innerHTML = "";
+    configure_message_bar(`Account ${email} has been created`);
+    r_e("signup_form").reset();
+    r_e("signupmodal").classList.remove("is-active");
+  } catch (err) {
+    r_e("sign-up-error").innerHTML = err.message;
+  }
 });
 
 // sign out
@@ -127,7 +123,7 @@ r_e("signout-button").addEventListener("click", () => {
 
 // sign in
 
-r_e("signin_form").addEventListener("submit", (e) => {
+r_e("signin_form").addEventListener("submit", async (e) => {
   r_e("sign-in-error").innerHTML = "";
   // prevent the page from auto refresh
   e.preventDefault();
@@ -136,29 +132,85 @@ r_e("signin_form").addEventListener("submit", (e) => {
   let email = r_e("sign-in-email").value;
   let password = r_e("sign-in-password").value;
 
-  // sign in the user
-  auth
-    .signInWithEmailAndPassword(email, password)
-    .then(() => {
-      configure_message_bar(`Welcome back ${auth.currentUser.email}!`);
+  try {
+    // sign in the user
+    await auth.signInWithEmailAndPassword(email, password);
 
-      // reset the sign up form
-      r_e("signin_form").reset();
+    // fetch the user's document from Firestore
+    const userDoc = await firebase
+      .firestore()
+      .collection("users")
+      .doc(auth.currentUser.uid)
+      .get();
 
-      // close the modal
-      r_e("signinmodal").classList.remove("is-active");
-    })
-    .catch((err) => {
-      if (
-        err.message ==
-        '{"error":{"code":400,"message":"INVALID_LOGIN_CREDENTIALS","errors":[{"message":"INVALID_LOGIN_CREDENTIALS","domain":"global","reason":"invalid"}]}}'
-      ) {
-        r_e("sign-in-error").innerHTML =
-          "The email or password entered is incorrect.";
-      } else {
-        r_e("sign-in-error").innerHTML = err.message;
+    if (userDoc.exists) {
+      const userName = userDoc.data().name;
+      configure_message_bar(`Welcome back ${userName}!`);
+    } else {
+      configure_message_bar(`Welcome back!`);
+    }
+
+    // reset the sign in form
+    r_e("signin_form").reset();
+
+    // close the modal
+    r_e("signinmodal").classList.remove("is-active");
+  } catch (err) {
+    if (
+      err.message ==
+      '{"error":{"code":400,"message":"INVALID_LOGIN_CREDENTIALS","errors":[{"message":"INVALID_LOGIN_CREDENTIALS","domain":"global","reason":"invalid"}]}}'
+    ) {
+      r_e("sign-in-error").innerHTML =
+        "The email or password entered is incorrect.";
+    } else {
+      r_e("sign-in-error").innerHTML = err.message;
+    }
+  }
+});
+
+// Open the My Account Modal
+r_e("openMyAccountModal").addEventListener("click", async () => {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const userDoc = await firebase
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .get();
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      r_e("myAccountName").value = userData.name || "";
+      r_e("myAccountEmail").value = user.email || "";
+      r_e("myAccountRole").value = userData.role || "";
+      r_e("myAccountModal").classList.add("is-active");
+    }
+  }
+});
+
+// Save Changes in My Account Modal
+r_e("myAccountForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const user = firebase.auth().currentUser;
+
+  if (user) {
+    const name = r_e("myAccountName").value;
+    const email = r_e("myAccountEmail").value;
+    const password = r_e("myAccountPassword").value;
+    const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+
+    try {
+      await user.updateEmail(email);
+      if (password) {
+        await user.updatePassword(password);
       }
-    });
+      await userDocRef.update({ name: name });
+      r_e("myAccountError").innerHTML = "";
+      configure_message_bar("Account updated successfully.");
+      r_e("myAccountModal").classList.remove("is-active");
+    } catch (err) {
+      r_e("myAccountError").innerHTML = err.message;
+    }
+  }
 });
 
 // message bar delete button
@@ -182,12 +234,25 @@ function configure_message_bar(msg) {
 }
 
 // onauthstatechendged
-auth.onAuthStateChanged((user) => {
+firebase.auth().onAuthStateChanged(async (user) => {
   if (user) {
-    // show recipes
-    show_page(auth.currentUser.email);
+    const userDoc = await firebase
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .get();
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      show_page(auth.currentUser.email);
+    } else {
+      show_page();
+      auth.currentUser.delete().then(() => {
+        configure_message_bar(
+          "You have no roles.  Your account has been deleted.  Contact an administrator."
+        );
+      });
+    }
   } else {
-    // hide recipes
     show_page();
   }
 });
@@ -199,10 +264,12 @@ function show_page(email) {
     r_e("signed-in-div").classList.remove("is-hidden");
     r_e("signin-button").classList.add("is-hidden");
     r_e("signout-button").classList.remove("is-hidden");
+    r_e("openMyAccountModal").classList.remove("is-hidden");
   } else {
     r_e("signed-out-div").classList.remove("is-hidden");
     r_e("signed-in-div").classList.add("is-hidden");
     r_e("signin-button").classList.remove("is-hidden");
     r_e("signout-button").classList.add("is-hidden");
+    r_e("openMyAccountModal").classList.add("is-hidden");
   }
 }

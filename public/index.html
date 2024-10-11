@@ -38,13 +38,18 @@
           </div>
           <div class="navbar-end">
             <a
+              id="openMyAccountModal"
+              class="navbar-item button has-background-black has-text-white mx-1 is-link is-hidden"
+              >My Account</a
+            >
+            <a
               id="signin-button"
               class="navbar-item button has-background-black has-text-white is-link"
               >Sign In</a
             >
             <a
               id="signout-button"
-              class="navbar-item button has-background-black has-text-white is-link is-hidden"
+              class="navbar-item button has-background-black has-text-white mx-1 is-link is-hidden"
               >Sign Out</a
             >
           </div>
@@ -61,7 +66,7 @@
             </h1>
             <form id="signin_form">
               <div class="field">
-                <label class="label has-text-black">Email:</label>
+                <label class="label has-text-black has-text-left">Email:</label>
                 <div class="control">
                   <input
                     id="sign-in-email"
@@ -73,7 +78,9 @@
               </div>
 
               <div class="field">
-                <label class="label has-text-black">Password:</label>
+                <label class="label has-text-black has-text-left"
+                  >Password:</label
+                >
                 <div class="control">
                   <input
                     id="sign-in-password"
@@ -98,7 +105,7 @@
     </header>
 
     <!-- begin signed in div -->
-    <div id="signed-in-div">
+    <div id="signed-in-div" class="is-hidden">
       <!-- Sign Up Modal -->
       <div class="modal has-text-centered" id="signupmodal">
         <div class="modal-background"></div>
@@ -108,6 +115,18 @@
               Add User
             </h1>
             <form id="signup_form">
+              <div class="field">
+                <label class="label has-text-black has-text-left">Name:</label>
+                <div class="control">
+                  <input
+                    id="sign-up-name"
+                    class="input"
+                    type="text"
+                    placeholder="Name"
+                  />
+                </div>
+              </div>
+
               <div class="field">
                 <label class="label has-text-black has-text-left">Email:</label>
                 <div class="control">
@@ -120,9 +139,95 @@
                 </div>
               </div>
 
+              <div class="field">
+                <label class="label has-text-black has-text-left"
+                  >User Type:</label
+                >
+                <div class="control has-text-left">
+                  <div class="select">
+                    <select id="user-type-select">
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               <button class="button light-button" id="sign-up">Add User</button>
               <!-- div error -->
               <div id="sign-up-error" class="error has-text-danger"></div>
+            </form>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
+      <!-- Sign Up Modal -->
+      <div class="modal has-text-centered" id="myAccountModal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              My Account
+            </h1>
+            <form id="myAccountForm">
+              <!-- Name -->
+              <div class="field">
+                <label class="label has-text-left">Name:</label>
+                <div class="control">
+                  <input
+                    id="myAccountName"
+                    class="input"
+                    type="text"
+                    placeholder="Name"
+                  />
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="field">
+                <label class="label has-text-left">Email:</label>
+                <div class="control">
+                  <input
+                    id="myAccountEmail"
+                    class="input"
+                    type="email"
+                    placeholder="Email"
+                  />
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="field">
+                <label class="label has-text-left">Password:</label>
+                <div class="control">
+                  <input
+                    id="myAccountPassword"
+                    class="input"
+                    type="password"
+                    placeholder="New Password"
+                  />
+                </div>
+              </div>
+
+              <!-- Role -->
+              <div class="field">
+                <label class="label has-text-left">Role:</label>
+                <div class="control">
+                  <input
+                    id="myAccountRole"
+                    class="input"
+                    type="text"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <!-- Save Changes Button -->
+              <button class="button is-primary" type="submit">
+                Save Changes
+              </button>
+              <div id="myAccountError" class="error has-text-danger"></div>
             </form>
           </div>
         </div>
