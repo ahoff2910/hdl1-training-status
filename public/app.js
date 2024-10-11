@@ -343,6 +343,24 @@ r_e("deleteUserButton").addEventListener("click", async (e) => {
   }
 });
 
+// Handle Forgot Password Button Click
+r_e("forgotPasswordButton").addEventListener("click", () => {
+  let email = r_e("sign-in-email").value;
+  if (email) {
+    auth
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        configure_message_bar("Password reset email sent successfully.");
+      })
+      .catch((err) => {
+        r_e("sign-in-error").innerHTML = err.message;
+      });
+  } else {
+    r_e("sign-in-error").innerHTML =
+      "Please enter your email address to reset your password.";
+  }
+});
+
 // Send Password Reset Email
 r_e("sendPasswordResetButton").addEventListener("click", async (e) => {
   e.preventDefault();

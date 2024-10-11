@@ -61,7 +61,7 @@
       </div>
 
       <!-- Sign In Modal -->
-      <div class="modal" id="signinmodal">
+      <div class="modal has-text-centered" id="signinmodal">
         <div class="modal-background"></div>
         <div class="modal-content">
           <div class="box">
@@ -70,21 +70,18 @@
             </h1>
             <form id="signin_form">
               <div class="field">
-                <label class="label has-text-black has-text-left">Email:</label>
+                <label class="label has-text-left">Email:</label>
                 <div class="control">
                   <input
                     id="sign-in-email"
                     class="input"
-                    type="text"
+                    type="email"
                     placeholder="Email"
                   />
                 </div>
               </div>
-
               <div class="field">
-                <label class="label has-text-black has-text-left"
-                  >Password:</label
-                >
+                <label class="label has-text-left">Password:</label>
                 <div class="control">
                   <input
                     id="sign-in-password"
@@ -94,16 +91,18 @@
                   />
                 </div>
               </div>
-
-              <button class="button light-button" id="signin-button">
-                Sign In
+              <button class="button is-primary" type="submit">Sign In</button>
+              <button
+                class="button is-link"
+                id="forgotPasswordButton"
+                type="button"
+              >
+                Forgot Password?
               </button>
-              <!-- div error -->
               <div id="sign-in-error" class="error has-text-danger"></div>
             </form>
           </div>
         </div>
-        <button class="modal-close is-large" aria-label="close"></button>
       </div>
       <!-- end of sign in modal -->
     </header>
