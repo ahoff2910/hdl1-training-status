@@ -15,10 +15,14 @@
     <!-- Notification Bar -->
     <div
       class="notification is-primary is-hidden"
-      style="position: sticky; top: 0; z-index: 9"
+      style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000"
       id="message_bar"
     >
-      <button id="hide_message_bar" class="delete"></button>
+      <button
+        id="hide_message_bar"
+        class="delete"
+        style="z-index: 1001"
+      ></button>
     </div>
 
     <!-- Header Section -->

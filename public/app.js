@@ -234,6 +234,7 @@ r_e("view-users-button").addEventListener("click", async () => {
     userDataCache[user.id] = user; // Cache user data
 
     const userRow = document.createElement("tr");
+    userRow.setAttribute("data-user-id", user.id);
     userRow.innerHTML = `
             <td>${user.name}</td>
             <td>${user.email}</td>
@@ -251,7 +252,7 @@ r_e("view-users-button").addEventListener("click", async () => {
 
 // Filter users in the table
 r_e("searchUsersInput").addEventListener("input", () => {
-  let searchTerm = r_e("searchUsersInput").value.toLowerCase(); // make values lowercase
+  let searchTerm = r_e("searchUsersInput").value.toLowerCase(); // Make values lowercase
   let usersTableBody = r_e("users-table-body");
   usersTableBody.innerHTML = ""; // Clear previous data
 
@@ -263,14 +264,15 @@ r_e("searchUsersInput").addEventListener("input", () => {
       userData.role.toLowerCase().includes(searchTerm)
     ) {
       const userRow = document.createElement("tr");
+      userRow.setAttribute("data-user-id", userId);
       userRow.innerHTML = `
-              <td>${userData.name}</td>
-              <td>${userData.email}</td>
-              <td>${userData.role}</td>
-              <td>
-                  <button class="button is-info view-user-button" data-user-id="${userId}">View</button>
-              </td>
-          `;
+                <td>${userData.name}</td>
+                <td>${userData.email}</td>
+                <td>${userData.role}</td>
+                <td>
+                    <button class="button is-info view-user-button" data-user-id="${userId}">View</button>
+                </td>
+            `;
       usersTableBody.appendChild(userRow);
     }
   });
@@ -300,9 +302,22 @@ r_e("userAccountForm").addEventListener("submit", async (e) => {
 
   const name = r_e("userAccountName").value;
   const email = r_e("userAccountEmail").value;
+  const role = r_e("userAccountRole").value;
 
   try {
-    await userDocRef.update({ name: name, email: email });
+    await userDocRef.update({ name: name, email: email, role: role });
+    // Update cache
+    userDataCache[userId] = { name: name, email: email, role: role };
+    // Update displayed info in the table
+    const userRow = document.querySelector(`tr[data-user-id="${userId}"]`);
+    userRow.innerHTML = `
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${role}</td>
+            <td>
+                <button class="button is-info view-user-button" data-user-id="${userId}">View</button>
+            </td>
+        `;
     r_e("userAccountError").innerHTML = "";
     configure_message_bar("User account updated successfully.");
     r_e("userAccountModal").classList.remove("is-active");
@@ -320,10 +335,9 @@ r_e("deleteUserButton").addEventListener("click", async (e) => {
     await firebase.firestore().collection("users").doc(userId).delete();
     configure_message_bar("User deleted successfully.");
     r_e("userAccountModal").classList.remove("is-active");
-    r_e("viewUsersModal")
-      .querySelector(`[data-user-id="${userId}"]`)
-      .closest("tr")
-      .remove();
+    // Remove user from cache and table
+    delete userDataCache[userId];
+    document.querySelector(`tr[data-user-id="${userId}"]`).remove();
   } catch (err) {
     r_e("userAccountError").innerHTML = err.message;
   }
