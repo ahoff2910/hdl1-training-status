@@ -329,6 +329,19 @@ r_e("deleteUserButton").addEventListener("click", async (e) => {
   }
 });
 
+// Send Password Reset Email
+r_e("sendPasswordResetButton").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = r_e("userAccountEmail").value;
+
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    configure_message_bar(`Password reset email sent to ${email}.`);
+  } catch (err) {
+    r_e("userAccountError").innerHTML = err.message;
+  }
+});
+
 // message bar delete button
 r_e("hide_message_bar").addEventListener("click", () => {
   r_e("message_bar").classList.add("is-hidden");
