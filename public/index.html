@@ -1,89 +1,817 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/10.14.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/10.14.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/10.14.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DoIT Help Desk</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="images/favicon.png" />
   </head>
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+    <!-- Header Section -->
+    <header class="section p-2 has-text-centered">
+      <div class="container">
+        <div class="columns is-vcentered">
+          <div class="column is-half has-text-right">
+            <img 
+              src="images/logo.png"
+              width="325px"
+              height="100px"
+              alt="DoIT Help Desk"
+            />
+          </div>
+          <div class="column has-text-left">
+            <h1 class="title is-size-3">HDL1 Training Manager</h1>
+          </div>
+          <div class="navbar-end">
+            <a
+              id="signin"
+              class="navbar-item button has-background-black has-text-white is-link"
+              >Sign in</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- sign in modal -->
+    <div class="modal" id="signinmodal">
+      <div class="modal-background" id="modalbg1"></div>
+      <div class="modal-content has-background-white p-4">
+        <form id="signin_form">
+          <p class="title has-text-centered">Sign In</p>
+
+          <!-- email -->
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                id="email_"
+                class="input"
+                type="email"
+                placeholder="Enter email"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- password -->
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left has-icons-right">
+             <input id="password_" class="input" type="password" placeholder="Enter password" />
+              <span class="icon is-small is-left"></span>
+                <i class="fas fa-key"></i>
+              </span>
+            </div>
+          </div>
+          <!-- submit -->
+          <button
+            id="signin_submit"
+            type="submit"
+            value="Login"
+            class="button is-primary"
+          >
+            Submit
+          </button>
+          <input type="reset" value="Reset" class="button is-danger" />
+        </form>
+      </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+    <!-- end of sign in modal -->
+    </header>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <!-- Navbar Section -->
+    <nav
+      class="navbar has-background-danger-dark p-2"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div class="navbar-menu">
+        <div class="m-auto">
+          <a
+            class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
+            >Add Employee</a
+          >
+          <a
+            class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
+            >Add User</a
+          >
+          <a
+            class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
+            >View Departed</a
+          >
+        </div>
+      </div>
+    </nav>
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
+    <section class="section p-5">
+      <div class="container">
+        <div class="columns">
+          <!-- HDQA Column -->
+          <div class="column px-0 is-narrow mx-6">
+            <table class="table is-bordered has-text-centered">
+              <thead>
+                <tr>
+                  <th colspan="3" class="has-background-danger">HDQA</th>
+                </tr>
+                <tr>
+                  <th
+                    class="has-background-success-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Trained
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-1">
+                    <button
+                      id="agent-ARBO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      ARBO
+                    </button>
+                    <button
+                      id="agent-AARK"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AARK
+                    </button>
+                    <button
+                      id="agent-RTLA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      RTLA
+                    </button>
+                    <button
+                      id="agent-BKLI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      BKLI
+                    </button>
+                    <button
+                      id="agent-AMBE"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AMBE
+                    </button>
+                    <button
+                      id="agent-RGIE"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      RGIE
+                    </button>
+                    <button
+                      id="agent-AMHO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AMHO
+                    </button>
+                    <button
+                      id="agent-SEET"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      SEET
+                    </button>
+                    <button
+                      id="agent-RATU"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      RATU
+                    </button>
+                    <button
+                      id="agent-POPP"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      POPP
+                    </button>
+                    <button
+                      id="agent-VBEN"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      VBEN
+                    </button>
+                    <button
+                      id="agent-AMCU"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AMCU
+                    </button>
+                    <button
+                      id="agent-MRSC"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      MRSC
+                    </button>
+                    <button
+                      id="agent-AHOD"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AHOD
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Onsite Column -->
+          <div class="column px-0">
+            <table class="table is-bordered has-text-centered">
+              <thead>
+                <tr>
+                  <th colspan="3" class="has-background-warning">Onsite</th>
+                </tr>
+                <tr>
+                  <th
+                    class="has-background-danger-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Not Ready
+                  </th>
+                  <th
+                    class="has-background-warning-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Ready
+                  </th>
+                  <th
+                    class="has-background-success-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    In Training
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-1">
+                    <button
+                      id="agent-JRLU"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      JRLU
+                    </button>
+                    <button
+                      id="agent-PRAJ"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      PRAJ
+                    </button>
+                  </td>
+                  <td class="p-1">
+                    <button
+                      id="agent-LNAG"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      LNAG
+                    </button>
+                    <button
+                      id="agent-BMKR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      BMKR
+                    </button>
+                    <button
+                      id="agent-JTYA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      JTYA
+                    </button>
+                  </td>
+                  <td class="p-1">
+                    <button
+                      id="agent-ARUI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      ARUI
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Chat/Email Column -->
+          <div class="column px-0">
+            <table class="table is-bordered has-text-centered">
+              <thead>
+                <tr>
+                  <th colspan="3" class="has-background-success">Chat/Email</th>
+                </tr>
+                <tr>
+                  <th
+                    class="has-background-danger-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Not Ready
+                  </th>
+                  <th
+                    class="has-background-warning-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Ready
+                  </th>
+                  <th
+                    class="has-background-success-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    In Training
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-1">
+                    <button
+                      id="agent-JIRO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      JIRO
+                    </button>
+                    <button
+                      id="agent-ZYWA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      ZYWA
+                    </button>
+                    <button
+                      id="agent-APOR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      APOR
+                    </button>
+                    <button
+                      id="agent-HSGR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      HSGR
+                    </button>
+                    <button
+                      id="agent-JSTU"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      JSTU
+                    </button>
+                    <button
+                      id="agent-FAMO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      FAMO
+                    </button>
+                    <button
+                      id="agent-LCHA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      LCHA
+                    </button>
+                    <button
+                      id="agent-VHOW"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      VHOW
+                    </button>
+                    <button
+                      id="agent-JMWO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      JMWO
+                    </button>
+                    <button
+                      id="agent-RKJI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      RKJI
+                    </button>
+                    <button
+                      id="agent-DHDI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      DHDI
+                    </button>
+                    <button
+                      id="agent-KLKR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      KLKR
+                    </button>
+                    <button
+                      id="agent-NDAV"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      NDAV
+                    </button>
+                    <button
+                      id="agent-AGUR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AGUR
+                    </button>
+                    <button
+                      id="agent-LEE2"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      LEE2
+                    </button>
+                  </td>
+                  <td class="p-1">
+                    <button
+                      id="agent-AMER"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AMER
+                    </button>
+                  </td>
+                  <td class="p-1">
+                    <button
+                      id="agent-AYAN"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AYAN
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Advanced Phones Column -->
+          <div class="column px-0">
+            <table class="table is-bordered has-text-centered">
+              <thead>
+                <tr>
+                  <th colspan="3" class="has-background-link">
+                    Advanced Phones
+                  </th>
+                </tr>
+                <tr>
+                  <th
+                    class="has-background-danger-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Not Ready
+                  </th>
+                  <th
+                    class="has-background-warning-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Ready
+                  </th>
+                  <th
+                    class="has-background-success-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    In Training
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-1">
+                    <button
+                      id="agent-SGAN"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      SGAN
+                    </button>
+                    <button
+                      id="agent-NARI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      NARI
+                    </button>
+                    <button
+                      id="agent-DENG"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      DENG
+                    </button>
+                    <button
+                      id="agent-JFAN"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      JFAN
+                    </button>
+                    <button
+                      id="agent-TSIN"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      TSIN
+                    </button>
+                    <button
+                      id="agent-BINO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      BINO
+                    </button>
+                    <button
+                      id="agent-KAMA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      KAMA
+                    </button>
+                    <button
+                      id="agent-MTDI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      MTDI
+                    </button>
+                    <button
+                      id="agent-AANA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AANA
+                    </button>
+                    <button
+                      id="agent-NAIR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      NAIR
+                    </button>
+                    <button
+                      id="agent-BXIO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      BXIO
+                    </button>
+                    <button
+                      id="agent-WCHA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      WCHA
+                    </button>
+                    <button
+                      id="agent-DAGU"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      DAGU
+                    </button>
+                    <button
+                      id="agent-DHAM"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      DHAM
+                    </button>
+                    <button
+                      id="agent-SAGG"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      SAGG
+                    </button>
+                  </td>
+                  <td class="p-1">
+                    <button
+                      id="agent-KRUP"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      KRUP
+                    </button>
+                    <button
+                      id="agent-SENC"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      SENC
+                    </button>
+                    <button
+                      id="agent-PASI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      PASI
+                    </button>
+                    <button
+                      id="agent-AKAU"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AKAU
+                    </button>
+                    <button
+                      id="agent-MCHA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      MCHA
+                    </button>
+                  </td>
+                  <td class="p-1"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Pick 1 Column -->
+          <div class="column px-0">
+            <table class="table is-bordered has-text-centered">
+              <thead>
+                <tr>
+                  <th colspan="3" class="has-background-info">Pick 1</th>
+                </tr>
+                <tr>
+                  <th
+                    class="has-background-danger-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Not Ready
+                  </th>
+                  <th
+                    class="has-background-warning-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    Ready
+                  </th>
+                  <th
+                    class="has-background-success-light is-size-7 has-text-weight-normal"
+                    width="80px"
+                  >
+                    In Training
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-1">
+                    <button
+                      id="agent-AFZA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AFZA
+                    </button>
+                    <button
+                      id="agent-EXTO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      EXTO
+                    </button>
+                    <button
+                      id="agent-AKKI"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AKKI
+                    </button>
+                    <button
+                      id="agent-SMHO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      SMHO
+                    </button>
+                    <button
+                      id="agent-EPET"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      EPET
+                    </button>
+                    <button
+                      id="agent-HAFO"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      HAFO
+                    </button>
+                    <button
+                      id="agent-DANG"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      DANG
+                    </button>
+                  </td>
+                  <td class="p-1"></td>
+                  <td class="p-1">
+                    <button
+                      id="agent-AYAR"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      AYAR
+                    </button>
+                    <button
+                      id="agent-KTRA"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      KTRA
+                    </button>
+                    <button
+                      id="agent-TPAL"
+                      class="button is-small m-1 agent-button"
+                      draggable="true"
+                    >
+                      TPAL
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<!-- color key modal -->
+<div class="modal" id="colormodal">
+  <div class="modal-background" id="modalbg2"></div>
+  <div class="modal-content has-background-white p-4">
+    <table class="table is-bordered is-narrow is-hoverable is-fullwidth" id="keytable">
+      <tbody>
+        <tr></tr>
+          <th>Blue</th>
+          <th>Green</th>
+          <th>Red</th>
+          <th>Orange</th>
+        </tr>
+        <tr>
+          <td class="has-background-info-light has-text-weight-bold px-3 py-2" id="bluekey">
+            Has been reviewed within the past 2 months
+          </td>
+          <td class="has-background-success-light has-text-weight-bold px-3 py-2" id="greenkey">
+            Indicated Training too easy
+          </td>
+          <td class="has-background-danger-light has-text-weight-bold px-3 py-2" id="redkey">
+            Attendance or performance concerns - DO NOT TRAIN
+          </td>
+          <td class="has-background-warning-light has-text-weight-bold px-3 py-2" id="orangekey">
+            Agent is departing/on hiatus
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- end of color key modal -->
+
+    <!-- Footer Section -->
+    <footer class="footer has-background-danger-dark">
+      <div class="content has-text-centered">
+        <button id="colorBtn" class="button is-dark">View Color Key</button>
+        <p class="has-text-white has-text-weight-bold p-4">Copyright &copy; Group 2 2024</p>
+      </div>
+    </footer>
+  </script>
+
+  <script src="app.js"></script>
   </body>
 </html>
