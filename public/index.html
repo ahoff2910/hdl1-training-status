@@ -1114,6 +1114,8 @@
       // define authentication variable
       let auth = firebase.auth();
       let db = firebase.firestore();
+
+      let secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
     </script>
 
     <script src="app.js"></script>

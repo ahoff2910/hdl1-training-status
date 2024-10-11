@@ -88,8 +88,6 @@ r_e("signup_form").addEventListener("submit", async (e) => {
   let password = generatePass();
   let userType = r_e("user-type-select").value;
 
-  var secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
-
   try {
     let userCredential = await secondaryApp
       .auth()
