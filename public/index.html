@@ -242,19 +242,27 @@
             <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
               Users
             </h1>
-            <table class="table is-fullwidth">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="users-table-body">
-                <!-- User rows will be added here dynamically -->
-              </tbody>
-            </table>
+            <input
+              id="searchUsersInput"
+              class="input"
+              type="text"
+              placeholder="Search users..."
+            />
+            <div class="table-container">
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body">
+                  <!-- User rows will be added here dynamically -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <button class="modal-close is-large" aria-label="close"></button>

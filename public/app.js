@@ -219,17 +219,27 @@ r_e("view-users-button").addEventListener("click", async () => {
   usersTableBody.innerHTML = ""; // Clear previous data
 
   const usersSnapshot = await firebase.firestore().collection("users").get();
+  const usersArray = [];
+
   usersSnapshot.forEach((doc) => {
     const userData = doc.data();
-    userDataCache[doc.id] = userData; // Cache user data
-    const userRow = document.createElement("tr");
+    usersArray.push({ id: doc.id, ...userData });
+  });
 
+  // Sort users by name before caching
+  usersArray.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Cache sorted user data and populate the table
+  usersArray.forEach((user) => {
+    userDataCache[user.id] = user; // Cache user data
+
+    const userRow = document.createElement("tr");
     userRow.innerHTML = `
-            <td>${userData.name}</td>
-            <td>${userData.email}</td>
-            <td>${userData.role}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
             <td>
-                <button class="button is-info view-user-button" data-user-id="${doc.id}">View</button>
+                <button class="button is-info view-user-button" data-user-id="${user.id}">View</button>
             </td>
         `;
 
@@ -237,6 +247,33 @@ r_e("view-users-button").addEventListener("click", async () => {
   });
 
   r_e("viewUsersModal").classList.add("is-active");
+});
+
+// Filter users in the table
+r_e("searchUsersInput").addEventListener("input", () => {
+  let searchTerm = r_e("searchUsersInput").value.toLowerCase(); // make values lowercase
+  let usersTableBody = r_e("users-table-body");
+  usersTableBody.innerHTML = ""; // Clear previous data
+
+  Object.keys(userDataCache).forEach((userId) => {
+    let userData = userDataCache[userId];
+    if (
+      userData.name.toLowerCase().includes(searchTerm) ||
+      userData.email.toLowerCase().includes(searchTerm) ||
+      userData.role.toLowerCase().includes(searchTerm)
+    ) {
+      const userRow = document.createElement("tr");
+      userRow.innerHTML = `
+              <td>${userData.name}</td>
+              <td>${userData.email}</td>
+              <td>${userData.role}</td>
+              <td>
+                  <button class="button is-info view-user-button" data-user-id="${userId}">View</button>
+              </td>
+          `;
+      usersTableBody.appendChild(userRow);
+    }
+  });
 });
 
 // Handle View User Button Click
