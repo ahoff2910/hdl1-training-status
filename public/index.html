@@ -234,6 +234,92 @@
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
+      <!-- View Users Modal -->
+      <div class="modal has-text-centered" id="viewUsersModal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Users
+            </h1>
+            <table class="table is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body">
+                <!-- User rows will be added here dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
+      <!-- User Account Modal -->
+      <div class="modal has-text-centered" id="userAccountModal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Edit User
+            </h1>
+            <form id="userAccountForm">
+              <div class="field">
+                <label class="label has-text-left">Name:</label>
+                <div class="control">
+                  <input
+                    id="userAccountName"
+                    class="input"
+                    type="text"
+                    placeholder="Name"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label has-text-left">Email:</label>
+                <div class="control">
+                  <input
+                    id="userAccountEmail"
+                    class="input"
+                    type="email"
+                    placeholder="Email"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label has-text-black has-text-left"
+                  >User Type:</label
+                >
+                <div class="control has-text-left">
+                  <div class="select">
+                    <select id="userAccountRole">
+                      <option value="user">User</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <button class="button is-primary" type="submit">
+                Save Changes
+              </button>
+              <button class="button is-danger" id="deleteUserButton">
+                Delete User
+              </button>
+              <div id="userAccountError" class="error has-text-danger"></div>
+            </form>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
       <!-- Navbar Section -->
       <nav
         class="navbar has-background-danger-dark p-2"
@@ -247,13 +333,18 @@
               >Add Employee</a
             >
             <a
-              id="signup-button"
               class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
+              >View Departed</a
+            >
+            <a
+              id="signup-button"
+              class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline is-hidden"
               >Add User</a
             >
             <a
-              class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
-              >View Departed</a
+              id="view-users-button"
+              class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline is-hidden"
+              >View Users</a
             >
           </div>
         </div>
@@ -924,7 +1015,7 @@
 
       <!-- color key modal -->
       <div class="modal" id="colormodal">
-        <div class="modal-background" id="modalbg2"></div>
+        <div class="modal-background"></div>
         <div class="modal-content has-background-white p-4">
           <table
             class="table is-bordered is-narrow is-hoverable is-fullwidth"

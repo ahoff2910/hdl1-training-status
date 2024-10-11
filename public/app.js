@@ -203,13 +203,94 @@ r_e("myAccountForm").addEventListener("submit", async (e) => {
       if (password) {
         await user.updatePassword(password);
       }
-      await userDocRef.update({ name: name });
+      await userDocRef.update({ name: name, email: email });
       r_e("myAccountError").innerHTML = "";
       configure_message_bar("Account updated successfully.");
       r_e("myAccountModal").classList.remove("is-active");
     } catch (err) {
       r_e("myAccountError").innerHTML = err.message;
     }
+  }
+});
+
+let userDataCache = {}; // Cache to store user data
+
+// Open the View Users Modal
+r_e("view-users-button").addEventListener("click", async () => {
+  const usersTableBody = r_e("users-table-body");
+  usersTableBody.innerHTML = ""; // Clear previous data
+
+  const usersSnapshot = await firebase.firestore().collection("users").get();
+  usersSnapshot.forEach((doc) => {
+    const userData = doc.data();
+    userDataCache[doc.id] = userData; // Cache user data
+    const userRow = document.createElement("tr");
+
+    userRow.innerHTML = `
+            <td>${userData.name}</td>
+            <td>${userData.email}</td>
+            <td>${userData.role}</td>
+            <td>
+                <button class="button is-info view-user-button" data-user-id="${doc.id}">View</button>
+            </td>
+        `;
+
+    usersTableBody.appendChild(userRow);
+  });
+
+  r_e("viewUsersModal").classList.add("is-active");
+});
+
+// Handle View User Button Click
+document.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("view-user-button")) {
+    const userId = e.target.getAttribute("data-user-id");
+    const userData = userDataCache[userId]; // Get user data from cache
+
+    if (userData) {
+      r_e("userAccountName").value = userData.name || "";
+      r_e("userAccountEmail").value = userData.email || "";
+      r_e("userAccountRole").value = userData.role || "";
+      r_e("userAccountModal").setAttribute("data-user-id", userId); // Save user ID to modal
+      r_e("userAccountModal").classList.add("is-active");
+    }
+  }
+});
+
+// Save Changes in User Account Modal
+r_e("userAccountForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const userId = r_e("userAccountModal").getAttribute("data-user-id");
+  const userDocRef = firebase.firestore().collection("users").doc(userId);
+
+  const name = r_e("userAccountName").value;
+  const email = r_e("userAccountEmail").value;
+
+  try {
+    await userDocRef.update({ name: name, email: email });
+    r_e("userAccountError").innerHTML = "";
+    configure_message_bar("User account updated successfully.");
+    r_e("userAccountModal").classList.remove("is-active");
+  } catch (err) {
+    r_e("userAccountError").innerHTML = err.message;
+  }
+});
+
+// Delete User
+r_e("deleteUserButton").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const userId = r_e("userAccountModal").getAttribute("data-user-id");
+
+  try {
+    await firebase.firestore().collection("users").doc(userId).delete();
+    configure_message_bar("User deleted successfully.");
+    r_e("userAccountModal").classList.remove("is-active");
+    r_e("viewUsersModal")
+      .querySelector(`[data-user-id="${userId}"]`)
+      .closest("tr")
+      .remove();
+  } catch (err) {
+    r_e("userAccountError").innerHTML = err.message;
   }
 });
 
@@ -243,7 +324,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
       .get();
     if (userDoc.exists) {
       const userData = userDoc.data();
-      show_page(auth.currentUser.email);
+      show_page(auth.currentUser.email, userData.role);
     } else {
       show_page();
       auth.currentUser.delete().then(() => {
@@ -257,7 +338,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
   }
 });
 
-function show_page(email) {
+function show_page(email, role = "") {
   // check if there is a current user
   if (email) {
     r_e("signed-out-div").classList.add("is-hidden");
@@ -265,6 +346,13 @@ function show_page(email) {
     r_e("signin-button").classList.add("is-hidden");
     r_e("signout-button").classList.remove("is-hidden");
     r_e("openMyAccountModal").classList.remove("is-hidden");
+    if (role == "admin") {
+      r_e("signup-button").classList.remove("is-hidden");
+      r_e("view-users-button").classList.remove("is-hidden");
+    } else {
+      r_e("signup-button").classList.add("is-hidden");
+      r_e("view-users-button").classList.add("is-hidden");
+    }
   } else {
     r_e("signed-out-div").classList.remove("is-hidden");
     r_e("signed-in-div").classList.add("is-hidden");
