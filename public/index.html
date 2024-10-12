@@ -8,6 +8,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" href="images/favicon.png" />
   </head>
@@ -365,7 +369,7 @@
       </nav>
 
       <!-- begin dashboard div -->
-      <div id="dashboard-div" class="is-hidden">
+      <div id="dashboard-div" class="">
         <section class="section p-5">
           <div class="container">
             <div class="columns">
@@ -1087,13 +1091,15 @@
       </div>
       <!-- end of dashboard div -->
       <!-- start of user page div -->
-      <div id="user-page-div" class="">
+      <div id="user-page-div" class="is-hidden">
         <section class="section">
           <div class="container">
             <div class="columns">
               <div class="column is-one-third">
                 <!-- Return to Home Button -->
-                <button class="button is-link">← Return to Home</button>
+                <button class="button is-link" id="home-button">
+                  ← Return to Home
+                </button>
               </div>
               <div class="column is-one-third has-text-centered">
                 <!-- MRSC Title -->
@@ -1107,18 +1113,197 @@
                 <!-- Employee Info -->
                 <div class="box">
                   <p><strong>Hired Date:</strong> 08/17/2022</p>
-                  <p><strong>Current Training Level:</strong> Chat/Email</p>
+                  <p>
+                    <strong>Current Training Level:</strong> Advanced Phones
+                  </p>
                   <p><strong>Last Reviewed:</strong> 08/11/2024 - 60 Days</p>
                   <p><strong>Pay Rate:</strong> $17.25</p>
-                  <button class="button is-info">Edit</button>
+                  <button class="button is-info my-2">Edit</button>
+                  <button class="button is-danger my-2">Delete</button>
                 </div>
               </div>
 
               <div class="column is-two-thirds">
-                <!-- Collapsible Training Boxes -->
-                <div class="box">
-                  <h2 class="title is-size-5">Chat/Email Training</h2>
-                  <form id="chatEmailTrainingForm">
+                <div class="box collapsible">
+                  <a>
+                    <div class="columns is-mobile is-vcentered">
+                      <div class="column">
+                        <h2 class="title is-size-5">Pick 1 Training</h2>
+                      </div>
+                      <div class="column has-text-left">
+                        <h2 class="title is-size-6">
+                          <span class="icon has-text-success is-size-7">
+                            <i class="fas fa-circle"></i>
+                          </span>
+                          Completed 11/2/2023
+                        </h2>
+                      </div>
+                      <div class="column has-text-right is-one-fifth">
+                        <h2 class="title is-size-5">
+                          <i class="fas fa-caret-down"></i>
+                        </h2>
+                      </div>
+                    </div>
+                  </a>
+
+                  <form id="pick1TrainingForm" class="pt-5">
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal" style="flex-grow: 4">
+                        <label class="label is-size-6"
+                          >Shadowing Date Completed</label
+                        >
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input
+                              type="date"
+                              name="shadowingDateCompleted"
+                              class="input is-size-6"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal" style="flex-grow: 4">
+                        <label class="label is-size-6"
+                          >Training Date Completed</label
+                        >
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input
+                              type="date"
+                              name="trainingDateCompleted"
+                              class="input is-size-6"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="button is-success" type="submit">
+                      Save Changes
+                    </button>
+                    <button class="button is-danger" type="submit">
+                      Cancel Pick 1 Training
+                    </button>
+                  </form>
+                </div>
+
+                <div class="box collapsible">
+                  <a>
+                    <div class="columns is-mobile is-vcentered">
+                      <div class="column">
+                        <h2 class="title is-size-5">
+                          Advanced Phones Training
+                        </h2>
+                      </div>
+                      <div class="column has-text-left">
+                        <h2 class="title is-size-6">
+                          <span class="icon has-text-success is-size-7">
+                            <i class="fas fa-circle"></i>
+                          </span>
+                          Completed 12/12/2023
+                        </h2>
+                      </div>
+                      <div class="column has-text-right is-one-fifth">
+                        <h2 class="title is-size-5">
+                          <i class="fas fa-caret-down"></i>
+                        </h2>
+                      </div>
+                    </div>
+                  </a>
+
+                  <form id="advancedPhonesTrainingForm" class="pt-5">
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal" style="flex-grow: 4">
+                        <label class="label is-size-6">Contacted Agent</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input type="checkbox" name="contactedAgent" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal" style="flex-grow: 4">
+                        <label class="label is-size-6"
+                          >Submit Raise Request</label
+                        >
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input type="checkbox" name="submitPayRaise" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal" style="flex-grow: 4">
+                        <label class="label is-size-6"
+                          >Last Day of Training</label
+                        >
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input type="checkbox" name="lastDayOfTraining" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field is-horizontal">
+                      <div class="field-label is-normal" style="flex-grow: 4">
+                        <label class="label is-size-6"
+                          >Update Training in NOVA & Training Tracking Google
+                          Sheet</label
+                        >
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                            <input type="checkbox" name="updateTraining" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="button is-success" type="submit">
+                      Save Changes
+                    </button>
+                    <button class="button is-danger" type="submit">
+                      Cancel Advanced Phones Training
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Chat/Email Training -->
+                <div class="box collapsible">
+                  <a>
+                    <div class="columns is-mobile is-vcentered">
+                      <div class="column">
+                        <h2 class="title is-size-5">Chat/Email Training</h2>
+                      </div>
+                      <div class="column has-text-left">
+                        <h2 class="title is-size-6">
+                          <span class="icon has-text-warning is-size-7">
+                            <i class="fas fa-circle"></i>
+                          </span>
+                          Started 11/2/2023
+                        </h2>
+                      </div>
+                      <div class="column has-text-right is-one-fifth">
+                        <h2 class="title is-size-5">
+                          <i class="fas fa-caret-down"></i>
+                        </h2>
+                      </div>
+                    </div>
+                  </a>
+                  <form id="chatEmailTrainingForm" class="pt-5">
                     <div class="field is-horizontal">
                       <div class="field-label is-normal" style="flex-grow: 4">
                         <label class="label is-size-6">Contacted Agent</label>
@@ -1247,47 +1432,21 @@
                       </div>
                     </div>
 
-                    <button class="button is-primary" type="submit">
+                    <button class="button is-success" type="submit">
                       Save Changes
+                    </button>
+
+                    <button class="button is-danger" type="submit">
+                      Cancel Chat/Email Training
                     </button>
                   </form>
                 </div>
-
-                <!-- Other Collapsible Boxes -->
-                <div class="box">
-                  <h2 class="title is-size-5">Pick 1 Training</h2>
-                  <div class="content">
-                    <!-- Add content specific to Pick 1 Training here -->
-                  </div>
-                </div>
-
-                <div class="box">
-                  <h2 class="title is-size-5">Advanced Phones Training</h2>
-                  <div class="content">
-                    <!-- Add content specific to Advanced Phones Training here -->
-                  </div>
-                </div>
-
-                <div class="box">
-                  <h2 class="title is-size-5">Onsite Training</h2>
-                  <div class="content">
-                    <!-- Add content specific to Onsite Training here -->
-                  </div>
-                </div>
-
-                <div class="box">
-                  <h2 class="title is-size-5">HDQA Training</h2>
-                  <div class="content">
-                    <!-- Add content specific to HDQA Training here -->
-                  </div>
-                </div>
-
-                <div class="box">
-                  <h2 class="title is-size-5">Offboarding</h2>
-                  <div class="content">
-                    <!-- Add content specific to Offboarding here -->
-                  </div>
-                </div>
+                <button class="button is-link" type="submit">
+                  Start Onsite Training
+                </button>
+                <button class="button is-danger" type="submit">
+                  Start Offboarding
+                </button>
               </div>
             </div>
           </div>

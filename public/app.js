@@ -343,6 +343,35 @@ r_e("deleteUserButton").addEventListener("click", async (e) => {
   }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+  // Select all boxes with the class "collapsible"
+  const boxes = document.querySelectorAll(".box.collapsible");
+
+  // Loop through each box and add click event to the anchor element
+  boxes.forEach((box) => {
+    const trigger = box.querySelector("a");
+    const content = box.querySelector("form");
+    const caret = trigger.querySelector(".fas.fa-caret-down, .fas.fa-caret-up");
+
+    // Initially hide content
+    content.style.display = "none";
+
+    // Add click event to the anchor element
+    trigger.addEventListener("click", function () {
+      // Toggle content visibility
+      if (content.style.display === "none") {
+        content.style.display = "block";
+        caret.classList.remove("fa-caret-down");
+        caret.classList.add("fa-caret-up");
+      } else {
+        content.style.display = "none";
+        caret.classList.remove("fa-caret-up");
+        caret.classList.add("fa-caret-down");
+      }
+    });
+  });
+});
+
 // Handle Forgot Password Button Click
 r_e("forgotPasswordButton").addEventListener("click", () => {
   let email = r_e("sign-in-email").value;
@@ -426,6 +455,8 @@ function show_page(email, role = "") {
     r_e("signin-button").classList.add("is-hidden");
     r_e("signout-button").classList.remove("is-hidden");
     r_e("openMyAccountModal").classList.remove("is-hidden");
+    r_e("dashboard-div").classList.remove("is-hidden");
+    r_e("user-page-div").classList.add("is-hidden");
     if (role == "admin") {
       r_e("signup-button").classList.remove("is-hidden");
       r_e("view-users-button").classList.remove("is-hidden");
@@ -439,5 +470,29 @@ function show_page(email, role = "") {
     r_e("signin-button").classList.remove("is-hidden");
     r_e("signout-button").classList.add("is-hidden");
     r_e("openMyAccountModal").classList.add("is-hidden");
+    r_e("dashboard-div").classList.remove("is-hidden");
+    r_e("user-page-div").classList.add("is-hidden");
   }
 }
+
+// Handle "return to home" button on user page
+r_e("home-button").addEventListener("click", function () {
+  r_e("user-page-div").classList.add("is-hidden");
+  r_e("dashboard-div").classList.remove("is-hidden");
+});
+
+// Handle "return to home" button on user page
+r_e("home-button").addEventListener("click", function () {
+  r_e("user-page-div").classList.add("is-hidden");
+  r_e("dashboard-div").classList.remove("is-hidden");
+});
+
+// Placeholder to make all agent buttons move to agent page
+let agentButtons = document.querySelectorAll(".agent-button");
+
+agentButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    r_e("dashboard-div").classList.add("is-hidden");
+    r_e("user-page-div").classList.remove("is-hidden");
+  });
+});
