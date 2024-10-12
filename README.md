@@ -145,10 +145,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Set up Firebase hosting</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Set up user authentication</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -206,10 +206,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Continued working on user authentication and menus</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Will begin working on user roles and role management</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -267,10 +267,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Started coding agent page</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continue coding agent page and start departed agent modal</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
