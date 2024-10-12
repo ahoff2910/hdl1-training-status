@@ -123,6 +123,7 @@
         </tbody>
     </table>
 <h3>Trello Board</h3>
+<p><a href="https://trello.com/invite/b/6702e5b4d7840888240070e4/ATTIea44f8793ced9b6d8f420ddfb96f75113EAD6469/sprint-2">Link to Trello Board</a></p>
 <h3>Burndown Charts</h3>
 <h3>Daily Scrum Meetings</h3>
 <h3>Sprint Review</h3>
