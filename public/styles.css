@@ -19,3 +19,7 @@
 .field.is-horizontal .field-body {
   align-items: center;
 }
+
+.agent-depart-row {
+  cursor: pointer;
+}

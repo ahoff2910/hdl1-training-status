@@ -241,6 +241,61 @@
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
+      <!-- View Departed Modal -->
+      <div class="modal has-text-centered" id="departedmodal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Departed Agents
+            </h1>
+            <input
+              id="searchDepartedInput"
+              class="input"
+              type="text"
+              placeholder="Search agents..."
+            />
+            <div class="table-container">
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Agent</th>
+                    <th>Last Day</th>
+                    <th>Offboarded</th>
+                    <th>Services</th>
+                    <th>Laptop</th>
+                  </tr>
+                </thead>
+                <tbody id="departed-agents-table">
+                  <tr class="agent-depart-row">
+                    <td>ABCD</td>
+                    <td>2023-05-01</td>
+                    <td><input type="checkbox" checked disabled /></td>
+                    <td><input type="checkbox" checked disabled /></td>
+                    <td><input type="checkbox" checked disabled /></td>
+                  </tr>
+                  <tr class="agent-depart-row">
+                    <td>EFGH</td>
+                    <td>2023-06-15</td>
+                    <td><input type="checkbox" checked disabled /></td>
+                    <td><input type="checkbox" checked disabled /></td>
+                    <td><input type="checkbox" checked disabled /></td>
+                  </tr>
+                  <tr class="agent-depart-row">
+                    <td>IJKL</td>
+                    <td>2023-07-20</td>
+                    <td><input type="checkbox" checked disabled /></td>
+                    <td><input type="checkbox" checked disabled /></td>
+                    <td><input type="checkbox" checked disabled /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
       <!-- View Users Modal -->
       <div class="modal has-text-centered" id="viewUsersModal">
         <div class="modal-background"></div>
@@ -351,6 +406,7 @@
               >Add Employee</a
             >
             <a
+              id="open-departed-button"
               class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
               >View Departed</a
             >

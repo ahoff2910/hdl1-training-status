@@ -13,6 +13,11 @@ r_e("signup-button").addEventListener("click", () => {
   r_e("signupmodal").classList.add("is-active");
 });
 
+// open departed
+r_e("open-departed-button").addEventListener("click", () => {
+  r_e("departedmodal").classList.add("is-active");
+});
+
 // open color key modal
 r_e("colorBtn").addEventListener("click", () => {
   r_e("colormodal").classList.add("is-active");
@@ -492,6 +497,17 @@ let agentButtons = document.querySelectorAll(".agent-button");
 
 agentButtons.forEach((button) => {
   button.addEventListener("click", function () {
+    closeAllModals();
+    r_e("dashboard-div").classList.add("is-hidden");
+    r_e("user-page-div").classList.remove("is-hidden");
+  });
+});
+
+let departedRows = document.querySelectorAll(".agent-depart-row");
+
+departedRows.forEach((row) => {
+  row.addEventListener("click", function () {
+    closeAllModals();
     r_e("dashboard-div").classList.add("is-hidden");
     r_e("user-page-div").classList.remove("is-hidden");
   });
