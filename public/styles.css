@@ -11,3 +11,11 @@
 #message_bar {
   z-index: 100;
 }
+
+.field.is-horizontal .field-label {
+  align-items: center;
+}
+
+.field.is-horizontal .field-body {
+  align-items: center;
+}
