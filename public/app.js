@@ -23,6 +23,11 @@ r_e("colorBtn").addEventListener("click", () => {
   r_e("colormodal").classList.add("is-active");
 });
 
+// open add employee modal
+r_e("add-employee-button").addEventListener("click", () => {
+  r_e("addemployeemodal").classList.add("is-active");
+});
+
 // Close the modal and reset its forms
 function closeModal($el) {
   $el.classList.remove("is-active");

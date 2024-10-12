@@ -33,7 +33,7 @@
     <header class="section p-2 has-text-centered">
       <div class="container">
         <div class="columns is-vcentered">
-          <div class="column is-half has-text-right">
+          <div class="column is-half has-text-left is-one-third">
             <img
               src="images/logo.png"
               width="325px"
@@ -41,7 +41,7 @@
               alt="DoIT Help Desk"
             />
           </div>
-          <div class="column has-text-left">
+          <div class="column has-text-centered is-one-third">
             <h1 class="title is-size-3">HDL1 Training Manager</h1>
           </div>
           <div class="navbar-end">
@@ -401,6 +401,45 @@
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
+      
+      <!-- Add Employee Modal -->
+      <div class="modal has-text-centered" id="addemployeemodal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Add Employee
+            </h1>
+            <form id="signin_form">
+              <div class="field">
+                <label class="label has-text-left">Hire Date: </label>
+                <div class="control">
+                  <input
+                    id="hiredate"
+                    class="input"
+                    type="text"
+                    placeholder="xx-xx-xxxx"
+                  />
+                </div>
+              </div>
+              <div class="field">
+                <label class="label has-text-left">4 Letter ID: </label>
+                <div class="control">
+                  <input
+                    id="4letterid"
+                    class="input"
+                    type="text"
+                    placeholder="ABCD"
+                  />
+                </div>
+              </div>
+              <button class="button is-primary" type="submit">
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
 
       <!-- Navbar Section -->
       <nav
@@ -411,6 +450,7 @@
         <div class="navbar-menu">
           <div class="m-auto">
             <a
+              id="add-employee-button"
               class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"
               >Add Employee</a
             >
@@ -1531,13 +1571,28 @@
 
     <!-- Copyright Footer Section -->
     <footer class="footer has-background-danger-dark p-3">
-      <div class="content has-text-centered">
-        <p class="has-text-white has-text-weight-bold">
-          Copyright &copy; Group 2 2024
-        </p>
+      <div class="columns is-vcentered">
+        <div class="column">
+          <img
+          src="images/WSB logo.png"
+          width="500px"
+          height="500px"
+          alt="DoIT Help Desk"
+        />
+        </div>
+        <div class="column">
+          <div class="content has-text-centered">
+            <p class="has-text-white has-text-weight-bold">
+              Copyright &copy; Group 2 2024
+            </p>
+          </div>
+        </div>
+        <div class="column">
+          <!-- centering column -->
+        </div>
       </div>
     </footer>
-
+      
     <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
