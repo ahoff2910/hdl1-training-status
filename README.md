@@ -129,5 +129,192 @@
 <p>Day 5</p>
 <p>Day 7</p>
 <h3>Daily Scrum Meetings</h3>
-
+<h4>Day 2: Daily Scrum Meeting</h4>
+        <p>Hannah:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?: none.</p>
+            </li>
+        </ul>
+        <p>Alex:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: None</p>
+            </li>
+        </ul>
+        <p>Ethan:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:N/A</p>
+            </li>
+        </ul>
+        <p>Max:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: </p>
+            </li>
+        </ul>
+        <p>Nico:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: None</p>
+            </li>
+        </ul>
+<h4>Day 5: Daily Scrum Meeting</h4>
+        <p>Hannah:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?: none.</p>
+            </li>
+        </ul>
+        <p>Alex:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: None</p>
+            </li>
+        </ul>
+        <p>Ethan:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:N/A</p>
+            </li>
+        </ul>
+        <p>Max:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: </p>
+            </li>
+        </ul>
+        <p>Nico:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: None</p>
+            </li>
+        </ul>
+<h4>Day 7: Daily Scrum Meeting</h4>
+        <p>Hannah:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?: none.</p>
+            </li>
+        </ul>
+        <p>Alex:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: None</p>
+            </li>
+        </ul>
+        <p>Ethan:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?:</p>
+            </li>
+            <li>
+                <p>What are you planning to do today?:</p>
+            </li>
+            <li>
+                <p>Any problems?:N/A</p>
+            </li>
+        </ul>
+        <p>Max:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: </p>
+            </li>
+        </ul>
+        <p>Nico:</p>
+        <ul>
+            <li>
+                <p>What did you do yesterday?: </p>
+            </li>
+            <li>
+                <p>What are you planning to do today?: </p>
+            </li>
+            <li>
+                <p>Any problems?: None</p>
+            </li>
+        </ul>
 <h3>Sprint Review</h3>
+<p>a. What did you learn during the sprint?:</p>
+<p>b. What did go well? Why?:</p>
+<p>c. What didn't go well? Why not?:</p>
+<p>d. How can you make things better next time?:</p>
+<p>e. Are you satisfied with what you already completed?:</p>
