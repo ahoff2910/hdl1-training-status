@@ -189,10 +189,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Helped update the sign-in pop-up on homepage, prior to Firebase implamentation </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Help edit the homepage based on client feedback recieved from last sprint </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -250,10 +250,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Began to brianstorm possible ways to edit the webpage to allow for a more dynamic view  </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continue to edit modal design </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -311,10 +311,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Switched column order per discussion with client  </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Help with sprint deliverables where possible  </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
