@@ -128,8 +128,12 @@
 <p><a href="https://trello.com/invite/b/6702e5b4d7840888240070e4/ATTIea44f8793ced9b6d8f420ddfb96f75113EAD6469/sprint-2">Link to Trello Board</a></p>
 <h3>Burndown Charts</h3>
 <p>Day 2</p>
+![s2d2](https://github.com/user-attachments/assets/bd262085-6b51-4e8c-8613-6ea7cf61e369)
 <p>Day 5</p>
+![s2d5](https://github.com/user-attachments/assets/544ed481-579e-425a-91ba-b2610ff65b00)
 <p>Day 7</p>
+![s2d7](https://github.com/user-attachments/assets/f571b65a-7679-4661-9fdb-e75bba8fd39d)
+
 <h3>Daily Scrum Meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
