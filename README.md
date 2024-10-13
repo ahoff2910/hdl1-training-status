@@ -159,10 +159,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Tested animation coding for adding a slide-up effect for color key modal.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Start coding the animation for the modal and test its responsiveness on different screen sizes.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -220,10 +220,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Implemented the slide-up animation.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Make further visual edits, add padding and color modifications to color key.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -281,10 +281,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Continued minor editing to color key modal appearance and content.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Finalize animated color key modal and commit changes.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
