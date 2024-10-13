@@ -133,10 +133,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Created user departed page on Justinmind.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Take client feedback from last sprint into account and make changes to home page layout.</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -194,10 +194,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Created mockup of user page in Justinmind.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Test application, make sure that user will have seamless experience. </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -255,10 +255,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Put together readme file. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Work on finishing sprint deliverables, meet for sprint review. </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -315,6 +315,6 @@
 <h3>Sprint Review</h3>
 <p>a. What did you learn during the sprint?:</p>
 <p>b. What did go well? Why?:</p>
-<p>c. What didn't go well? Why not?:</p>
+<p>c. What didn't go well? Why not?: This spring we took on more work so we didn't complete our work according to the burndown chart. We were a little off track during the middle of the week, but by the end of the week we got back on track and were able to get everything done. </p>
 <p>d. How can you make things better next time?:</p>
-<p>e. Are you satisfied with what you already completed?:</p>
+<p>e. Are you satisfied with what you already completed?: We are satisfied with what we have completed. We have taken the users suggestions in from the last sprint and applied them to the application during this sprint. We have completed the whole graphical interface and completed a good portion of the user authentication within firebase as well. </p>
