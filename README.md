@@ -127,11 +127,13 @@
 <h3>Trello Board</h3>
 <p><a href="https://trello.com/invite/b/6702e5b4d7840888240070e4/ATTIea44f8793ced9b6d8f420ddfb96f75113EAD6469/sprint-2">Link to Trello Board</a></p>
 <h3>Burndown Charts</h3>
-<p>Day 2</p>
+<p>Day 2:</p>
 ![s2d2](https://github.com/user-attachments/assets/bd262085-6b51-4e8c-8613-6ea7cf61e369)
-<p>Day 5</p>
+
+<p>Day 5:</p>
 ![s2d5](https://github.com/user-attachments/assets/544ed481-579e-425a-91ba-b2610ff65b00)
-<p>Day 7</p>
+
+<p>Day 7:</p>
 ![s2d7](https://github.com/user-attachments/assets/f571b65a-7679-4661-9fdb-e75bba8fd39d)
 
 <h3>Daily Scrum Meetings</h3>
@@ -175,13 +177,13 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on footer updates. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continued work on footer updates; Header Bulma implementation. </p>
             </li>
             <li>
-                <p>Any problems?: </p>
+                <p>Any problems?: N/A </p>
             </li>
         </ul>
         <p>Nico:</p>
@@ -236,13 +238,13 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finalized footer design & reworked header spacing to adjust better with improved bulma implementation. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Adding functionality to "Add Employee" button, modal, and modal form. </p>
             </li>
             <li>
-                <p>Any problems?: </p>
+                <p>Any problems?: N/A </p>
             </li>
         </ul>
         <p>Nico:</p>
@@ -297,10 +299,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished up "Add Employee" functionality. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Add burndown updates and verify readme completion. </p>
             </li>
             <li>
                 <p>Any problems?: </p>
