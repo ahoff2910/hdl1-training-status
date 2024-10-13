@@ -23,3 +23,95 @@
 .agent-depart-row {
   cursor: pointer;
 }
+
+/* Color Key Modal CSS */
+/* Color Modal (background) */
+.colormodal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s;
+}
+/* Color Modal Content */
+.colormodal-content {
+  position: fixed;
+  bottom: 0;
+  background-color: #fefefe;
+  width: 100%;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s;
+}
+
+/* Color Close Button */
+.colorclose {
+  color: rgb(255, 255, 255);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.colorclose:hover,
+.colorclose:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.colormodal-header {
+  padding: 2px 16px 20px 16px;
+  color: rgb(255, 255, 255);
+  font-size: large;
+}
+.colormodal-body {
+  padding: 20px 10px 20px 10px;
+}
+.colormodal-footer {
+  padding: 2px 16px;
+  color: white;
+}
+/* Color Modal Animation */
+@-webkit-keyframes slideIn {
+  from {
+    bottom: -300px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    bottom: -300px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* end of color modal css */

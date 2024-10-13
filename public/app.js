@@ -18,10 +18,28 @@ r_e("open-departed-button").addEventListener("click", () => {
   r_e("departedmodal").classList.add("is-active");
 });
 
-// open color key modal
-r_e("colorBtn").addEventListener("click", () => {
-  r_e("colormodal").classList.add("is-active");
-});
+// Animated Color Key Modal
+// Get the modal
+var colormodal = document.getElementById("colormodal");
+// Get the button that opens the modal
+var colorbtn = document.getElementById("colorBtn");
+// Get the <span> element that closes the modal
+var colorspan = document.getElementsByClassName("colorclose")[0];
+// When the user clicks the button, open the modal
+colorbtn.onclick = function () {
+  colormodal.style.display = "block";
+};
+// When the user clicks on <span> (x), close the modal
+colorspan.onclick = function () {
+  colormodal.style.display = "none";
+};
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == colormodal) {
+    colormodal.style.display = "none";
+  }
+};
+// End of Color key Modal
 
 // open add employee modal
 r_e("add-employee-button").addEventListener("click", () => {

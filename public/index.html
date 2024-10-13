@@ -401,7 +401,7 @@
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
-      
+
       <!-- Add Employee Modal -->
       <div class="modal has-text-centered" id="addemployeemodal">
         <div class="modal-background"></div>
@@ -1139,49 +1139,56 @@
           </div>
         </section>
 
-        <!-- color key modal -->
-        <div class="modal" id="colormodal">
-          <div class="modal-background"></div>
-          <div class="modal-content has-background-white p-4">
-            <table
-              class="table is-bordered is-narrow is-hoverable is-fullwidth"
-              id="keytable"
-            >
-              <tbody>
-                <tr>
-                  <th>Blue</th>
-                  <th>Green</th>
-                  <th>Red</th>
-                  <th>Orange</th>
-                </tr>
-                <tr>
-                  <td
-                    class="has-background-info-light has-text-weight-bold px-3 py-2"
-                    id="bluekey"
-                  >
-                    Has been reviewed within the past 2 months
-                  </td>
-                  <td
-                    class="has-background-success-light has-text-weight-bold px-3 py-2"
-                    id="greenkey"
-                  >
-                    Indicated Training too easy
-                  </td>
-                  <td
-                    class="has-background-danger-light has-text-weight-bold px-3 py-2"
-                    id="redkey"
-                  >
-                    Attendance or performance concerns - DO NOT TRAIN
-                  </td>
-                  <td
-                    class="has-background-warning-light has-text-weight-bold px-3 py-2"
-                    id="orangekey"
-                  >
-                    Agent is departing/on hiatus
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- Animated Color Key Modal -->
+        <!-- The colorModal -->
+        <div id="colormodal" class="colormodal">
+          <!-- Modal content -->
+          <div class="colormodal-content">
+            <div class="colormodal-header has-background-dark">
+              <span class="colorclose">&times;</span>
+              <h2>Color Key</h2>
+            </div>
+            <div class="colormodal-body">
+              <table
+                class="table is-bordered is-narrow is-hoverable is-fullwidth"
+                id="keytable"
+              >
+                <tbody>
+                  <tr>
+                    <th>Blue</th>
+                    <th>Green</th>
+                    <th>Red</th>
+                    <th>Orange</th>
+                  </tr>
+                  <tr>
+                    <td
+                      class="has-background-info-light has-text-weight-bold px-3 py-2"
+                      id="bluekey"
+                    >
+                      Has been reviewed within the past 2 months
+                    </td>
+                    <td
+                      class="has-background-success-light has-text-weight-bold px-3 py-2"
+                      id="greenkey"
+                    >
+                      Indicated Training too easy
+                    </td>
+                    <td
+                      class="has-background-danger-light has-text-weight-bold px-3 py-2"
+                      id="redkey"
+                    >
+                      Attendance or performance concerns - DO NOT TRAIN
+                    </td>
+                    <td
+                      class="has-background-warning-light has-text-weight-bold px-3 py-2"
+                      id="orangekey"
+                    >
+                      Agent is departing/on hiatus
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -1574,11 +1581,11 @@
       <div class="columns is-vcentered">
         <div class="column">
           <img
-          src="images/WSB logo.png"
-          width="500px"
-          height="500px"
-          alt="DoIT Help Desk"
-        />
+            src="images/WSB logo.png"
+            width="500px"
+            height="500px"
+            alt="DoIT Help Desk"
+          />
         </div>
         <div class="column">
           <div class="content has-text-centered">
@@ -1592,7 +1599,7 @@
         </div>
       </div>
     </footer>
-      
+
     <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
     <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
