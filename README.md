@@ -1,4 +1,6 @@
 <h1>Sprint 2 ReadMe</h1>
+<h3>GitHub</h3>
+<P><a href= "https://github.com/ahoff2910/hdl1-training-status"></a>Link to Public Repository</P>
 <h3>User Stories</h3>
 <p>1. As a user I want to easily access training status information and departed employees.</p>
 <p>2. As a developer, meet with clients and receive feedback to alter training sites to clients desires. </p>
