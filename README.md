@@ -315,7 +315,7 @@
             </li>
         </ul>
 <h3>Sprint Review</h3>
-<p>a. What did you learn during the sprint?:</p>
+<p>a. What did you learn during the sprint?: During this sprint we learned the importance of constant user feedback. We created mockups for the client and after meeting with the client they had suggestions. This allowed us to develop the application to the clients specification.</p>
 <p>b. What did go well? Why?:</p>
 <p>c. What didn't go well? Why not?: This spring we took on more work so we didn't complete our work according to the burndown chart. We were a little off track during the middle of the week, but by the end of the week we got back on track and were able to get everything done. </p>
 <p>d. How can you make things better next time?:</p>
