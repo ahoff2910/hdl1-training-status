@@ -239,12 +239,12 @@ r_e("myAccountForm").addEventListener("submit", async (e) => {
   }
 });
 
-let userDataCache = {}; // Cache to store user data
+let userDataCache = {};
 
 // Open the View Users Modal
 r_e("view-users-button").addEventListener("click", async () => {
   const usersTableBody = r_e("users-table-body");
-  usersTableBody.innerHTML = ""; // Clear previous data
+  usersTableBody.innerHTML = "";
 
   const usersSnapshot = await firebase.firestore().collection("users").get();
   const usersArray = [];
@@ -257,7 +257,7 @@ r_e("view-users-button").addEventListener("click", async () => {
   // Sort users by name before caching
   usersArray.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Cache sorted user data and populate the table
+  // Cache sorted user data and fill table
   usersArray.forEach((user) => {
     userDataCache[user.id] = user; // Cache user data
 
@@ -282,7 +282,7 @@ r_e("view-users-button").addEventListener("click", async () => {
 r_e("searchUsersInput").addEventListener("input", () => {
   let searchTerm = r_e("searchUsersInput").value.toLowerCase(); // Make values lowercase
   let usersTableBody = r_e("users-table-body");
-  usersTableBody.innerHTML = ""; // Clear previous data
+  usersTableBody.innerHTML = "";
 
   Object.keys(userDataCache).forEach((userId) => {
     let userData = userDataCache[userId];
