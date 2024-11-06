@@ -535,3 +535,47 @@ departedRows.forEach((row) => {
     r_e("user-page-div").classList.remove("is-hidden");
   });
 });
+
+// Function to fetch agent data and display as buttons in the appropriate divs
+function displayAgentButtons() {
+  // Specify the document to read from, e.g., "agents/active"
+  db.collection("agents")
+    .doc("active")
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        // Assuming your data is an array of agent objects
+        const agents = doc.data().agents;
+
+        // Loop through each agent to create a button in the right div
+        agents.forEach((agent) => {
+          // Create a button element for the agent
+          const button = document.createElement("button");
+
+          // Set the button's properties
+          button.id = `agent-${agent.agent}`;
+          button.className = "button is-small m-1 agent-button";
+          button.draggable = true;
+          button.textContent = agent.agent;
+
+          // Apply red text color if the flag is 1
+          if (agent.flag === 1) {
+            button.style.color = "red";
+          }
+
+          // Append the button to the correct target div based on trainingLevel and trainingStatus
+          document
+            .getElementById(
+              `agent-button-${agent.trainingLevel}-${agent.trainingStatus}`
+            )
+            .appendChild(button);
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching document:", error);
+    });
+}
+
+// Call the function to display buttons when the page loads
+displayAgentButtons();
