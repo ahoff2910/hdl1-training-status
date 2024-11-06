@@ -483,6 +483,7 @@ firebase.auth().onAuthStateChanged(async (user) => {
 function show_page(email, role = "") {
   // check if there is a current user
   if (email) {
+    displayAgentButtons();
     r_e("signed-out-div").classList.add("is-hidden");
     r_e("signed-in-div").classList.remove("is-hidden");
     r_e("signin-button").classList.add("is-hidden");
@@ -780,9 +781,10 @@ function displayAgentButtons() {
     .get()
     .then((doc) => {
       if (doc.exists) {
-        const agents = doc.data().agents;
+        const agents = doc.data();
 
-        agents.forEach((agent) => {
+        Object.keys(agents).forEach((key) => {
+          const agent = agents[key];
           const button = document.createElement("button");
           button.id = `agent-${agent.agent}`;
           button.className = "button is-small m-1 agent-button";
@@ -795,7 +797,7 @@ function displayAgentButtons() {
           }
 
           button.onclick = function () {
-            showUserPage(agent);
+            showUserPage(agent.agent);
           };
 
           document
@@ -805,11 +807,11 @@ function displayAgentButtons() {
             .appendChild(button);
         });
       }
+    })
+    .catch((error) => {
+      console.error("Error getting document:", error);
     });
 }
-
-// Call the function to display buttons when the page loads
-displayAgentButtons();
 
 // Map training levels to names
 const trainingLevelNames = {
