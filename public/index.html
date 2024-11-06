@@ -735,7 +735,7 @@
               </div>
               <div class="column is-one-third has-text-centered">
                 <!-- MRSC Title -->
-                <h class="title is-size-4">MRSC</h>
+                <h id="user-page-agent-name" class="title is-size-4"></h>
               </div>
               <div class="column is-one-third"></div>
             </div>
@@ -744,12 +744,27 @@
               <div class="column is-one-third">
                 <!-- Employee Info -->
                 <div class="box">
-                  <p><strong>Hired Date:</strong> 08/17/2022</p>
                   <p>
-                    <strong>Current Training Level:</strong> Advanced Phones
+                    <strong>Hired Date:</strong>
+                    <span id="user-page-hire-date"></span>
                   </p>
-                  <p><strong>Last Reviewed:</strong> 08/11/2024 - 60 Days</p>
-                  <p><strong>Pay Rate:</strong> $17.25</p>
+                  <p>
+                    <strong>Expected Graduation:</strong>
+                    <span id="user-page-graduation"></span>
+                  </p>
+                  <p>
+                    <strong>Current Training Level:</strong>
+                    <span id="user-page-training-level"></span>
+                  </p>
+                  <p>
+                    <strong>Last Reviewed:</strong>
+                    <span id="user-page-last-reviewed"></span> -
+                    <span id="user-page-last-reviewed-duration"></span> Day(s)
+                  </p>
+                  <p>
+                    <strong>Pay Rate:</strong>
+                    <span id="user-page-pay-rate"></span>
+                  </p>
                   <button class="button is-info my-2">Edit</button>
                   <button class="button is-danger my-2">Delete</button>
                 </div>
@@ -1074,7 +1089,8 @@
                   </form>
                 </div>
                 <button class="button is-link" type="submit">
-                  Start Onsite Training
+                  Start&nbsp;
+                  <span id="user-page-next-training-level"></span>&nbsp;Training
                 </button>
                 <button class="button is-danger" type="submit">
                   Start Offboarding

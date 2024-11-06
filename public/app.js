@@ -515,17 +515,6 @@ r_e("home-button").addEventListener("click", function () {
   r_e("dashboard-div").classList.remove("is-hidden");
 });
 
-// Placeholder to make all agent buttons move to agent page
-let agentButtons = document.querySelectorAll(".agent-button");
-
-agentButtons.forEach((button) => {
-  button.addEventListener("click", function () {
-    closeAllModals();
-    r_e("dashboard-div").classList.add("is-hidden");
-    r_e("user-page-div").classList.remove("is-hidden");
-  });
-});
-
 let departedRows = document.querySelectorAll(".agent-depart-row");
 
 departedRows.forEach((row) => {
@@ -538,21 +527,15 @@ departedRows.forEach((row) => {
 
 // Function to fetch agent data and display as buttons in the appropriate divs
 function displayAgentButtons() {
-  // Specify the document to read from, e.g., "agents/active"
   db.collection("agents")
     .doc("active")
     .get()
     .then((doc) => {
       if (doc.exists) {
-        // Assuming your data is an array of agent objects
         const agents = doc.data().agents;
 
-        // Loop through each agent to create a button in the right div
         agents.forEach((agent) => {
-          // Create a button element for the agent
           const button = document.createElement("button");
-
-          // Set the button's properties
           button.id = `agent-${agent.agent}`;
           button.className = "button is-small m-1 agent-button";
           button.draggable = true;
@@ -563,7 +546,10 @@ function displayAgentButtons() {
             button.style.color = "red";
           }
 
-          // Append the button to the correct target div based on trainingLevel and trainingStatus
+          button.onclick = function () {
+            showUserPage(agent);
+          };
+
           document
             .getElementById(
               `agent-button-${agent.trainingLevel}-${agent.trainingStatus}`
@@ -571,11 +557,34 @@ function displayAgentButtons() {
             .appendChild(button);
         });
       }
-    })
-    .catch((error) => {
-      console.error("Error fetching document:", error);
     });
 }
 
 // Call the function to display buttons when the page loads
 displayAgentButtons();
+
+// Map training levels to names
+const trainingLevelNames = {
+  1: "Pick 1",
+  2: "Advanced Phones",
+  3: "Chat/Email",
+  4: "Onsite",
+  5: "HDQA",
+};
+
+// Function to display the user page for a specific agent
+function showUserPage(agent) {
+  closeAllModals();
+  r_e("dashboard-div").classList.add("is-hidden");
+  r_e("user-page-div").classList.remove("is-hidden");
+
+  // Populate user page elements with agent data
+  document.getElementById("user-page-agent-name").textContent = agent.agent;
+  document.getElementById("user-page-training-level").textContent =
+    trainingLevelNames[agent.trainingLevel] || "Unknown";
+  document.getElementById("user-page-hire-date").textContent = agent.hireDate;
+  document.getElementById("user-page-graduation").textContent =
+    agent.graduation;
+  document.getElementById("user-page-next-training-level").textContent =
+    trainingLevelNames[agent.trainingLevel + 1] || "Unknown";
+}
