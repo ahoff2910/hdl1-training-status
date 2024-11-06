@@ -402,6 +402,110 @@
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
+      <!-- Training Levels Modal -->
+      <div class="modal has-text-centered" id="trainingLevelsModal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Training Levels
+            </h1>
+
+            <!-- Search input for training levels -->
+            <input
+              id="searchTrainingLevelsInput"
+              class="input"
+              type="text"
+              placeholder="Search training levels..."
+            />
+
+            <!-- Training levels table -->
+            <div class="table-container mt-3">
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Training Level</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="trainingLevelsTableBody">
+                  <!-- Training level rows will be added here dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
+      <!-- Edit Training Level Modal -->
+      <div class="modal has-text-centered" id="editTrainingLevelModal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Edit Training Level
+            </h1>
+
+            <!-- Steps List -->
+            <div class="table-container mt-3">
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="stepsTableBody" class="is-narrow">
+                  <!-- Steps will be dynamically added here -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Add New Step Form -->
+            <div class="field is-horizontal mt-5">
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input
+                      id="newStepName"
+                      class="input"
+                      type="text"
+                      placeholder="Step Name"
+                    />
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control">
+                    <div class="select">
+                      <select id="newStepType">
+                        <option value="checkbox">Checkbox</option>
+                        <option value="date">Date</option>
+                        <option value="text">Text</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control">
+                    <button class="button is-primary" id="addStepButton">
+                      Add Step
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="errorMessage" class="error has-text-danger"></div>
+            <button class="button is-success mt-3" id="saveChangesButton">
+              Save Changes
+            </button>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
       <!-- Add Employee Modal -->
       <div class="modal has-text-centered" id="addemployeemodal">
         <div class="modal-background"></div>
@@ -468,6 +572,11 @@
               id="view-users-button"
               class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline is-hidden"
               >View Users</a
+            >
+            <a
+              id="edit-training-button"
+              class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline is-hidden"
+              >Edit Training</a
             >
           </div>
         </div>

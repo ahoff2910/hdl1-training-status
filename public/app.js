@@ -13,6 +13,11 @@ r_e("signup-button").addEventListener("click", () => {
   r_e("signupmodal").classList.add("is-active");
 });
 
+// open training up
+r_e("edit-training-button").addEventListener("click", () => {
+  r_e("trainingLevelsModal").classList.add("is-active");
+});
+
 // open departed
 r_e("open-departed-button").addEventListener("click", () => {
   r_e("departedmodal").classList.add("is-active");
@@ -488,9 +493,11 @@ function show_page(email, role = "") {
     if (role == "admin") {
       r_e("signup-button").classList.remove("is-hidden");
       r_e("view-users-button").classList.remove("is-hidden");
+      r_e("edit-training-button").classList.remove("is-hidden");
     } else {
       r_e("signup-button").classList.add("is-hidden");
       r_e("view-users-button").classList.add("is-hidden");
+      r_e("edit-training-button").classList.add("is-hidden");
     }
   } else {
     r_e("signed-out-div").classList.remove("is-hidden");
@@ -523,6 +530,247 @@ departedRows.forEach((row) => {
     r_e("dashboard-div").classList.add("is-hidden");
     r_e("user-page-div").classList.remove("is-hidden");
   });
+});
+
+let trainingDataCache = {};
+let localTrainingData = {};
+
+// Function to display steps from the cache
+function displaySteps() {
+  const stepsTableBody = r_e("stepsTableBody");
+  stepsTableBody.innerHTML = "";
+
+  // Check if steps exist and are not empty
+  if (localTrainingData.steps && localTrainingData.steps.length > 0) {
+    localTrainingData.steps.forEach((step, index) => {
+      const stepRow = document.createElement("tr");
+      stepRow.setAttribute("data-step-index", index);
+      stepRow.classList.add("is-narrow");
+      stepRow.innerHTML = `
+        <td class="p-1"><input class="input step-name" type="text" value="${
+          step.name
+        }" data-step-index="${index}"></td>
+        <td class="p-1">
+          <div class="select">
+            <select class="step-type" data-step-index="${index}">
+              <option value="checkbox" ${
+                step.type === "checkbox" ? "selected" : ""
+              }>Checkbox</option>
+              <option value="date" ${
+                step.type === "date" ? "selected" : ""
+              }>Date</option>
+              <option value="text" ${
+                step.type === "text" ? "selected" : ""
+              }>Text</option>
+            </select>
+          </div>
+        </td>
+        <td class="p-1">
+          <button class="button is-danger delete-step-button" data-step-index="${index}">
+            <span class="icon">
+              <i class="fas fa-times"></i>
+            </span>
+          </button>
+          <button class="button is-warning move-up-step-button" data-step-index="${index}">
+            <span class="icon">
+              <i class="fas fa-arrow-up"></i>
+            </span>
+          </button>
+          <button class="button is-warning move-down-step-button" data-step-index="${index}">
+            <span class="icon">
+              <i class="fas fa-arrow-down"></i>
+            </span>
+          </button>
+        </td>
+      `;
+      stepsTableBody.appendChild(stepRow);
+    });
+  } else {
+    // Display a message if there are no steps
+    const noStepsRow = document.createElement("tr");
+    noStepsRow.innerHTML = `
+      <td colspan="3" class="has-text-centered p-1">No steps available. Please add a step.</td>
+    `;
+    stepsTableBody.appendChild(noStepsRow);
+  }
+}
+
+// Open the Training Levels Modal
+r_e("edit-training-button").addEventListener("click", async () => {
+  const trainingLevelsTableBody = r_e("trainingLevelsTableBody");
+  trainingLevelsTableBody.innerHTML = "";
+
+  const trainingSnapshot = await firebase
+    .firestore()
+    .collection("training")
+    .get();
+  const trainingArray = [];
+
+  trainingSnapshot.forEach((doc) => {
+    const trainingData = doc.data();
+    trainingArray.push({ id: doc.id, ...trainingData });
+  });
+
+  // Cache training data and fill table
+  trainingArray.forEach((training) => {
+    trainingDataCache[training.id] = training; // Cache training data
+
+    const trainingRow = document.createElement("tr");
+    trainingRow.setAttribute("data-training-id", training.id);
+    trainingRow.innerHTML = `
+      <td>${training.name}</td>
+      <td>
+        <button class="button is-info edit-training-button" data-training-id="${training.id}">Edit</button>
+      </td>
+    `;
+
+    trainingLevelsTableBody.appendChild(trainingRow);
+  });
+
+  r_e("trainingLevelsModal").classList.add("is-active");
+});
+
+// Filter training levels in the table
+r_e("searchTrainingLevelsInput").addEventListener("input", () => {
+  let searchTerm = r_e("searchTrainingLevelsInput").value.toLowerCase();
+  let trainingLevelsTableBody = r_e("trainingLevelsTableBody");
+  trainingLevelsTableBody.innerHTML = "";
+
+  Object.keys(trainingDataCache).forEach((trainingId) => {
+    let trainingData = trainingDataCache[trainingId];
+    if (trainingData.name.toLowerCase().includes(searchTerm)) {
+      const trainingRow = document.createElement("tr");
+      trainingRow.setAttribute("data-training-id", trainingId);
+      trainingRow.innerHTML = `
+        <td>${trainingData.name}</td>
+        <td>
+          <button class="button is-info edit-training-button" data-training-id="${trainingId}">Edit</button>
+        </td>
+      `;
+      trainingLevelsTableBody.appendChild(trainingRow);
+    }
+  });
+});
+
+// Handle Edit Training Button Click
+document.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("edit-training-button")) {
+    const trainingId = e.target.getAttribute("data-training-id");
+    const trainingData = trainingDataCache[trainingId]; // Get training data from cache
+
+    if (trainingData) {
+      localTrainingData = { ...trainingData }; // Make a local copy of the training data
+      displaySteps();
+
+      r_e("editTrainingLevelModal").setAttribute(
+        "data-training-id",
+        trainingId
+      );
+      r_e("editTrainingLevelModal").classList.add("is-active");
+    }
+  }
+});
+
+// Add New Step
+r_e("addStepButton").addEventListener("click", () => {
+  const newStepName = r_e("newStepName").value;
+  const newStepType = r_e("newStepType").value;
+
+  if (newStepName && newStepType) {
+    const newStep = { name: newStepName, type: newStepType };
+
+    if (!localTrainingData.steps) {
+      localTrainingData.steps = [];
+    }
+    localTrainingData.steps.push(newStep);
+
+    displaySteps();
+
+    r_e("newStepName").value = "";
+    r_e("newStepType").value = "checkbox";
+    r_e("errorMessage").innerHTML = "";
+  } else {
+    r_e("errorMessage").innerHTML = "Please fill out all fields.";
+  }
+});
+
+// Delete Step
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("delete-step-button")) {
+    const stepIndex = parseInt(e.target.getAttribute("data-step-index"));
+
+    localTrainingData.steps.splice(stepIndex, 1);
+
+    displaySteps();
+  }
+});
+
+// Move Step Up
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("move-up-step-button")) {
+    const stepIndex = parseInt(e.target.getAttribute("data-step-index"));
+
+    if (stepIndex > 0) {
+      const temp = localTrainingData.steps[stepIndex];
+      localTrainingData.steps[stepIndex] =
+        localTrainingData.steps[stepIndex - 1];
+      localTrainingData.steps[stepIndex - 1] = temp;
+
+      displaySteps();
+    }
+  }
+});
+
+// Move Step Down
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("move-down-step-button")) {
+    const stepIndex = parseInt(e.target.getAttribute("data-step-index"));
+
+    if (stepIndex < localTrainingData.steps.length - 1) {
+      const temp = localTrainingData.steps[stepIndex];
+      localTrainingData.steps[stepIndex] =
+        localTrainingData.steps[stepIndex + 1];
+      localTrainingData.steps[stepIndex + 1] = temp;
+
+      displaySteps();
+    }
+  }
+});
+
+// Save Changes to Firestore
+r_e("saveChangesButton").addEventListener("click", async () => {
+  const trainingId = r_e("editTrainingLevelModal").getAttribute(
+    "data-training-id"
+  );
+  const trainingDocRef = firebase
+    .firestore()
+    .collection("training")
+    .doc(trainingId);
+
+  // Update localTrainingData with the latest values from the inputs
+  localTrainingData.steps.forEach((step, index) => {
+    const stepNameInput = document.querySelector(
+      `.step-name[data-step-index="${index}"]`
+    );
+    const stepTypeSelect = document.querySelector(
+      `.step-type[data-step-index="${index}"]`
+    );
+    step.name = stepNameInput.value;
+    step.type = stepTypeSelect.value;
+  });
+
+  try {
+    await trainingDocRef.update({ steps: localTrainingData.steps });
+
+    // Update cache
+    trainingDataCache[trainingId] = localTrainingData;
+
+    r_e("errorMessage").innerHTML = "";
+    configure_message_bar("Training level updated successfully.");
+    r_e("editTrainingLevelModal").classList.remove("is-active");
+  } catch (err) {
+    r_e("errorMessage").innerHTML = err.message;
+  }
 });
 
 // Function to fetch agent data and display as buttons in the appropriate divs
