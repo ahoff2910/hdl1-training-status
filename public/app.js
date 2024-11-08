@@ -25,9 +25,9 @@ r_e("open-departed-button").addEventListener("click", () => {
 
 // Animated Color Key Modal
 // Get the modal
-var colormodal = document.getElementById("colormodal");
+var colormodal = r_e("colormodal");
 // Get the button that opens the modal
-var colorbtn = document.getElementById("colorBtn");
+var colorbtn = r_e("colorBtn");
 // Get the <span> element that closes the modal
 var colorspan = document.getElementsByClassName("colorclose")[0];
 // When the user clicks the button, open the modal
@@ -200,14 +200,10 @@ r_e("signin_form").addEventListener("submit", async (e) => {
 });
 
 // Open the My Account Modal
-r_e("openMyAccountModal").addEventListener("click", async () => {
+r_e("openMyAccountModal").addEventListener("click", () => {
   const user = firebase.auth().currentUser;
   if (user) {
-    const userDoc = await firebase
-      .firestore()
-      .collection("users")
-      .doc(user.uid)
-      .get();
+    const userDoc = db.collection("users").doc(user.uid).get();
     if (userDoc.exists) {
       const userData = userDoc.data();
       r_e("myAccountName").value = userData.name || "";
@@ -227,7 +223,7 @@ r_e("myAccountForm").addEventListener("submit", async (e) => {
     const name = r_e("myAccountName").value;
     const email = r_e("myAccountEmail").value;
     const password = r_e("myAccountPassword").value;
-    const userDocRef = firebase.firestore().collection("users").doc(user.uid);
+    const userDocRef = db.collection("users").doc(user.uid);
 
     try {
       await user.updateEmail(email);
@@ -247,11 +243,11 @@ r_e("myAccountForm").addEventListener("submit", async (e) => {
 let userDataCache = {};
 
 // Open the View Users Modal
-r_e("view-users-button").addEventListener("click", async () => {
+r_e("view-users-button").addEventListener("click", () => {
   const usersTableBody = r_e("users-table-body");
   usersTableBody.innerHTML = "";
 
-  const usersSnapshot = await firebase.firestore().collection("users").get();
+  const usersSnapshot = db.collection("users").get();
   const usersArray = [];
 
   usersSnapshot.forEach((doc) => {
@@ -312,7 +308,7 @@ r_e("searchUsersInput").addEventListener("input", () => {
 });
 
 // Handle View User Button Click
-document.addEventListener("click", async (e) => {
+document.addEventListener("click", (e) => {
   if (e.target.classList.contains("view-user-button")) {
     const userId = e.target.getAttribute("data-user-id");
     const userData = userDataCache[userId]; // Get user data from cache
@@ -328,17 +324,17 @@ document.addEventListener("click", async (e) => {
 });
 
 // Save Changes in User Account Modal
-r_e("userAccountForm").addEventListener("submit", async (e) => {
+r_e("userAccountForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const userId = r_e("userAccountModal").getAttribute("data-user-id");
-  const userDocRef = firebase.firestore().collection("users").doc(userId);
+  const userDocRef = db.collection("users").doc(userId);
 
   const name = r_e("userAccountName").value;
   const email = r_e("userAccountEmail").value;
   const role = r_e("userAccountRole").value;
 
   try {
-    await userDocRef.update({ name: name, email: email, role: role });
+    userDocRef.update({ name: name, email: email, role: role });
     // Update cache
     userDataCache[userId] = { name: name, email: email, role: role };
     // Update displayed info in the table
@@ -360,12 +356,12 @@ r_e("userAccountForm").addEventListener("submit", async (e) => {
 });
 
 // Delete User
-r_e("deleteUserButton").addEventListener("click", async (e) => {
+r_e("deleteUserButton").addEventListener("click", (e) => {
   e.preventDefault();
   const userId = r_e("userAccountModal").getAttribute("data-user-id");
 
   try {
-    await firebase.firestore().collection("users").doc(userId).delete();
+    db.collection("users").doc(userId).delete();
     configure_message_bar("User deleted successfully.");
     r_e("userAccountModal").classList.remove("is-active");
     // Remove user from cache and table
@@ -374,35 +370,6 @@ r_e("deleteUserButton").addEventListener("click", async (e) => {
   } catch (err) {
     r_e("userAccountError").innerHTML = err.message;
   }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Select all boxes with the class "collapsible"
-  const boxes = document.querySelectorAll(".box.collapsible");
-
-  // Loop through each box and add click event to the anchor element
-  boxes.forEach((box) => {
-    const trigger = box.querySelector("a");
-    const content = box.querySelector("form");
-    const caret = trigger.querySelector(".fas.fa-caret-down, .fas.fa-caret-up");
-
-    // Initially hide content
-    content.style.display = "none";
-
-    // Add click event to the anchor element
-    trigger.addEventListener("click", function () {
-      // Toggle content visibility
-      if (content.style.display === "none") {
-        content.style.display = "block";
-        caret.classList.remove("fa-caret-down");
-        caret.classList.add("fa-caret-up");
-      } else {
-        content.style.display = "none";
-        caret.classList.remove("fa-caret-up");
-        caret.classList.add("fa-caret-down");
-      }
-    });
-  });
 });
 
 // Handle Forgot Password Button Click
@@ -424,12 +391,12 @@ r_e("forgotPasswordButton").addEventListener("click", () => {
 });
 
 // Send Password Reset Email
-r_e("sendPasswordResetButton").addEventListener("click", async (e) => {
+r_e("sendPasswordResetButton").addEventListener("click", (e) => {
   e.preventDefault();
   const email = r_e("userAccountEmail").value;
 
   try {
-    await firebase.auth().sendPasswordResetEmail(email);
+    firebase.auth().sendPasswordResetEmail(email);
     configure_message_bar(`Password reset email sent to ${email}.`);
   } catch (err) {
     r_e("userAccountError").innerHTML = err.message;
@@ -536,6 +503,11 @@ departedRows.forEach((row) => {
 let trainingDataCache = {};
 let localTrainingData = {};
 
+// Function to sanitize field names
+function sanitizeFieldName(name) {
+  return name.replace(/[~*/[\]]/g, "_");
+}
+
 // Function to display steps from the cache
 function displaySteps() {
   const stepsTableBody = r_e("stepsTableBody");
@@ -572,16 +544,26 @@ function displaySteps() {
               <i class="fas fa-times"></i>
             </span>
           </button>
+          ${
+            index > 0
+              ? `
           <button class="button is-warning move-up-step-button" data-step-index="${index}">
             <span class="icon">
               <i class="fas fa-arrow-up"></i>
             </span>
-          </button>
+          </button>`
+              : ""
+          }
+          ${
+            index < localTrainingData.steps.length - 1
+              ? `
           <button class="button is-warning move-down-step-button" data-step-index="${index}">
             <span class="icon">
               <i class="fas fa-arrow-down"></i>
             </span>
-          </button>
+          </button>`
+              : ""
+          }
         </td>
       `;
       stepsTableBody.appendChild(stepRow);
@@ -594,6 +576,52 @@ function displaySteps() {
     `;
     stepsTableBody.appendChild(noStepsRow);
   }
+
+  // Re-attach event listeners
+  attachEventListeners();
+}
+
+// Function to attach event listeners
+function attachEventListeners() {
+  document.querySelectorAll(".delete-step-button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const stepIndex = parseInt(
+        e.currentTarget.getAttribute("data-step-index")
+      );
+      localTrainingData.steps.splice(stepIndex, 1);
+      displaySteps();
+    });
+  });
+
+  document.querySelectorAll(".move-up-step-button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const stepIndex = parseInt(
+        e.currentTarget.getAttribute("data-step-index")
+      );
+      if (stepIndex > 0) {
+        const temp = localTrainingData.steps[stepIndex];
+        localTrainingData.steps[stepIndex] =
+          localTrainingData.steps[stepIndex - 1];
+        localTrainingData.steps[stepIndex - 1] = temp;
+        displaySteps();
+      }
+    });
+  });
+
+  document.querySelectorAll(".move-down-step-button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const stepIndex = parseInt(
+        e.currentTarget.getAttribute("data-step-index")
+      );
+      if (stepIndex < localTrainingData.steps.length - 1) {
+        const temp = localTrainingData.steps[stepIndex];
+        localTrainingData.steps[stepIndex] =
+          localTrainingData.steps[stepIndex + 1];
+        localTrainingData.steps[stepIndex + 1] = temp;
+        displaySteps();
+      }
+    });
+  });
 }
 
 // Open the Training Levels Modal
@@ -601,32 +629,34 @@ r_e("edit-training-button").addEventListener("click", async () => {
   const trainingLevelsTableBody = r_e("trainingLevelsTableBody");
   trainingLevelsTableBody.innerHTML = "";
 
-  const trainingSnapshot = await firebase
-    .firestore()
-    .collection("training")
-    .get();
-  const trainingArray = [];
+  const trainingDoc = await db.collection("training").doc("training").get();
+  const trainingData = trainingDoc.data();
 
-  trainingSnapshot.forEach((doc) => {
-    const trainingData = doc.data();
-    trainingArray.push({ id: doc.id, ...trainingData });
-  });
+  if (trainingData) {
+    trainingDataCache["training"] = trainingData; // Cache training data
 
-  // Cache training data and fill table
-  trainingArray.forEach((training) => {
-    trainingDataCache[training.id] = training; // Cache training data
+    // Convert training data to an array and sort by order
+    const trainingArray = Object.keys(trainingData)
+      .map((key) => ({
+        id: key,
+        ...trainingData[key],
+      }))
+      .sort((a, b) => a.order - b.order);
 
-    const trainingRow = document.createElement("tr");
-    trainingRow.setAttribute("data-training-id", training.id);
-    trainingRow.innerHTML = `
-      <td>${training.name}</td>
-      <td>
-        <button class="button is-info edit-training-button" data-training-id="${training.id}">Edit</button>
-      </td>
-    `;
+    // Loop through each sorted training level
+    trainingArray.forEach((training) => {
+      const trainingRow = document.createElement("tr");
+      trainingRow.setAttribute("data-training-id", training.id);
+      trainingRow.innerHTML = `
+        <td>${training.name}</td>
+        <td>
+          <button class="button is-info edit-training-button" data-training-id="${training.id}">Edit</button>
+        </td>
+      `;
 
-    trainingLevelsTableBody.appendChild(trainingRow);
-  });
+      trainingLevelsTableBody.appendChild(trainingRow);
+    });
+  }
 
   r_e("trainingLevelsModal").classList.add("is-active");
 });
@@ -637,15 +667,23 @@ r_e("searchTrainingLevelsInput").addEventListener("input", () => {
   let trainingLevelsTableBody = r_e("trainingLevelsTableBody");
   trainingLevelsTableBody.innerHTML = "";
 
-  Object.keys(trainingDataCache).forEach((trainingId) => {
-    let trainingData = trainingDataCache[trainingId];
-    if (trainingData.name.toLowerCase().includes(searchTerm)) {
+  // Convert training data to an array and sort by order
+  const trainingArray = Object.keys(trainingDataCache.training)
+    .map((key) => ({
+      id: key,
+      ...trainingDataCache.training[key],
+    }))
+    .sort((a, b) => a.order - b.order);
+
+  // Filter and display the sorted training levels
+  trainingArray.forEach((training) => {
+    if (training.name.toLowerCase().includes(searchTerm)) {
       const trainingRow = document.createElement("tr");
-      trainingRow.setAttribute("data-training-id", trainingId);
+      trainingRow.setAttribute("data-training-id", training.id);
       trainingRow.innerHTML = `
-        <td>${trainingData.name}</td>
+        <td>${training.name}</td>
         <td>
-          <button class="button is-info edit-training-button" data-training-id="${trainingId}">Edit</button>
+          <button class="button is-info edit-training-button" data-training-id="${training.id}">Edit</button>
         </td>
       `;
       trainingLevelsTableBody.appendChild(trainingRow);
@@ -654,10 +692,10 @@ r_e("searchTrainingLevelsInput").addEventListener("input", () => {
 });
 
 // Handle Edit Training Button Click
-document.addEventListener("click", async (e) => {
+document.addEventListener("click", (e) => {
   if (e.target.classList.contains("edit-training-button")) {
     const trainingId = e.target.getAttribute("data-training-id");
-    const trainingData = trainingDataCache[trainingId]; // Get training data from cache
+    const trainingData = trainingDataCache.training[trainingId]; // Get training data from cache
 
     if (trainingData) {
       localTrainingData = { ...trainingData }; // Make a local copy of the training data
@@ -695,58 +733,9 @@ r_e("addStepButton").addEventListener("click", () => {
   }
 });
 
-// Delete Step
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("delete-step-button")) {
-    const stepIndex = parseInt(e.target.getAttribute("data-step-index"));
-
-    localTrainingData.steps.splice(stepIndex, 1);
-
-    displaySteps();
-  }
-});
-
-// Move Step Up
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("move-up-step-button")) {
-    const stepIndex = parseInt(e.target.getAttribute("data-step-index"));
-
-    if (stepIndex > 0) {
-      const temp = localTrainingData.steps[stepIndex];
-      localTrainingData.steps[stepIndex] =
-        localTrainingData.steps[stepIndex - 1];
-      localTrainingData.steps[stepIndex - 1] = temp;
-
-      displaySteps();
-    }
-  }
-});
-
-// Move Step Down
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("move-down-step-button")) {
-    const stepIndex = parseInt(e.target.getAttribute("data-step-index"));
-
-    if (stepIndex < localTrainingData.steps.length - 1) {
-      const temp = localTrainingData.steps[stepIndex];
-      localTrainingData.steps[stepIndex] =
-        localTrainingData.steps[stepIndex + 1];
-      localTrainingData.steps[stepIndex + 1] = temp;
-
-      displaySteps();
-    }
-  }
-});
-
 // Save Changes to Firestore
 r_e("saveChangesButton").addEventListener("click", async () => {
-  const trainingId = r_e("editTrainingLevelModal").getAttribute(
-    "data-training-id"
-  );
-  const trainingDocRef = firebase
-    .firestore()
-    .collection("training")
-    .doc(trainingId);
+  const trainingDocRef = db.collection("training").doc("training");
 
   // Update localTrainingData with the latest values from the inputs
   localTrainingData.steps.forEach((step, index) => {
@@ -761,10 +750,11 @@ r_e("saveChangesButton").addEventListener("click", async () => {
   });
 
   try {
-    await trainingDocRef.update({ steps: localTrainingData.steps });
+    const sanitizedFieldName = sanitizeFieldName(localTrainingData.name);
+    await trainingDocRef.update({ [sanitizedFieldName]: localTrainingData });
 
     // Update cache
-    trainingDataCache[trainingId] = localTrainingData;
+    trainingDataCache.training[localTrainingData.name] = localTrainingData;
 
     r_e("errorMessage").innerHTML = "";
     configure_message_bar("Training level updated successfully.");
@@ -774,8 +764,15 @@ r_e("saveChangesButton").addEventListener("click", async () => {
   }
 });
 
+// Initial call to attach event listeners
+attachEventListeners();
+
 // Function to fetch agent data and display as buttons in the appropriate divs
 function displayAgentButtons() {
+  document.querySelectorAll(".agent-button-div").forEach((div) => {
+    div.innerHTML = "";
+  });
+
   db.collection("agents")
     .doc("active")
     .get()
@@ -822,19 +819,300 @@ const trainingLevelNames = {
   5: "HDQA",
 };
 
+// Function to initialize collapsible functionality
+function initializeCollapsibles() {
+  // Select all boxes with the class "collapsible"
+  const boxes = document.querySelectorAll(".box.collapsible");
+
+  // Loop through each box and add click event to the anchor element
+  boxes.forEach((box) => {
+    const trigger = box.querySelector("a");
+    const content = box.querySelector("form");
+    const caret = trigger.querySelector(".fas.fa-caret-down, .fas.fa-caret-up");
+
+    // Initially hide content
+    content.style.display = "none";
+
+    // Add click event to the anchor element
+    trigger.addEventListener("click", function () {
+      // Toggle content visibility
+      if (content.style.display === "none") {
+        content.style.display = "block";
+        caret.classList.remove("fa-caret-down");
+        caret.classList.add("fa-caret-up");
+      } else {
+        content.style.display = "none";
+        caret.classList.remove("fa-caret-up");
+        caret.classList.add("fa-caret-down");
+      }
+    });
+  });
+}
+
+// Call initializeCollapsibles on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function () {
+  initializeCollapsibles();
+});
+
 // Function to display the user page for a specific agent
-function showUserPage(agent) {
+function showUserPage(agentId) {
   closeAllModals();
   r_e("dashboard-div").classList.add("is-hidden");
   r_e("user-page-div").classList.remove("is-hidden");
 
-  // Populate user page elements with agent data
-  document.getElementById("user-page-agent-name").textContent = agent.agent;
-  document.getElementById("user-page-training-level").textContent =
-    trainingLevelNames[agent.trainingLevel] || "Unknown";
-  document.getElementById("user-page-hire-date").textContent = agent.hireDate;
-  document.getElementById("user-page-graduation").textContent =
-    agent.graduation;
-  document.getElementById("user-page-next-training-level").textContent =
-    trainingLevelNames[agent.trainingLevel + 1] || "Unknown";
+  // Reference to Firestore
+  const db = firebase.firestore();
+
+  // Get the agent data from Firestore
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const agent = doc.data();
+
+        // Populate user page elements with agent data
+        document.getElementById("user-page-agent-name").textContent =
+          agent.agent;
+        document.getElementById("user-page-training-level").textContent =
+          trainingLevelNames[agent.trainingLevel] || "Unknown";
+        document.getElementById("user-page-hire-date").textContent =
+          agent.hireDate;
+        document.getElementById("user-page-graduation").textContent =
+          agent.graduation;
+        document.getElementById("user-page-next-training-level").textContent =
+          trainingLevelNames[agent.trainingLevel + 1] || "Unknown";
+
+        // Fetch and display training steps
+        const trainingDiv = document.querySelector(".training-div");
+        trainingDiv.innerHTML = ""; // Clear existing content
+
+        const trainingArray = Object.keys(agent.training).map((key) => ({
+          ...agent.training[key],
+          key,
+        }));
+
+        // Sort the training array by the order property
+        trainingArray.sort((a, b) => a.order - b.order);
+
+        // Find the highest order
+        const highestOrder =
+          trainingArray.length > 0
+            ? trainingArray[trainingArray.length - 1].order
+            : 0;
+
+        trainingArray.forEach((trainingData) => {
+          const steps = trainingData.steps;
+
+          // Create training box
+          const trainingBox = document.createElement("div");
+          trainingBox.classList.add("box", "collapsible");
+
+          // Create training header
+          const trainingHeader = document.createElement("a");
+          trainingHeader.innerHTML = `
+            <div class="columns is-mobile is-vcentered">
+              <div class="column">
+                <h2 class="title is-size-5">${trainingData.name}</h2>
+              </div>
+              <div class="column has-text-left">
+                <h2 class="title is-size-6">
+                  <span class="icon has-text-success is-size-7">
+                    <i class="fas fa-circle"></i>
+                  </span>
+                  Completed ${trainingData.completedDate || "N/A"}
+                </h2>
+              </div>
+              <div class="column has-text-right is-one-fifth">
+                <h2 class="title is-size-5">
+                  <i class="fas fa-caret-down"></i>
+                </h2>
+              </div>
+            </div>
+          `;
+          trainingBox.appendChild(trainingHeader);
+
+          // Create training form
+          const trainingForm = document.createElement("form");
+          trainingForm.classList.add("pt-5");
+
+          for (const stepKey in steps) {
+            if (steps.hasOwnProperty(stepKey)) {
+              const step = steps[stepKey];
+
+              const field = document.createElement("div");
+              field.classList.add("field", "is-horizontal");
+
+              const fieldLabel = document.createElement("div");
+              fieldLabel.classList.add("field-label", "is-normal");
+              fieldLabel.style.flexGrow = 4;
+              fieldLabel.innerHTML = `<label class="label is-size-6">${step.name}</label>`;
+              field.appendChild(fieldLabel);
+
+              const fieldBody = document.createElement("div");
+              fieldBody.classList.add("field-body");
+
+              const fieldControl = document.createElement("div");
+              fieldControl.classList.add("field");
+
+              const control = document.createElement("div");
+              control.classList.add("control");
+
+              if (step.type === "checkbox") {
+                control.innerHTML = `<input type="checkbox" name="${stepKey}" ${
+                  step.value ? "checked" : ""
+                } />`;
+              } else if (step.type === "date") {
+                control.innerHTML = `<input type="date" name="${stepKey}" class="input is-size-6" value="${step.value}" />`;
+              }
+
+              fieldControl.appendChild(control);
+              fieldBody.appendChild(fieldControl);
+              field.appendChild(fieldBody);
+              trainingForm.appendChild(field);
+            }
+          }
+
+          // Add save and cancel buttons
+          trainingForm.innerHTML += `
+            <button class="button is-success" type="submit">Save Changes</button>
+            ${
+              trainingData.order === highestOrder
+                ? `<button class="button is-danger" type="button">Cancel ${trainingData.name}</button>`
+                : ""
+            }
+          `;
+
+          trainingBox.appendChild(trainingForm);
+          trainingDiv.appendChild(trainingBox);
+
+          // Add event listener for save button
+          trainingForm
+            .querySelector(".button.is-success")
+            .addEventListener("click", function (event) {
+              event.preventDefault();
+              saveTrainingUpdates(agentId, trainingData.key, trainingForm);
+            });
+
+          // Add event listener for cancel button if it exists
+          const cancelButton = trainingForm.querySelector(".button.is-danger");
+          if (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+              event.preventDefault();
+              cancelTraining(agentId, trainingData.key, trainingData.order);
+            });
+          }
+        });
+
+        // Reinitialize collapsibles after adding new boxes
+        initializeCollapsibles();
+      } else {
+        console.error("No such document!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting agent data: ", error);
+    });
+}
+
+// Function to save training updates to the database
+function saveTrainingUpdates(agentId, trainingKey, form) {
+  const db = firebase.firestore();
+  const updates = {};
+
+  // Collect form data
+  const formData = new FormData(form);
+  formData.forEach((value, key) => {
+    // Replace invalid characters in key
+    const sanitizedKey = key.replace(/[~*/[\]]/g, "_");
+    updates[`training.${trainingKey}.steps.${sanitizedKey}.value`] = value;
+  });
+
+  // Update Firestore
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .update(updates)
+    .then(() => {
+      configure_message_bar("Training updates saved successfully.");
+    })
+    .catch((error) => {
+      console.error("Error saving training updates: ", error);
+      configure_message_bar("Error saving training updates.");
+    });
+}
+
+// Function to cancel training and update the database
+function cancelTraining(agentId, trainingKey, trainingOrder) {
+  const db = firebase.firestore();
+
+  // Get the agent data to update training level and status
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const agent = doc.data();
+        const newTrainingLevel = trainingOrder - 1;
+
+        // Remove the training section from the database
+        const updates = {
+          [`training.${trainingKey}`]: firebase.firestore.FieldValue.delete(),
+          trainingLevel: newTrainingLevel,
+          trainingStatus: 0,
+        };
+
+        db.collection("agents")
+          .doc("active")
+          .collection("data")
+          .doc(agentId)
+          .update(updates)
+          .then(() => {
+            configure_message_bar(
+              "Training section removed and training level updated."
+            );
+
+            // Update trainingLevel and trainingStatus for the agent in the main collection
+            db.collection("agents")
+              .doc("active")
+              .update({
+                [`${agentId}.trainingLevel`]: newTrainingLevel,
+                [`${agentId}.trainingStatus`]: 0,
+              })
+              .then(() => {
+                configure_message_bar(
+                  "Agent's training level and status updated."
+                );
+
+                // Refresh the user page to reflect the changes
+                showUserPage(agentId);
+              })
+              .catch((error) => {
+                console.error(
+                  "Error updating agent's training level and status in the main collection: ",
+                  error
+                );
+                configure_message_bar(
+                  "Error updating agent's training level and status."
+                );
+              });
+          })
+          .catch((error) => {
+            console.error("Error removing training section: ", error);
+            configure_message_bar("Error removing training section.");
+          });
+      } else {
+        console.error("No such document!");
+        configure_message_bar("No such document!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting agent data: ", error);
+      configure_message_bar("Error getting agent data.");
+    });
 }
