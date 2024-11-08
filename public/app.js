@@ -779,9 +779,24 @@ function displayAgentButtons() {
     .then((doc) => {
       if (doc.exists) {
         const agents = doc.data();
+        const agentArray = Object.keys(agents).map((key) => ({
+          agent: key,
+          ...agents[key],
+        }));
 
-        Object.keys(agents).forEach((key) => {
-          const agent = agents[key];
+        // Sort agents by lastReviewed date, with empty dates at the top, and by agent if dates are equal
+        agentArray.sort((a, b) => {
+          if (!a.lastReviewed && !b.lastReviewed)
+            return a.agent.localeCompare(b.agent);
+          if (!a.lastReviewed) return -1;
+          if (!b.lastReviewed) return 1;
+          const dateComparison =
+            new Date(a.lastReviewed) - new Date(b.lastReviewed);
+          if (dateComparison !== 0) return dateComparison;
+          return a.agent.localeCompare(b.agent);
+        });
+
+        agentArray.forEach((agent) => {
           const button = document.createElement("button");
           button.id = `agent-${agent.agent}`;
           button.className = "button is-small m-1 agent-button";
@@ -854,6 +869,14 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeCollapsibles();
 });
 
+function calculateDuration(date) {
+  let lastReviewedDate = new Date(date);
+  let today = new Date();
+  let timeDifference = today - lastReviewedDate;
+  let durationInDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  return durationInDays;
+}
+
 // Function to display the user page for a specific agent
 function showUserPage(agentId) {
   closeAllModals();
@@ -884,6 +907,11 @@ function showUserPage(agentId) {
           agent.graduation;
         document.getElementById("user-page-next-training-level").textContent =
           trainingLevelNames[agent.trainingLevel + 1] || "Unknown";
+        document.getElementById("user-page-last-reviewed").textContent =
+          agent.lastReviewed || "Never";
+        document.getElementById(
+          "user-page-last-reviewed-duration"
+        ).textContent = calculateDuration(agent.lastReviewed) || "∞";
 
         // Fetch and display training steps
         const trainingDiv = document.querySelector(".training-div");
@@ -919,10 +947,20 @@ function showUserPage(agentId) {
               </div>
               <div class="column has-text-left">
                 <h2 class="title is-size-6">
-                  <span class="icon has-text-success is-size-7">
+                  <span class="icon has-text-${
+                    agent.trainingStatus === 2 &&
+                    trainingData.order === highestOrder
+                      ? "warning"
+                      : "success"
+                  } is-size-7">
                     <i class="fas fa-circle"></i>
                   </span>
-                  Completed ${trainingData.completedDate || "N/A"}
+                  ${
+                    agent.trainingStatus === 2 &&
+                    trainingData.order === highestOrder
+                      ? "In Progress"
+                      : `Completed ${trainingData.completedDate || "N/A"}`
+                  }
                 </h2>
               </div>
               <div class="column has-text-right is-one-fifth">
@@ -975,12 +1013,20 @@ function showUserPage(agentId) {
             }
           }
 
-          // Add save and cancel buttons
+          // Add save, cancel, and finish buttons
           trainingForm.innerHTML += `
             <button class="button is-success" type="submit">Save Changes</button>
             ${
               trainingData.order === highestOrder
-                ? `<button class="button is-danger" type="button">Cancel ${trainingData.name}</button>`
+                ? `<button class="button is-danger" type="button">Cancel ${
+                    trainingData.name
+                  }</button>${
+                    agent.trainingStatus === 2 &&
+                    trainingData.order === highestOrder
+                      ? '<button class="button is-primary mx-1" type="button">Finish Training</button>'
+                      : ""
+                  }
+                   `
                 : ""
             }
           `;
@@ -1004,16 +1050,108 @@ function showUserPage(agentId) {
               cancelTraining(agentId, trainingData.key, trainingData.order);
             });
           }
+
+          // Add event listener for finish button if it exists
+          const finishButton = trainingForm.querySelector(".button.is-primary");
+          if (finishButton) {
+            finishButton.addEventListener("click", function (event) {
+              event.preventDefault();
+              finishTraining(agentId, trainingData.order);
+            });
+          }
         });
 
         // Reinitialize collapsibles after adding new boxes
         initializeCollapsibles();
+
+        // Add event listener for the start-next-training-button
+        r_e("start-next-training-button").addEventListener(
+          "click",
+          function () {
+            startNextTraining(agentId);
+          }
+        );
       } else {
         console.error("No such document!");
       }
     })
     .catch((error) => {
       console.error("Error getting agent data: ", error);
+    });
+}
+
+// Function to finish the current training and update the database
+function finishTraining(agentId, trainingOrder) {
+  // Get the agent data to update training level and status
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const agent = doc.data();
+        const newTrainingLevel = trainingOrder;
+
+        // Update the training level and status in the database
+        const updates = {
+          trainingLevel: newTrainingLevel,
+          trainingStatus: 0,
+        };
+        console.log(updates);
+
+        db.collection("agents")
+          .doc("active")
+          .collection("data")
+          .doc(agentId)
+          .update(updates)
+          .then(() => {
+            console.log("Training level and status updated successfully.");
+            configure_message_bar(
+              "Training level and status updated successfully."
+            );
+
+            // Update trainingLevel and trainingStatus for the agent in the main collection
+            db.collection("agents")
+              .doc("active")
+              .update({
+                [`${agentId}.trainingLevel`]: newTrainingLevel,
+                [`${agentId}.trainingStatus`]: 0,
+              })
+              .then(() => {
+                console.log(
+                  "Agent's training level and status updated in the main collection."
+                );
+                configure_message_bar(
+                  "Agent's training level and status updated in the main collection."
+                );
+                displayAgentButtons(); // Update the cache of the main dashboard
+
+                // Refresh the user page to reflect the changes
+                showUserPage(agentId);
+              })
+              .catch((error) => {
+                console.error(
+                  "Error updating agent's training level and status in the main collection: ",
+                  error
+                );
+                configure_message_bar(
+                  "Error updating agent's training level and status in the main collection."
+                );
+              });
+          })
+          .catch((error) => {
+            console.error("Error updating training level and status: ", error);
+            configure_message_bar("Error updating training level and status.");
+          });
+      } else {
+        console.error("No such document!");
+        configure_message_bar("No such document!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting agent data: ", error);
+      configure_message_bar("Error getting agent data.");
     });
 }
 
@@ -1037,7 +1175,9 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
     .doc(agentId)
     .update(updates)
     .then(() => {
+      console.log("Training updates saved successfully.");
       configure_message_bar("Training updates saved successfully.");
+      displayAgentButtons(); // Update the cache of the main dashboard
     })
     .catch((error) => {
       console.error("Error saving training updates: ", error);
@@ -1073,6 +1213,7 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
           .doc(agentId)
           .update(updates)
           .then(() => {
+            console.log("Training section removed and training level updated.");
             configure_message_bar(
               "Training section removed and training level updated."
             );
@@ -1085,9 +1226,13 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
                 [`${agentId}.trainingStatus`]: 0,
               })
               .then(() => {
-                configure_message_bar(
-                  "Agent's training level and status updated."
+                console.log(
+                  "Agent's training level and status updated in the main collection."
                 );
+                configure_message_bar(
+                  "Agent's training level and status updated in the main collection."
+                );
+                displayAgentButtons(); // Update the cache of the main dashboard
 
                 // Refresh the user page to reflect the changes
                 showUserPage(agentId);
@@ -1098,7 +1243,7 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
                   error
                 );
                 configure_message_bar(
-                  "Error updating agent's training level and status."
+                  "Error updating agent's training level and status in the main collection."
                 );
               });
           })
@@ -1115,4 +1260,138 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
       console.error("Error getting agent data: ", error);
       configure_message_bar("Error getting agent data.");
     });
+}
+
+// Function to handle starting the next training level
+function startNextTraining(agentId) {
+  const db = firebase.firestore();
+
+  // Get the agent data to update training level and status
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const agent = doc.data();
+        const newTrainingLevel = agent.trainingLevel + 1;
+
+        // Get the next training steps from the training collection
+        db.collection("training")
+          .doc("training")
+          .get()
+          .then((trainingDoc) => {
+            if (trainingDoc.exists) {
+              const trainingData = trainingDoc.data();
+              const nextTraining = Object.values(trainingData).find(
+                (training) => training.order === newTrainingLevel
+              );
+
+              if (nextTraining) {
+                const updates = {
+                  [`training.${nextTraining.name}`]: {
+                    name: nextTraining.name,
+                    order: nextTraining.order,
+                    steps: nextTraining.steps,
+                  },
+                  trainingStatus: 2,
+                };
+
+                // Update Firestore
+                db.collection("agents")
+                  .doc("active")
+                  .collection("data")
+                  .doc(agentId)
+                  .update(updates)
+                  .then(() => {
+                    console.log(
+                      "Training level and status updated successfully."
+                    );
+                    configure_message_bar(
+                      "Training level and status updated successfully."
+                    );
+
+                    // Update trainingLevel and trainingStatus for the agent in the main collection
+                    db.collection("agents")
+                      .doc("active")
+                      .update({
+                        [`${agentId}.trainingStatus`]: 2,
+                      })
+                      .then(() => {
+                        console.log(
+                          "Agent's training level and status updated in the main collection."
+                        );
+                        configure_message_bar(
+                          "Agent's training level and status updated in the main collection."
+                        );
+                        displayAgentButtons(); // Update the cache of the main dashboard
+
+                        // Refresh the user page to reflect the changes
+                        showUserPage(agentId);
+                      })
+                      .catch((error) => {
+                        console.error(
+                          "Error updating agent's training level and status in the main collection: ",
+                          error
+                        );
+                        configure_message_bar(
+                          "Error updating agent's training level and status in the main collection."
+                        );
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Error updating training level and status: ",
+                      error
+                    );
+                    configure_message_bar(
+                      "Error updating training level and status."
+                    );
+                  });
+              } else {
+                console.error("No such training level!");
+                configure_message_bar("No such training level!");
+              }
+            } else {
+              console.error("No training data found!");
+              configure_message_bar("No training data found!");
+            }
+          })
+          .catch((error) => {
+            console.error("Error getting training data: ", error);
+            configure_message_bar("Error getting training data.");
+          });
+      } else {
+        console.error("No such document!");
+        configure_message_bar("No such document!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting agent data: ", error);
+      configure_message_bar("Error getting agent data.");
+    });
+}
+
+// Ad hoc function to pull all data from main collection and update subcollection
+async function updateAgentData() {
+  const docRef = db.collection("agents").doc("active");
+
+  try {
+    const doc = await docRef.get();
+    if (doc.exists) {
+      const agents = doc.data();
+
+      // Update each agent's document in the subcollection
+      for (const [agent, data] of Object.entries(agents)) {
+        await docRef.collection("data").doc(agent).set(data, { merge: true });
+      }
+
+      console.log("Subcollection documents successfully updated!");
+    } else {
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.error("Error updating documents:", error);
+  }
 }
