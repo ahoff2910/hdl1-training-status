@@ -903,8 +903,6 @@ function showUserPage(agentId) {
           agent.hireDate;
         document.getElementById("user-page-graduation").textContent =
           agent.graduation;
-        document.getElementById("user-page-next-training-level").textContent =
-          trainingLevelNames[agent.trainingLevel + 1] || "Unknown";
         document.getElementById("user-page-last-reviewed").textContent =
           agent.lastReviewed || "Never";
         document.getElementById(
@@ -1022,15 +1020,16 @@ function showUserPage(agentId) {
             <button class="button is-success" type="submit">Save Changes</button>
             ${
               trainingData.order === highestOrder
-                ? `<button class="button is-danger" type="button">Cancel ${
-                    trainingData.name
-                  }</button>${
+                ? `${
+                    agent.trainingLevel !== 1
+                      ? `<button class="button is-danger" type="button">Cancel ${trainingData.name}</button>`
+                      : ""
+                  }${
                     agent.trainingStatus === 2 &&
                     trainingData.order === highestOrder
                       ? '<button class="button is-primary mx-1" type="button">Finish Training</button>'
                       : ""
-                  }
-                   `
+                  }`
                 : ""
             }
           `;
@@ -1067,6 +1066,36 @@ function showUserPage(agentId) {
 
         // Reinitialize collapsibles after adding new boxes
         initializeCollapsibles();
+
+        let trainingButtonsHTML = "";
+
+        if (agent.trainingStatus === 0 && agent.trainingLevel !== 5) {
+          trainingButtonsHTML += `
+            <button
+              id="start-next-training-button"
+              class="button is-link"
+              type="submit"
+            >
+              Start 
+              <span id="user-page-next-training-level">${
+                trainingLevelNames[agent.trainingLevel + 1] || "Unknown"
+              }</span
+              > Training
+            </button>`;
+        }
+
+        if (agent.trainingLevel !== 6) {
+          trainingButtonsHTML += `
+            <button
+              id="start-next-offboarding-button"
+              class="button is-danger"
+              type="submit"
+            >
+              Start Offboarding
+            </button>`;
+        }
+
+        r_e("training-buttons").innerHTML = trainingButtonsHTML;
 
         // Add event listener for the start-next-training-button
         r_e("start-next-training-button").addEventListener(
