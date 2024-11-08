@@ -733,7 +733,7 @@ r_e("addStepButton").addEventListener("click", () => {
   }
 });
 
-// Save Changes to Firestore
+// Save Changes in Steps to Firestore
 r_e("saveChangesButton").addEventListener("click", async () => {
   const trainingDocRef = db.collection("training").doc("training");
 
@@ -812,11 +812,9 @@ function displayAgentButtons() {
             showUserPage(agent.agent);
           };
 
-          document
-            .getElementById(
-              `agent-button-${agent.trainingLevel}-${agent.trainingStatus}`
-            )
-            .appendChild(button);
+          r_e(
+            `agent-button-${agent.trainingLevel}-${agent.trainingStatus}`
+          ).appendChild(button);
         });
       }
     })
@@ -1003,7 +1001,13 @@ function showUserPage(agentId) {
                   step.value ? "checked" : ""
                 } />`;
               } else if (step.type === "date") {
-                control.innerHTML = `<input type="date" name="${stepKey}" class="input is-size-6" value="${step.value}" />`;
+                control.innerHTML = `<input type="date" name="${stepKey}" class="input is-size-6" value="${
+                  step.value || ""
+                }" />`;
+              } else if (step.type === "text") {
+                control.innerHTML = `<input type="text" name="${stepKey}" class="input is-size-6" value="${
+                  step.value || ""
+                }" />`;
               }
 
               fieldControl.appendChild(control);
@@ -1098,7 +1102,6 @@ function finishTraining(agentId, trainingOrder) {
           trainingLevel: newTrainingLevel,
           trainingStatus: 0,
         };
-        console.log(updates);
 
         db.collection("agents")
           .doc("active")
@@ -1106,7 +1109,6 @@ function finishTraining(agentId, trainingOrder) {
           .doc(agentId)
           .update(updates)
           .then(() => {
-            console.log("Training level and status updated successfully.");
             configure_message_bar(
               "Training level and status updated successfully."
             );
@@ -1119,9 +1121,6 @@ function finishTraining(agentId, trainingOrder) {
                 [`${agentId}.trainingStatus`]: 0,
               })
               .then(() => {
-                console.log(
-                  "Agent's training level and status updated in the main collection."
-                );
                 configure_message_bar(
                   "Agent's training level and status updated in the main collection."
                 );
@@ -1165,23 +1164,55 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
   formData.forEach((value, key) => {
     // Replace invalid characters in key
     const sanitizedKey = key.replace(/[~*/[\]]/g, "_");
-    updates[`training.${trainingKey}.steps.${sanitizedKey}.value`] = value;
+    const stepIndex = parseInt(sanitizedKey, 10);
+    updates[stepIndex] = value;
   });
 
-  // Update Firestore
+  // Read the current steps array
   db.collection("agents")
     .doc("active")
     .collection("data")
     .doc(agentId)
-    .update(updates)
-    .then(() => {
-      console.log("Training updates saved successfully.");
-      configure_message_bar("Training updates saved successfully.");
-      displayAgentButtons(); // Update the cache of the main dashboard
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        const steps = data.training[trainingKey].steps || [];
+
+        // Update the steps array
+        Object.keys(updates).forEach((index) => {
+          const stepIndex = parseInt(index, 10);
+          if (steps[stepIndex]) {
+            steps[stepIndex].value = updates[index];
+          } else {
+            steps[stepIndex] = { value: updates[index] };
+          }
+        });
+
+        // Write the updated steps array back to Firestore
+        db.collection("agents")
+          .doc("active")
+          .collection("data")
+          .doc(agentId)
+          .update({
+            [`training.${trainingKey}.steps`]: steps,
+          })
+          .then(() => {
+            configure_message_bar("Training updates saved successfully.");
+            displayAgentButtons(); // Update the cache of the main dashboard
+          })
+          .catch((error) => {
+            console.error("Error saving training updates: ", error);
+            configure_message_bar("Error saving training updates.");
+          });
+      } else {
+        console.error("No such document!");
+        configure_message_bar("Error: No such document.");
+      }
     })
     .catch((error) => {
-      console.error("Error saving training updates: ", error);
-      configure_message_bar("Error saving training updates.");
+      console.error("Error getting document: ", error);
+      configure_message_bar("Error getting document.");
     });
 }
 
@@ -1213,7 +1244,6 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
           .doc(agentId)
           .update(updates)
           .then(() => {
-            console.log("Training section removed and training level updated.");
             configure_message_bar(
               "Training section removed and training level updated."
             );
@@ -1226,9 +1256,6 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
                 [`${agentId}.trainingStatus`]: 0,
               })
               .then(() => {
-                console.log(
-                  "Agent's training level and status updated in the main collection."
-                );
                 configure_message_bar(
                   "Agent's training level and status updated in the main collection."
                 );
@@ -1264,8 +1291,6 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
 
 // Function to handle starting the next training level
 function startNextTraining(agentId) {
-  const db = firebase.firestore();
-
   // Get the agent data to update training level and status
   db.collection("agents")
     .doc("active")
@@ -1284,13 +1309,21 @@ function startNextTraining(agentId) {
           .then((trainingDoc) => {
             if (trainingDoc.exists) {
               const trainingData = trainingDoc.data();
-              const nextTraining = Object.values(trainingData).find(
-                (training) => training.order === newTrainingLevel
-              );
+              let foundKey = null;
+              let nextTraining = null;
+
+              // Find the key and the corresponding training data
+              for (const [key, value] of Object.entries(trainingData)) {
+                if (value.order === newTrainingLevel) {
+                  foundKey = key;
+                  nextTraining = value;
+                  break;
+                }
+              }
 
               if (nextTraining) {
                 const updates = {
-                  [`training.${nextTraining.name}`]: {
+                  [`training.${foundKey}`]: {
                     name: nextTraining.name,
                     order: nextTraining.order,
                     steps: nextTraining.steps,
@@ -1305,9 +1338,6 @@ function startNextTraining(agentId) {
                   .doc(agentId)
                   .update(updates)
                   .then(() => {
-                    console.log(
-                      "Training level and status updated successfully."
-                    );
                     configure_message_bar(
                       "Training level and status updated successfully."
                     );
@@ -1319,11 +1349,8 @@ function startNextTraining(agentId) {
                         [`${agentId}.trainingStatus`]: 2,
                       })
                       .then(() => {
-                        console.log(
-                          "Agent's training level and status updated in the main collection."
-                        );
                         configure_message_bar(
-                          "Agent's training level and status updated in the main collection."
+                          "Agent's training level and status updated."
                         );
                         displayAgentButtons(); // Update the cache of the main dashboard
 
