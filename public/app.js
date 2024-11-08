@@ -359,6 +359,11 @@ r_e("userAccountForm").addEventListener("submit", async (e) => {
   }
 });
 
+//Delete user Modal
+r_e("delete-employee-button").addEventListener("click", () => {
+  r_e("verifymodal").classList.add("is-active");
+});
+
 // Delete User
 r_e("deleteUserButton").addEventListener("click", async (e) => {
   e.preventDefault();

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -160,7 +160,9 @@
                 </div>
               </div>
 
-              <button class="button light-button is-info" id="sign-up">Add User</button>
+              <button class="button light-button is-info" id="sign-up">
+                Add User
+              </button>
               <!-- div error -->
               <div id="sign-up-error" class="error has-text-danger"></div>
             </form>
@@ -231,9 +233,7 @@
               </div>
 
               <!-- Save Changes Button -->
-              <button class="button is-info" type="submit">
-                Save Changes
-              </button>
+              <button class="button is-info" type="submit">Save Changes</button>
               <div id="myAccountError" class="error has-text-danger"></div>
             </form>
           </div>
@@ -386,9 +386,7 @@
                 </div>
               </div>
 
-              <button class="button is-info" type="submit">
-                Save Changes
-              </button>
+              <button class="button is-info" type="submit">Save Changes</button>
               <button class="button is-danger" id="deleteUserButton">
                 Delete User
               </button>
@@ -537,10 +535,20 @@
                   />
                 </div>
               </div>
-              <button class="button is-info" type="submit">
-                Save Changes
-              </button>
+              <button class="button is-info" type="submit">Save Changes</button>
             </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal has-text-centered" id="verifymodal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Are You sure you want to proceed?
+            </h1>
+            <button class="button is-info" type="submit">Proceed</button>
           </div>
         </div>
       </div>
@@ -789,7 +797,7 @@
                       class="has-background-info has-text-weight-bold py-2 px-2 has-text-centered"
                       id="bluekey"
                     >
-                      Has been reviewed within the past 2 months 
+                      Has been reviewed within the past 2 months
                     </td>
                     <td
                       style="width: 25%"
@@ -873,7 +881,9 @@
                     <span id="user-page-pay-rate"></span>
                   </p>
                   <button class="button is-info my-2">Edit</button>
-                  <button class="button is-danger my-2">Delete</button>
+                  <button class="button is-danger my-2" id="delete-user-button">
+                    Delete
+                  </button>
                 </div>
               </div>
 
@@ -1224,11 +1234,11 @@
       <div class="columns is-vcentered">
         <div class="column">
           <img
-          class="ml-4"
-          src="images/Wlogo.png"
-          width="100px"
-          height="100px"
-          alt="DoIT Help Desk"
+            class="ml-4"
+            src="images/Wlogo.png"
+            width="100px"
+            height="100px"
+            alt="DoIT Help Desk"
           />
         </div>
         <div class="column">
