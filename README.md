@@ -316,8 +316,8 @@
             </li>
         </ul>
 <h3>Sprint Review</h3>
-<p>a. What did you learn?:</p>
-<p>b. What did go well? Why?: </p>
-<p>c. What didn’t go well? Why not?: </p>
-<p>d. How can you make things better next time?: </p>
-<p>e. Are you satisfied with what you already completed?: </p>
+<p>a. What did you learn?: We learned that tasks may take longer or shorter when you are actually doing them compared to when you are just brainstorming. When we were completeing the tasks this week some of the tasks ended up taking a lot longer to complete because of how complex our code has gotten. This has taught us always to budger more time to make sure we can get everything done.</p>
+<p>b. What did go well? Why?: I think that something that we didn't account for is how much more time consuming the more complex tasks would take. This led to us having more to do in this sprint than anticipated.</p>
+<p>c. What didn’t go well? Why not?: We didn't stick to the ideal burndown. We were not as active in the begining of the week just because of the business of our schedules, but we were able to make up for it later in the week. </p>
+<p>d. How can you make things better next time?: Next time we can make sure to plan a better balance of complex and easier tasks. This will allow us to complete the tasks in a more even fashion, allowing for easy tasks to be completed when we are busy and then later in the week when we have more time we can complete the complex tasks.</p>
+<p>e. Are you satisfied with what you already completed?: Yes we feel like we have made good progress. We have most of the functionality of our site done and just need to fix any little errors that we find as we do more testing. </p>
