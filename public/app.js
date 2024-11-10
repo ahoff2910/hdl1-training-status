@@ -535,6 +535,12 @@ function displaySteps() {
               <option value="text" ${
                 step.type === "text" ? "selected" : ""
               }>Text</option>
+              <option value="schedule" ${
+                step.type === "schedule" ? "selected" : ""
+              }>Schedule</option>
+              <option value="finish" ${
+                step.type === "finish" ? "selected" : ""
+              }>Finish</option>
             </select>
           </div>
         </td>
@@ -971,6 +977,7 @@ function showUserPage(agentId) {
           // Create training form
           const trainingForm = document.createElement("form");
           trainingForm.classList.add("pt-5");
+          trainingForm.id = "trainingForm";
 
           for (const stepKey in steps) {
             if (steps.hasOwnProperty(stepKey)) {
@@ -994,18 +1001,34 @@ function showUserPage(agentId) {
               const control = document.createElement("div");
               control.classList.add("control");
 
-              if (step.type === "checkbox") {
-                control.innerHTML = `<input type="checkbox" name="${stepKey}" ${
-                  step.value ? "checked" : ""
-                } />`;
-              } else if (step.type === "date") {
-                control.innerHTML = `<input type="date" name="${stepKey}" class="input is-size-6" value="${
-                  step.value || ""
-                }" />`;
-              } else if (step.type === "text") {
-                control.innerHTML = `<input type="text" name="${stepKey}" class="input is-size-6" value="${
-                  step.value || ""
-                }" />`;
+              if (
+                step.finish != 1 ||
+                (agent.trainingStatus === 2 &&
+                  trainingData.order === highestOrder)
+              ) {
+                if (step.type === "checkbox") {
+                  control.innerHTML = `<input type="checkbox" name="${stepKey}" ${
+                    step.value ? "checked" : ""
+                  } />`;
+                } else if (step.type === "date") {
+                  control.innerHTML = `<input type="date" name="${stepKey}" class="input is-size-6" value="${
+                    step.value || ""
+                  }" />`;
+                } else if (step.type === "text") {
+                  control.innerHTML = `<input type="text" name="${stepKey}" class="input is-size-6" value="${
+                    step.value || ""
+                  }" />`;
+                }
+              } else {
+                if (step.type === "checkbox") {
+                  control.innerHTML = `<input type="checkbox" disabled="true" name="${stepKey}" ${
+                    step.value ? "checked" : ""
+                  } />`;
+                } else if (step.type === "date") {
+                  control.innerHTML = `<input type="date" disabled="true" name="${stepKey}" class="input is-size-6" value="${
+                    step.value || ""
+                  }" />`;
+                }
               }
 
               fieldControl.appendChild(control);
@@ -1021,13 +1044,8 @@ function showUserPage(agentId) {
             ${
               trainingData.order === highestOrder
                 ? `${
-                    agent.trainingLevel !== 1
+                    trainingData.order !== 1
                       ? `<button class="button is-danger" type="button">Cancel ${trainingData.name}</button>`
-                      : ""
-                  }${
-                    agent.trainingStatus === 2 &&
-                    trainingData.order === highestOrder
-                      ? '<button class="button is-primary mx-1" type="button">Finish Training</button>'
                       : ""
                   }`
                 : ""
@@ -1053,23 +1071,16 @@ function showUserPage(agentId) {
               cancelTraining(agentId, trainingData.key, trainingData.order);
             });
           }
-
-          // Add event listener for finish button if it exists
-          const finishButton = trainingForm.querySelector(".button.is-primary");
-          if (finishButton) {
-            finishButton.addEventListener("click", function (event) {
-              event.preventDefault();
-              finishTraining(agentId, trainingData.order);
-            });
-          }
         });
 
         // Reinitialize collapsibles after adding new boxes
         initializeCollapsibles();
 
         let trainingButtonsHTML = "";
+        let nextTrainingButtonActive = false;
 
         if (agent.trainingStatus === 0 && agent.trainingLevel !== 5) {
+          nextTrainingButtonActive = true;
           trainingButtonsHTML += `
             <button
               id="start-next-training-button"
@@ -1097,13 +1108,15 @@ function showUserPage(agentId) {
 
         r_e("training-buttons").innerHTML = trainingButtonsHTML;
 
-        // Add event listener for the start-next-training-button
-        r_e("start-next-training-button").addEventListener(
-          "click",
-          function () {
-            startNextTraining(agentId);
-          }
-        );
+        // Add event listener for the start-next-training-button if it exists
+        if (nextTrainingButtonActive) {
+          r_e("start-next-training-button").addEventListener(
+            "click",
+            function () {
+              startNextTraining(agentId);
+            }
+          );
+        }
       } else {
         console.error("No such document!");
       }
@@ -1114,7 +1127,7 @@ function showUserPage(agentId) {
 }
 
 // Function to finish the current training and update the database
-function finishTraining(agentId, trainingOrder) {
+function finishTraining(agentId, trainingOrder, trainingKey, completedDate) {
   // Get the agent data to update training level and status
   db.collection("agents")
     .doc("active")
@@ -1130,6 +1143,7 @@ function finishTraining(agentId, trainingOrder) {
         const updates = {
           trainingLevel: newTrainingLevel,
           trainingStatus: 0,
+          [`training.${trainingKey}.completedDate`]: completedDate,
         };
 
         db.collection("agents")
@@ -1197,6 +1211,15 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
     updates[stepIndex] = value;
   });
 
+  // Handle unchecked checkboxes
+  form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+    if (!checkbox.checked) {
+      const sanitizedKey = checkbox.name.replace(/[~*/[\]]/g, "_");
+      const stepIndex = parseInt(sanitizedKey, 10);
+      updates[stepIndex] = ""; // Set the value to an empty string for unchecked checkboxes
+    }
+  });
+
   // Read the current steps array
   db.collection("agents")
     .doc("active")
@@ -1208,13 +1231,65 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
         const data = doc.data();
         const steps = data.training[trainingKey].steps || [];
 
+        // Track tasks to add or remove
+        const tasksToAdd = [];
+        const tasksToRemove = [];
+
         // Update the steps array
         Object.keys(updates).forEach((index) => {
           const stepIndex = parseInt(index, 10);
-          if (steps[stepIndex]) {
-            steps[stepIndex].value = updates[index];
+          const step = steps[stepIndex];
+          const value = updates[index];
+
+          if (step) {
+            step.value = value;
+
+            // Handle task creation for "scheduled" and "finish" steps
+            if (
+              (step.type === "date" && step.schedule) ||
+              (step.type === "date" && step.finish)
+            ) {
+              const checkboxStep = steps[stepIndex + 1]; // Assuming the checkbox step follows the date step
+              const taskId = `training-${trainingKey}-${stepIndex}`;
+              const manager = firebase.auth().currentUser.email;
+
+              // Use the updates object to check the submitted values
+              const checkboxValue = updates[stepIndex + 1];
+
+              if (value && !checkboxValue) {
+                tasksToAdd.push({
+                  agentId,
+                  taskId,
+                  taskSource: "training",
+                  taskName: step.name,
+                  taskDate: value,
+                  manager,
+                });
+              } else if (checkboxValue) {
+                tasksToRemove.push({ agentId, taskId });
+              }
+
+              if (step.finish && checkboxValue) {
+                // Prompt the user for confirmation before finishing training
+                if (
+                  confirm(
+                    "Are you sure you want to finish this training? Training Completed date will not be able to be updated."
+                  )
+                ) {
+                  finishTraining(
+                    agentId,
+                    data.training[trainingKey].order,
+                    trainingKey,
+                    value
+                  ); // Pass the finish date value here
+                } else {
+                  // If the user cancels, uncheck the checkbox
+                  checkboxStep.value = "";
+                }
+              }
+            }
           } else {
-            steps[stepIndex] = { value: updates[index] };
+            steps[stepIndex] = { value };
           }
         });
 
@@ -1229,6 +1304,26 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
           .then(() => {
             configure_message_bar("Training updates saved successfully.");
             displayAgentButtons(); // Update the cache of the main dashboard
+
+            // Process tasks to add
+            tasksToAdd.forEach((task) => {
+              addTask(
+                task.agentId,
+                task.taskId,
+                task.taskSource,
+                task.taskName,
+                task.taskDate,
+                task.manager
+              );
+            });
+
+            // Process tasks to remove
+            tasksToRemove.forEach((task) => {
+              removeTask(task.agentId, task.taskId);
+            });
+
+            // Update the local form data without refreshing
+            updateLocalFormData(agentId, trainingKey, steps);
           })
           .catch((error) => {
             console.error("Error saving training updates: ", error);
@@ -1245,10 +1340,35 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
     });
 }
 
+// Function to update local form data without refreshing
+function updateLocalFormData(agentId, trainingKey, steps) {
+  const trainingForm = document.getElementById("trainingForm");
+
+  if (!trainingForm) {
+    console.error("Error: trainingForm element not found.");
+    configure_message_bar("Error: trainingForm element not found.");
+    return;
+  }
+
+  // Update the form fields with the new steps data
+  for (const stepKey in steps) {
+    if (steps.hasOwnProperty(stepKey)) {
+      const step = steps[stepKey];
+      const input = trainingForm.querySelector(`[name="${stepKey}"]`);
+
+      if (input) {
+        if (input.type === "checkbox") {
+          input.checked = step.value ? true : false;
+        } else {
+          input.value = step.value || "";
+        }
+      }
+    }
+  }
+}
+
 // Function to cancel training and update the database
 function cancelTraining(agentId, trainingKey, trainingOrder) {
-  const db = firebase.firestore();
-
   // Get the agent data to update training level and status
   db.collection("agents")
     .doc("active")
@@ -1277,30 +1397,48 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
               "Training section removed and training level updated."
             );
 
-            // Update trainingLevel and trainingStatus for the agent in the main collection
+            // Get main collection data for task removal
             db.collection("agents")
               .doc("active")
-              .update({
-                [`${agentId}.trainingLevel`]: newTrainingLevel,
-                [`${agentId}.trainingStatus`]: 0,
-              })
-              .then(() => {
-                configure_message_bar(
-                  "Agent's training level and status updated in the main collection."
-                );
-                displayAgentButtons(); // Update the cache of the main dashboard
+              .get()
+              .then((doc) => {
+                let mainUpdates = {
+                  [`${agentId}.trainingLevel`]: newTrainingLevel,
+                  [`${agentId}.trainingStatus`]: 0,
+                };
 
-                // Refresh the user page to reflect the changes
-                showUserPage(agentId);
-              })
-              .catch((error) => {
-                console.error(
-                  "Error updating agent's training level and status in the main collection: ",
-                  error
-                );
-                configure_message_bar(
-                  "Error updating agent's training level and status in the main collection."
-                );
+                mainAgentDoc = doc.data()[agentId];
+
+                // Remove all tasks associated with this training level
+                const tasks = mainAgentDoc.tasks || {};
+                for (const taskId in tasks) {
+                  if (taskId.startsWith(`training-${trainingKey}-`)) {
+                    mainUpdates[`${agentId}.tasks.${taskId}`] =
+                      firebase.firestore.FieldValue.delete();
+                  }
+                }
+                // Update trainingLevel and trainingStatus for the agent in the main collection
+                db.collection("agents")
+                  .doc("active")
+                  .update(mainUpdates)
+                  .then(() => {
+                    configure_message_bar(
+                      "Agent's training level and status updated in the main collection."
+                    );
+                    displayAgentButtons(); // Update the cache of the main dashboard
+
+                    // Refresh the user page to reflect the changes
+                    showUserPage(agentId);
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Error updating agent's training level and status in the main collection: ",
+                      error
+                    );
+                    configure_message_bar(
+                      "Error updating agent's training level and status in the main collection."
+                    );
+                  });
               });
           })
           .catch((error) => {
@@ -1351,6 +1489,23 @@ function startNextTraining(agentId) {
               }
 
               if (nextTraining) {
+                // Process steps to handle "finish" and "schedule" types
+                nextTraining.steps = nextTraining.steps.flatMap((step) => {
+                  if (step.type === "finish") {
+                    return [
+                      { ...step, type: "date", finish: 1 },
+                      { ...step, type: "checkbox", finish: 1 },
+                    ];
+                  } else if (step.type === "schedule") {
+                    return [
+                      { ...step, type: "date", schedule: 1 },
+                      { ...step, type: "checkbox", schedule: 1 },
+                    ];
+                  } else {
+                    return step;
+                  }
+                });
+
                 const updates = {
                   [`training.${foundKey}`]: {
                     name: nextTraining.name,
@@ -1385,47 +1540,12 @@ function startNextTraining(agentId) {
 
                         // Refresh the user page to reflect the changes
                         showUserPage(agentId);
-                      })
-                      .catch((error) => {
-                        console.error(
-                          "Error updating agent's training level and status in the main collection: ",
-                          error
-                        );
-                        configure_message_bar(
-                          "Error updating agent's training level and status in the main collection."
-                        );
                       });
-                  })
-                  .catch((error) => {
-                    console.error(
-                      "Error updating training level and status: ",
-                      error
-                    );
-                    configure_message_bar(
-                      "Error updating training level and status."
-                    );
                   });
-              } else {
-                console.error("No such training level!");
-                configure_message_bar("No such training level!");
               }
-            } else {
-              console.error("No training data found!");
-              configure_message_bar("No training data found!");
             }
-          })
-          .catch((error) => {
-            console.error("Error getting training data: ", error);
-            configure_message_bar("Error getting training data.");
           });
-      } else {
-        console.error("No such document!");
-        configure_message_bar("No such document!");
       }
-    })
-    .catch((error) => {
-      console.error("Error getting agent data: ", error);
-      configure_message_bar("Error getting agent data.");
     });
 }
 
@@ -1450,4 +1570,27 @@ async function updateAgentData() {
   } catch (error) {
     console.error("Error updating documents:", error);
   }
+}
+
+function addTask(agentId, taskId, taskSource, taskName, taskDate, manager) {
+  let task = {
+    name: taskName,
+    date: taskDate,
+    source: taskSource,
+    assign: manager,
+  };
+
+  db.collection("agents")
+    .doc("active")
+    .update({
+      [`${agentId}.tasks.${taskId}`]: task,
+    });
+}
+
+function removeTask(agentId, taskId) {
+  db.collection("agents")
+    .doc("active")
+    .update({
+      [`${agentId}.tasks.${taskId}`]: firebase.firestore.FieldValue.delete(),
+    });
 }
