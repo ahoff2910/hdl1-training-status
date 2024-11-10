@@ -132,7 +132,7 @@
 <a href="https://trello.com/invite/b/6727cd2d9e7b52ee5d0c9bf3/ATTI17ae070dc9151ae25c3b728c3a52ede22CC0DA5B/sprint-3"><p>Link to Trello Board</p></a>
 <h3>Burndown Charts</h3>
 <h6>Day 2</h6>
-
+<img src="Screen Shot 2024-11-06 at 1.33.29 PM.png">
 <h6>Day 5</h6>
 <h6>Day 7</h6>
 <h3>Daily Scrum meetings</h3>
