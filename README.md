@@ -131,15 +131,19 @@
 <h3>Trello Board</h3>
 <a href="https://trello.com/invite/b/6727cd2d9e7b52ee5d0c9bf3/ATTI17ae070dc9151ae25c3b728c3a52ede22CC0DA5B/sprint-3"><p>Link to Trello Board</p></a>
 <h3>Burndown Charts</h3>
+<h6>Day 2</h6>
+
+<h6>Day 5</h6>
+<h6>Day 7</h6>
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Sprint Planning. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Move all tasks onto Trello and Burndown Chart. </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -197,10 +201,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Started to work on client suggestions.</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Edited color key modal. </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -258,10 +262,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on developing Data Flow to help further develop database.</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Work on ReadME.</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
