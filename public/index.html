@@ -174,7 +174,7 @@
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
-      <!-- Sign Up Modal -->
+      <!-- My Account Modal -->
       <div class="modal has-text-centered" id="myAccountModal">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -509,7 +509,7 @@
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
-      <!-- Add Employee Modal -->
+      <!-- Add New Employee Modal -->
       <div class="modal has-text-centered" id="addemployeemodal">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -517,33 +517,167 @@
             <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
               Add Employee
             </h1>
-            <form id="new_agent_form">
+            <form id="addemployee_form">
               <div class="field">
-                <label class="label has-text-left">Hire Date: </label>
+                <label class="label has-text-black has-text-left"
+                  >4 Letter:</label
+                >
                 <div class="control">
                   <input
-                    id="hiredate"
+                    id="employee-code"
                     class="input"
                     type="text"
-                    placeholder="xx-xx-xxxx"
+                    placeholder="4 Letter"
                   />
                 </div>
               </div>
+
               <div class="field">
-                <label class="label has-text-left">4 Letter ID: </label>
+                <label class="label has-text-black has-text-left"
+                  >Hire Date:</label
+                >
                 <div class="control">
-                  <input
-                    id="4letterid"
-                    class="input"
-                    type="text"
-                    placeholder="ABCD"
-                  />
+                  <input id="hire-date" class="input" type="date" />
                 </div>
               </div>
-              <button class="button is-info" type="submit">Save Changes</button>
+
+              <label class="label has-text-black has-text-left"
+                >Expected Graduation:</label
+              >
+              <div class="field is-grouped">
+                <div class="control">
+                  <input
+                    id="exp-grad-year"
+                    class="input"
+                    type="number"
+                    min="2024"
+                    value="2024"
+                  />
+                </div>
+
+                <div class="control">
+                  <div id="exp-grad-sem" class="select">
+                    <select>
+                      <option>Spring</option>
+                      <option>Summer</option>
+                      <option>Fall</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <button class="button light-button is-info" id="add-employee">
+                Add Employee
+              </button>
+              <button class="button light-button is-info" id="add-employee-new">
+                Add Another
+              </button>
+              <!-- div error -->
+              <div id="new-employee-error" class="error has-text-danger"></div>
             </form>
           </div>
         </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
+      <!-- Edit Employee Modal -->
+      <div class="modal has-text-centered" id="editemployeemodal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Edit Employee
+            </h1>
+            <form id="editemployee_form">
+              <div class="field">
+                <label class="label has-text-black has-text-left"
+                  >4 Letter:</label
+                >
+                <div class="control">
+                  <input
+                    id="employee-code-edit"
+                    class="input"
+                    type="text"
+                    placeholder="4 Letter"
+                    disabled="disabled"
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label has-text-black has-text-left"
+                  >Hire Date:</label
+                >
+                <div class="control">
+                  <input id="hire-date-edit" class="input" type="date" />
+                </div>
+              </div>
+
+              <label class="label has-text-black has-text-left"
+                >Expected Graduation:</label
+              >
+              <div class="field is-grouped">
+                <div class="control">
+                  <input
+                    id="exp-grad-year-edit"
+                    class="input"
+                    type="number"
+                    min="2024"
+                    value="2024"
+                  />
+                </div>
+
+                <div class="control">
+                  <div id="exp-grad-sem-edit" class="select">
+                    <select>
+                      <option>Spring</option>
+                      <option>Summer</option>
+                      <option>Fall</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field has-text-left">
+                <label class="label has-text-black has-text-left">Flag:</label>
+                <div class="control">
+                  <div id="flag-edit" class="select">
+                    <select>
+                      <option value="0"></option>
+                      <option value="1">
+                        Attendance or performance concerns
+                      </option>
+                      <option value="2">Does not want to train up</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field has-text-left">
+                <label class="label has-text-black has-text-left"
+                  >SLP Role:</label
+                >
+                <div class="control">
+                  <div id="slp-role-edit" class="select">
+                    <select>
+                      <option value="0"></option>
+                      <option value="1">Student Team Lead</option>
+                      <option value="2">Student Developer</option>
+                      <option value="3">Data & Metrics Student Lead</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <button class="button light-button is-info" id="edit-employee">
+                Save Employee
+              </button>
+              <!-- div error -->
+              <div id="edit-employee-error" class="error has-text-danger"></div>
+            </form>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
       <!-- Navbar Section -->
@@ -595,6 +729,7 @@
                 <thead>
                   <tr>
                     <!-- column headers row -->
+                    <th colspan="1" class="has-background-white">New</th>
                     <th colspan="3" class="has-background-info">Pick 1</th>
                     <th colspan="3" class="has-background-link">
                       Advanced Phones
@@ -607,6 +742,12 @@
                   </tr>
                   <tr>
                     <!-- status indicators row -->
+                    <th
+                      class="has-background-success-light is-size-7 has-text-weight-normal"
+                      width="80px"
+                    >
+                      In Training
+                    </th>
                     <th
                       class="has-background-danger-light is-size-7 has-text-weight-normal"
                       width="80px"
@@ -689,6 +830,7 @@
                 </thead>
                 <tbody>
                   <tr>
+                    <td id="agent-button-0-2" class="agent-button-div p-1"></td>
                     <!-- agent button divs -->
                     <!-- Pick 1 -->
                     <td id="agent-button-1-0" class="agent-button-div p-1"></td>
@@ -811,6 +953,14 @@
                     <span id="user-page-graduation"></span>
                   </p>
                   <p>
+                    <strong>SLP Role:</strong>
+                    <span id="user-page-slp"></span>
+                  </p>
+                  <p>
+                    <strong>Flags:</strong>
+                    <span id="user-page-flag"></span>
+                  </p>
+                  <p>
                     <strong>Current Training Level:</strong>
                     <span id="user-page-training-level"></span>
                   </p>
@@ -819,8 +969,18 @@
                     <span id="user-page-last-reviewed"></span> -
                     <span id="user-page-last-reviewed-duration"></span> Day(s)
                   </p>
-                  <button class="button is-info my-2">Edit</button>
-                  <button class="button is-danger my-2">Delete</button>
+                  <button
+                    id="user-page-edit-button"
+                    class="button is-info my-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    id="user-page-delete-button"
+                    class="button is-danger my-2"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
               <div class="column is-two-thirds">

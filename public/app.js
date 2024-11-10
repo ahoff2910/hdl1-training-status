@@ -243,40 +243,44 @@ r_e("myAccountForm").addEventListener("submit", async (e) => {
 let userDataCache = {};
 
 // Open the View Users Modal
-r_e("view-users-button").addEventListener("click", () => {
+r_e("view-users-button").addEventListener("click", async () => {
   const usersTableBody = r_e("users-table-body");
   usersTableBody.innerHTML = "";
 
-  const usersSnapshot = db.collection("users").get();
-  const usersArray = [];
+  try {
+    const usersSnapshot = await db.collection("users").get();
+    const usersArray = [];
 
-  usersSnapshot.forEach((doc) => {
-    const userData = doc.data();
-    usersArray.push({ id: doc.id, ...userData });
-  });
+    usersSnapshot.forEach((doc) => {
+      const userData = doc.data();
+      usersArray.push({ id: doc.id, ...userData });
+    });
 
-  // Sort users by name before caching
-  usersArray.sort((a, b) => a.name.localeCompare(b.name));
+    // Sort users by name before caching
+    usersArray.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Cache sorted user data and fill table
-  usersArray.forEach((user) => {
-    userDataCache[user.id] = user; // Cache user data
+    // Cache sorted user data and fill table
+    usersArray.forEach((user) => {
+      userDataCache[user.id] = user; // Cache user data
 
-    const userRow = document.createElement("tr");
-    userRow.setAttribute("data-user-id", user.id);
-    userRow.innerHTML = `
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td>${user.role}</td>
-            <td>
-                <button class="button is-info view-user-button" data-user-id="${user.id}">View</button>
-            </td>
-        `;
+      const userRow = document.createElement("tr");
+      userRow.setAttribute("data-user-id", user.id);
+      userRow.innerHTML = `
+              <td>${user.name}</td>
+              <td>${user.email}</td>
+              <td>${user.role}</td>
+              <td>
+                  <button class="button is-info view-user-button" data-user-id="${user.id}">View</button>
+              </td>
+          `;
 
-    usersTableBody.appendChild(userRow);
-  });
+      usersTableBody.appendChild(userRow);
+    });
 
-  r_e("viewUsersModal").classList.add("is-active");
+    r_e("viewUsersModal").classList.add("is-active");
+  } catch (error) {
+    console.error("Error getting users:", error);
+  }
 });
 
 // Filter users in the table
@@ -814,6 +818,11 @@ function displayAgentButtons() {
             button.style.color = "red";
           }
 
+          // Apply blue text color if the flag is 1
+          if (agent.flag === 2) {
+            button.style.color = "blue";
+          }
+
           button.onclick = function () {
             showUserPage(agent.agent);
           };
@@ -836,6 +845,19 @@ const trainingLevelNames = {
   3: "Chat/Email",
   4: "Onsite",
   5: "HDQA",
+};
+
+const slpNames = {
+  0: "",
+  1: "Student Team Lead",
+  2: "Student Developer",
+  3: "Data & Metrics Student Lead",
+};
+
+const flagNames = {
+  0: "",
+  1: "Attendance or performance concerns",
+  2: "Does not want to train up",
 };
 
 // Function to initialize collapsible functionality
@@ -883,10 +905,6 @@ function calculateDuration(date) {
 
 // Function to display the user page for a specific agent
 function showUserPage(agentId) {
-  closeAllModals();
-  r_e("dashboard-div").classList.add("is-hidden");
-  r_e("user-page-div").classList.remove("is-hidden");
-
   // Reference to Firestore
   const db = firebase.firestore();
 
@@ -901,19 +919,17 @@ function showUserPage(agentId) {
         const agent = doc.data();
 
         // Populate user page elements with agent data
-        document.getElementById("user-page-agent-name").textContent =
-          agent.agent;
-        document.getElementById("user-page-training-level").textContent =
+        r_e("user-page-agent-name").textContent = agent.agent;
+        r_e("user-page-training-level").textContent =
           trainingLevelNames[agent.trainingLevel] || "Unknown";
-        document.getElementById("user-page-hire-date").textContent =
-          agent.hireDate;
-        document.getElementById("user-page-graduation").textContent =
-          agent.graduation;
-        document.getElementById("user-page-last-reviewed").textContent =
+        r_e("user-page-slp").textContent = slpNames[agent.slp] || "";
+        r_e("user-page-flag").textContent = flagNames[agent.flag] || "";
+        r_e("user-page-hire-date").textContent = agent.hireDate;
+        r_e("user-page-graduation").textContent = agent.graduation;
+        r_e("user-page-last-reviewed").textContent =
           agent.lastReviewed || "Never";
-        document.getElementById(
-          "user-page-last-reviewed-duration"
-        ).textContent = calculateDuration(agent.lastReviewed) || "∞";
+        r_e("user-page-last-reviewed-duration").textContent =
+          calculateDuration(agent.lastReviewed) || "∞";
 
         // Fetch and display training steps
         const trainingDiv = document.querySelector(".training-div");
@@ -1113,10 +1129,16 @@ function showUserPage(agentId) {
           r_e("start-next-training-button").addEventListener(
             "click",
             function () {
-              startNextTraining(agentId);
+              startNextTraining(agentId).then(() => {
+                showUserPage(agentId);
+              });
             }
           );
         }
+
+        closeAllModals();
+        r_e("dashboard-div").classList.add("is-hidden");
+        r_e("user-page-div").classList.remove("is-hidden");
       } else {
         console.error("No such document!");
       }
@@ -1342,7 +1364,7 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
 
 // Function to update local form data without refreshing
 function updateLocalFormData(agentId, trainingKey, steps) {
-  const trainingForm = document.getElementById("trainingForm");
+  const trainingForm = r_e("trainingForm");
 
   if (!trainingForm) {
     console.error("Error: trainingForm element not found.");
@@ -1458,99 +1480,100 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
 
 // Function to handle starting the next training level
 function startNextTraining(agentId) {
-  // Get the agent data to update training level and status
-  db.collection("agents")
-    .doc("active")
-    .collection("data")
-    .doc(agentId)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const agent = doc.data();
-        const newTrainingLevel = agent.trainingLevel + 1;
+  return new Promise((resolve, reject) => {
+    // Get the agent data to update training level and status
+    db.collection("agents")
+      .doc("active")
+      .collection("data")
+      .doc(agentId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const agent = doc.data();
+          const newTrainingLevel = agent.trainingLevel + 1;
 
-        // Get the next training steps from the training collection
-        db.collection("training")
-          .doc("training")
-          .get()
-          .then((trainingDoc) => {
-            if (trainingDoc.exists) {
-              const trainingData = trainingDoc.data();
-              let foundKey = null;
-              let nextTraining = null;
+          // Get the next training steps from the training collection
+          db.collection("training")
+            .doc("training")
+            .get()
+            .then((trainingDoc) => {
+              if (trainingDoc.exists) {
+                const trainingData = trainingDoc.data();
+                let foundKey = null;
+                let nextTraining = null;
 
-              // Find the key and the corresponding training data
-              for (const [key, value] of Object.entries(trainingData)) {
-                if (value.order === newTrainingLevel) {
-                  foundKey = key;
-                  nextTraining = value;
-                  break;
+                // Find the key and the corresponding training data
+                for (const [key, value] of Object.entries(trainingData)) {
+                  if (value.order === newTrainingLevel) {
+                    foundKey = key;
+                    nextTraining = value;
+                    break;
+                  }
+                }
+
+                if (nextTraining) {
+                  // Process steps to handle "finish" and "schedule" types
+                  nextTraining.steps = nextTraining.steps.flatMap((step) => {
+                    if (step.type === "finish") {
+                      return [
+                        { ...step, type: "date", finish: 1 },
+                        { ...step, type: "checkbox", finish: 1 },
+                      ];
+                    } else if (step.type === "schedule") {
+                      return [
+                        { ...step, type: "date", schedule: 1 },
+                        { ...step, type: "checkbox", schedule: 1 },
+                      ];
+                    } else {
+                      return step;
+                    }
+                  });
+
+                  const updates = {
+                    [`training.${foundKey}`]: {
+                      name: nextTraining.name,
+                      order: nextTraining.order,
+                      steps: nextTraining.steps,
+                    },
+                    trainingStatus: 2,
+                  };
+
+                  // Update Firestore
+                  db.collection("agents")
+                    .doc("active")
+                    .collection("data")
+                    .doc(agentId)
+                    .update(updates)
+                    .then(() => {
+                      configure_message_bar(
+                        "Training level and status updated successfully."
+                      );
+
+                      // Update trainingLevel and trainingStatus for the agent in the main collection
+                      db.collection("agents")
+                        .doc("active")
+                        .update({
+                          [`${agentId}.trainingStatus`]: 2,
+                        })
+                        .then(() => {
+                          configure_message_bar(
+                            "Agent's training level and status updated."
+                          );
+                          displayAgentButtons(); // Update the cache of the main dashboard
+
+                          resolve();
+                        });
+                    });
                 }
               }
-
-              if (nextTraining) {
-                // Process steps to handle "finish" and "schedule" types
-                nextTraining.steps = nextTraining.steps.flatMap((step) => {
-                  if (step.type === "finish") {
-                    return [
-                      { ...step, type: "date", finish: 1 },
-                      { ...step, type: "checkbox", finish: 1 },
-                    ];
-                  } else if (step.type === "schedule") {
-                    return [
-                      { ...step, type: "date", schedule: 1 },
-                      { ...step, type: "checkbox", schedule: 1 },
-                    ];
-                  } else {
-                    return step;
-                  }
-                });
-
-                const updates = {
-                  [`training.${foundKey}`]: {
-                    name: nextTraining.name,
-                    order: nextTraining.order,
-                    steps: nextTraining.steps,
-                  },
-                  trainingStatus: 2,
-                };
-
-                // Update Firestore
-                db.collection("agents")
-                  .doc("active")
-                  .collection("data")
-                  .doc(agentId)
-                  .update(updates)
-                  .then(() => {
-                    configure_message_bar(
-                      "Training level and status updated successfully."
-                    );
-
-                    // Update trainingLevel and trainingStatus for the agent in the main collection
-                    db.collection("agents")
-                      .doc("active")
-                      .update({
-                        [`${agentId}.trainingStatus`]: 2,
-                      })
-                      .then(() => {
-                        configure_message_bar(
-                          "Agent's training level and status updated."
-                        );
-                        displayAgentButtons(); // Update the cache of the main dashboard
-
-                        // Refresh the user page to reflect the changes
-                        showUserPage(agentId);
-                      });
-                  });
-              }
-            }
-          });
-      }
-    });
+            });
+        }
+      });
+  });
 }
 
 // Ad hoc function to pull all data from main collection and update subcollection
-async function updateAgentData() {
+async function repairAgentData() {
   const docRef = db.collection("agents").doc("active");
 
   try {
@@ -1594,3 +1617,218 @@ function removeTask(agentId, taskId) {
       [`${agentId}.tasks.${taskId}`]: firebase.firestore.FieldValue.delete(),
     });
 }
+
+// Function to add employee to Firestore
+function addEmployee(
+  employeeCode,
+  hireDate,
+  expGradYear,
+  expGradSem,
+  toshowUserPage = true
+) {
+  const agentId = employeeCode.toUpperCase();
+  const newEmployeeData = {
+    agent: agentId,
+    hireDate: hireDate,
+    graduation: `${expGradSem} ${expGradYear}`,
+    trainingLevel: 0,
+    trainingStatus: 2,
+  };
+
+  // Add employee data to Firestore
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .set(newEmployeeData)
+    .then(() => {
+      // Update additional fields
+      db.collection("agents")
+        .doc("active")
+        .update({
+          [`${agentId}.agent`]: agentId,
+          [`${agentId}.hireDate`]: hireDate,
+          [`${agentId}.graduation`]: newEmployeeData["graduation"],
+          [`${agentId}.trainingLevel`]: 0,
+          [`${agentId}.trainingStatus`]: 0,
+        })
+        .then(() => {
+          // Start next training
+          startNextTraining(agentId).then(() => {
+            // Show user page if required
+            if (toshowUserPage) {
+              showUserPage(agentId);
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("Error updating document: ", error);
+        });
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+    });
+}
+
+// Event listener for form submission
+r_e("addemployee_form").addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const employeeCode = r_e("employee-code").value;
+  const hireDate = r_e("hire-date").value;
+  const expGradYear = r_e("exp-grad-year").value;
+  const expGradSem = r_e("exp-grad-sem").querySelector("select").value;
+
+  if (employeeCode && hireDate && expGradYear && expGradSem) {
+    addEmployee(employeeCode, hireDate, expGradYear, expGradSem);
+  } else {
+    r_e("new-employee-error").textContent = "Please fill in all fields.";
+  }
+});
+
+// Event listener for "Add Another" button
+r_e("add-employee-new").addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const employeeCode = r_e("employee-code").value;
+  const hireDate = r_e("hire-date").value;
+  const expGradYear = r_e("exp-grad-year").value;
+  const expGradSem = r_e("exp-grad-sem").querySelector("select").value;
+
+  if (employeeCode && hireDate && expGradYear && expGradSem) {
+    addEmployee(employeeCode, hireDate, expGradYear, expGradSem, false);
+    r_e("addemployee_form").reset();
+  } else {
+    r_e("new-employee-error").textContent = "Please fill in all fields.";
+  }
+});
+
+// Event listener for the delete button
+r_e("user-page-delete-button").addEventListener("click", () => {
+  // Get the agentId of the open user
+  const agentId = r_e("user-page-agent-name").innerHTML;
+
+  if (agentId) {
+    // Confirm deletion
+    if (confirm("Are you sure you want to delete this user?")) {
+      // Delete the user document from Firestore
+      db.collection("agents")
+        .doc("active")
+        .collection("data")
+        .doc(agentId)
+        .delete()
+        .then(() => {
+          db.collection("agents")
+            .doc("active")
+            .update({ [agentId]: firebase.firestore.FieldValue.delete() })
+            .then(() => {
+              configure_message_bar("User successfully deleted");
+              displayAgentButtons();
+              r_e("dashboard-div").classList.remove("is-hidden");
+              r_e("user-page-div").classList.add("is-hidden");
+            });
+        })
+        .catch((error) => {
+          configure_message_bar("Error deleting user");
+          console.error("Error removing document: ", error);
+        });
+    }
+  } else {
+    configure_message_bar("Error deleting user");
+    console.error("No agent ID found for deletion.");
+  }
+});
+
+r_e("user-page-edit-button").addEventListener("click", function () {
+  // Get the data from the page
+  const agentname = r_e("user-page-agent-name").textContent;
+  const hireDate = r_e("user-page-hire-date").textContent;
+  const graduation = r_e("user-page-graduation").textContent;
+  const slpRole = r_e("user-page-slp").textContent;
+  const flag = r_e("user-page-flag").textContent;
+
+  // Map the SLP Role and Flag text to their corresponding values
+  const slpRoleMap = {
+    "": 0,
+    "Student Team Lead": 1,
+    "Student Developer": 2,
+    "Data & Metrics Student Lead": 3,
+  };
+
+  const flagMap = {
+    "": 0,
+    "Attendance or performance concerns": 1,
+    "Does not want to train up": 2,
+  };
+
+  // Populate the modal fields
+  r_e("employee-code-edit").value = agentname;
+  r_e("hire-date-edit").value = hireDate;
+  r_e("exp-grad-year-edit").value = graduation.split(" ")[1];
+  r_e("exp-grad-sem-edit").querySelector("select").value =
+    graduation.split(" ")[0];
+  r_e("slp-role-edit").querySelector("select").value = slpRoleMap[slpRole];
+  r_e("flag-edit").querySelector("select").value = flagMap[flag];
+
+  // Open the modal
+  r_e("editemployeemodal").classList.add("is-active");
+});
+
+r_e("edit-employee").addEventListener("click", async function (event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  // Get the form data
+  const hireDate = r_e("hire-date-edit").value;
+  const gradYear = r_e("exp-grad-year-edit").value;
+  const gradSemester = r_e("exp-grad-sem-edit").querySelector("select").value;
+  const slpRole = r_e("slp-role-edit").querySelector("select").value;
+  const flag = r_e("flag-edit").querySelector("select").value;
+
+  // Validate the form data (optional)
+  if (!hireDate || !gradYear || !gradSemester) {
+    r_e("edit-employee-error").textContent = "Please fill out all fields.";
+    return;
+  }
+
+  // Prepare the data to be saved
+  const employeeData = {
+    hireDate: hireDate,
+    graduation: `${gradSemester} ${gradYear}`,
+    slpRole: slpRole,
+    flag: flag,
+  };
+
+  try {
+    const agentId = r_e("employee-code-edit").value; // Assuming agentId is stored in this field
+
+    // Save the data to Firestore
+    await db
+      .collection("agents")
+      .doc("active")
+      .collection("data")
+      .doc(agentId)
+      .update(employeeData);
+
+    // Update additional fields
+    await db
+      .collection("agents")
+      .doc("active")
+      .update({
+        [`${agentId}.hireDate`]: hireDate,
+        [`${agentId}.graduation`]: employeeData["graduation"],
+        [`${agentId}.slpRole`]: slpRole,
+        [`${agentId}.flag`]: flag,
+      });
+
+    // Close the modal
+    r_e("editemployeemodal").classList.remove("is-active");
+
+    // Clear any previous error messages
+    r_e("edit-employee-error").textContent = "";
+    configure_message_bar("User successfully saved");
+  } catch (error) {
+    console.error("Error saving employee data: ", error);
+    r_e("edit-employee-error").textContent =
+      "Error saving data. Please try again.";
+  }
+});
