@@ -23,6 +23,21 @@ r_e("open-departed-button").addEventListener("click", () => {
   r_e("departedmodal").classList.add("is-active");
 });
 
+document.querySelectorAll(".tabs ul li").forEach((tab, index) => {
+  tab.addEventListener("click", () => {
+    document
+      .querySelectorAll(".tabs ul li")
+      .forEach((item) => item.classList.remove("is-active"));
+    tab.classList.add("is-active");
+
+    document
+      .querySelectorAll("#tab-content > div")
+      .forEach((content) => (content.style.display = "none"));
+    document.querySelectorAll("#tab-content > div")[index].style.display =
+      "block";
+  });
+});
+
 // Animated Color Key Modal
 // Get the modal
 var colormodal = r_e("colormodal");
@@ -827,6 +842,11 @@ function displayAgentButtons() {
             button.classList.add("has-text-info");
           }
 
+          // Apply yellow highlight if departing
+          if (agent.departing) {
+            button.classList.add("has-background-warning");
+          }
+
           // Check if lastReviewed is within the last 2 months
           if (agent.lastReviewed) {
             const lastReviewedDate = new Date(agent.lastReviewed);
@@ -959,10 +979,9 @@ function showUserPage(agentId) {
         trainingArray.sort((a, b) => a.order - b.order);
 
         // Find the highest order
-        const highestOrder =
-          trainingArray.length > 0
-            ? trainingArray[trainingArray.length - 1].order
-            : 0;
+        const highestOrder = trainingArray
+          .filter((item) => item.order !== 6)
+          .reduce((max, item) => (item.order > max ? item.order : max), 0);
 
         trainingArray.forEach((trainingData) => {
           const steps = trainingData.steps;
@@ -1123,17 +1142,6 @@ function showUserPage(agentId) {
                 trainingLevelNames[agent.trainingLevel + 1] || "Unknown"
               }</span
               > Training
-            </button>`;
-        }
-
-        if (agent.trainingLevel !== 6) {
-          trainingButtonsHTML += `
-            <button
-              id="start-next-offboarding-button"
-              class="button is-danger"
-              type="submit"
-            >
-              Start Offboarding
             </button>`;
         }
 
@@ -1569,6 +1577,136 @@ function startNextTraining(agentId) {
                         .doc("active")
                         .update({
                           [`${agentId}.trainingStatus`]: 2,
+                        })
+                        .then(() => {
+                          configure_message_bar(
+                            "Agent's training level and status updated."
+                          );
+                          displayAgentButtons(); // Update the cache of the main dashboard
+
+                          resolve();
+                        });
+                    });
+                }
+              }
+            });
+        }
+      });
+  });
+}
+
+function cancelOffboarding(agentId) {
+  db.collection("agents")
+    .doc("active")
+    .collection("data")
+    .doc(agentId)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const agent = doc.data();
+
+        // Update Firestore
+        db.collection("agents")
+          .doc("active")
+          .collection("data")
+          .doc(agentId)
+          .update({
+            departing: firebase.firestore.FieldValue.delete(),
+            [`departing`]: firebase.firestore.FieldValue.delete(),
+          })
+          .then(() => {
+            // Update  main collection
+            db.collection("agents")
+              .doc("active")
+              .update({
+                [`${agentId}.departing`]:
+                  firebase.firestore.FieldValue.delete(),
+              })
+              .then(() => {
+                configure_message_bar("Offboarding cancelled.");
+                displayAgentButtons(); // Update the cache of the main dashboard
+                showUserPage(agentId);
+              });
+          });
+      }
+    });
+}
+
+// Function to handle starting the next training level
+function startOffboarding(agentId) {
+  return new Promise((resolve, reject) => {
+    // Get the agent data to update training level and status
+    db.collection("agents")
+      .doc("active")
+      .collection("data")
+      .doc(agentId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const agent = doc.data();
+
+          // Get the next training steps from the training collection
+          db.collection("training")
+            .doc("training")
+            .get()
+            .then((trainingDoc) => {
+              if (trainingDoc.exists) {
+                const trainingData = trainingDoc.data();
+                let foundKey = null;
+                let nextTraining = null;
+
+                // Find the key and the corresponding training data
+                for (const [key, value] of Object.entries(trainingData)) {
+                  if (value.order === 6) {
+                    foundKey = key;
+                    nextTraining = value;
+                    break;
+                  }
+                }
+
+                if (nextTraining) {
+                  // Process steps to handle "finish" and "schedule" types
+                  nextTraining.steps = nextTraining.steps.flatMap((step) => {
+                    if (step.type === "finish") {
+                      return [
+                        { ...step, type: "date", finish: 1 },
+                        { ...step, type: "checkbox", finish: 1 },
+                      ];
+                    } else if (step.type === "schedule") {
+                      return [
+                        { ...step, type: "date", schedule: 1 },
+                        { ...step, type: "checkbox", schedule: 1 },
+                      ];
+                    } else {
+                      return step;
+                    }
+                  });
+
+                  const updates = {
+                    [`training.${foundKey}`]: {
+                      name: nextTraining.name,
+                      order: nextTraining.order,
+                      steps: nextTraining.steps,
+                    },
+                    departing: 1,
+                  };
+
+                  // Update Firestore
+                  db.collection("agents")
+                    .doc("active")
+                    .collection("data")
+                    .doc(agentId)
+                    .update(updates)
+                    .then(() => {
+                      configure_message_bar(
+                        "Training level and status updated successfully."
+                      );
+
+                      // Update trainingLevel and trainingStatus for the agent in the main collection
+                      db.collection("agents")
+                        .doc("active")
+                        .update({
+                          [`${agentId}.departing`]: 1,
                         })
                         .then(() => {
                           configure_message_bar(
