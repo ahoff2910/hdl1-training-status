@@ -827,6 +827,17 @@ function displayAgentButtons() {
             button.classList.add("has-text-info");
           }
 
+          // Check if lastReviewed is within the last 2 months
+          if (agent.lastReviewed) {
+            const lastReviewedDate = new Date(agent.lastReviewed);
+            const currentDate = new Date();
+            const timeDiff = currentDate - lastReviewedDate;
+            const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+            if (daysDiff < 60) {
+              button.classList.add("has-background-info-light");
+            }
+          }
+
           button.onclick = function () {
             showUserPage(agent.agent);
           };
