@@ -166,10 +166,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Began updating the site's language to make user roles clearer. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?:Continue updating the user role language across the site.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -227,10 +227,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: completed updating the site's language for user roles. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: start drafting activity diagrams for user scenarios.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -288,10 +288,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on creating activity diagrams for users. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Finish activity diagrams</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
