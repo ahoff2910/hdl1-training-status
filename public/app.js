@@ -1159,6 +1159,30 @@ function showUserPage(agentId) {
           );
         }
 
+        let offboardingdiv = "";
+
+        if (!agent.departing) {
+          offboardingdiv += `<button class="button is-danger" id="start-offboarding" type="button">Start Offboarding</button>`;
+        } else {
+          offboardingdiv += `<button class="button is-danger" id="cancel-offboarding" type="button">Cancel Offboarding</button>`;
+        }
+
+        r_e("offboarding-div").innerHTML = offboardingdiv;
+
+        if (!agent.departing) {
+          r_e("start-offboarding").addEventListener("click", function () {
+            startOffboarding(agentId).then(() => {
+              showUserPage(agentId);
+            });
+          });
+        } else {
+          r_e("cancel-offboarding").addEventListener("click", function () {
+            cancelOffboarding(agentId).then(() => {
+              showUserPage(agentId);
+            });
+          });
+        }
+
         closeAllModals();
         r_e("dashboard-div").classList.add("is-hidden");
         r_e("user-page-div").classList.remove("is-hidden");
@@ -1596,40 +1620,41 @@ function startNextTraining(agentId) {
 }
 
 function cancelOffboarding(agentId) {
-  db.collection("agents")
-    .doc("active")
-    .collection("data")
-    .doc(agentId)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const agent = doc.data();
+  return new Promise((resolve, reject) => {
+    db.collection("agents")
+      .doc("active")
+      .collection("data")
+      .doc(agentId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const agent = doc.data();
 
-        // Update Firestore
-        db.collection("agents")
-          .doc("active")
-          .collection("data")
-          .doc(agentId)
-          .update({
-            departing: firebase.firestore.FieldValue.delete(),
-            [`departing`]: firebase.firestore.FieldValue.delete(),
-          })
-          .then(() => {
-            // Update  main collection
-            db.collection("agents")
-              .doc("active")
-              .update({
-                [`${agentId}.departing`]:
-                  firebase.firestore.FieldValue.delete(),
-              })
-              .then(() => {
-                configure_message_bar("Offboarding cancelled.");
-                displayAgentButtons(); // Update the cache of the main dashboard
-                showUserPage(agentId);
-              });
-          });
-      }
-    });
+          // Update Firestore
+          db.collection("agents")
+            .doc("active")
+            .collection("data")
+            .doc(agentId)
+            .update({
+              departing: firebase.firestore.FieldValue.delete(),
+            })
+            .then(() => {
+              // Update  main collection
+              db.collection("agents")
+                .doc("active")
+                .update({
+                  [`${agentId}.departing`]:
+                    firebase.firestore.FieldValue.delete(),
+                })
+                .then(() => {
+                  configure_message_bar("Offboarding cancelled.");
+                  displayAgentButtons(); // Update the cache of the main dashboard
+                  showUserPage(agentId);
+                });
+            });
+        }
+      });
+  });
 }
 
 // Function to handle starting the next training level
@@ -1683,12 +1708,10 @@ function startOffboarding(agentId) {
                   });
 
                   const updates = {
-                    [`training.${foundKey}`]: {
-                      name: nextTraining.name,
-                      order: nextTraining.order,
-                      steps: nextTraining.steps,
-                    },
-                    departing: 1,
+                    offboarded: 0,
+                    services: 0,
+                    laptop: 0,
+                    steps: nextTraining.steps,
                   };
 
                   // Update Firestore
@@ -1696,7 +1719,7 @@ function startOffboarding(agentId) {
                     .doc("active")
                     .collection("data")
                     .doc(agentId)
-                    .update(updates)
+                    .update({ [`departing`]: updates })
                     .then(() => {
                       configure_message_bar(
                         "Training level and status updated successfully."
@@ -1706,7 +1729,7 @@ function startOffboarding(agentId) {
                       db.collection("agents")
                         .doc("active")
                         .update({
-                          [`${agentId}.departing`]: 1,
+                          [`${agentId}.departing`]: updates,
                         })
                         .then(() => {
                           configure_message_bar(
