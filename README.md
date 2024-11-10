@@ -176,10 +176,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Unified modal submit buttons & coloring. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Updating footer WSB logo. </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -237,10 +237,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: I did not complete any work yesterday. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Reworking the color key pop-up to be easier to read. </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -298,13 +298,13 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Debugged outline border issues with the color key pop-up. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Redesigning dashboard columns into a single, unified table to solve the columns stacking issue. </p>
             </li>
             <li>
-                <p>Any problems?: N/A </p>
+                <p>Any problems?: I'm going to need to refresh on table structures in order to make the changes to the dashboard columns. I'll definitely need to create a separate branch                     to work on to avoid any site-breaking issues. </p>
             </li>
         </ul>
         <p>Nico:</p>
