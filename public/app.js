@@ -815,12 +815,12 @@ function displayAgentButtons() {
 
           // Apply red text color if the flag is 1
           if (agent.flag === 1) {
-            button.style.color = "red";
+            button.classList.add("has-text-danger");
           }
 
           // Apply blue text color if the flag is 1
           if (agent.flag === 2) {
-            button.style.color = "blue";
+            button.classList.add("has-text-info");
           }
 
           button.onclick = function () {
