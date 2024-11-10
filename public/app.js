@@ -200,16 +200,20 @@ r_e("signin_form").addEventListener("submit", async (e) => {
 });
 
 // Open the My Account Modal
-r_e("openMyAccountModal").addEventListener("click", () => {
+r_e("openMyAccountModal").addEventListener("click", async () => {
   const user = firebase.auth().currentUser;
   if (user) {
-    const userDoc = db.collection("users").doc(user.uid).get();
-    if (userDoc.exists) {
-      const userData = userDoc.data();
-      r_e("myAccountName").value = userData.name || "";
-      r_e("myAccountEmail").value = user.email || "";
-      r_e("myAccountRole").value = userData.role || "";
-      r_e("myAccountModal").classList.add("is-active");
+    try {
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        r_e("myAccountName").value = userData.name || "";
+        r_e("myAccountEmail").value = user.email || "";
+        r_e("myAccountRole").value = userData.role || "";
+        r_e("myAccountModal").classList.add("is-active");
+      }
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
     }
   }
 });
