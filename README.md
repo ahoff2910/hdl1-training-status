@@ -190,10 +190,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Added misc tasks to the Burndown Chart </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Begin to write code for "are you sure you want to delete?" button </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -251,10 +251,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Wrote code for "Are you sure you want to delete?" modal </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Plan activity diagrams </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -312,10 +312,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Finished some activity diagrams with Ethan </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Work on filling out ReadMe, ensure nothing else remains on Burndown </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
