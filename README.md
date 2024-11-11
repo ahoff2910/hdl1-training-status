@@ -131,15 +131,21 @@
 <h3>Trello Board</h3>
 <a href="https://trello.com/invite/b/6727cd2d9e7b52ee5d0c9bf3/ATTI17ae070dc9151ae25c3b728c3a52ede22CC0DA5B/sprint-3"><p>Link to Trello Board</p></a>
 <h3>Burndown Charts</h3>
+<h6>Day 2</h6>
+<img src="images/Screen Shot 2024-11-06 at 1.33.29 PM.png">
+<h6>Day 5</h6>
+<img src="images/Screen Shot 2024-11-08 at 2.45.25 PM.png">
+<h6>Day 7</h6>
+<img src="images/Screen Shot 2024-11-10 at 12.24.06 PM.png">
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Sprint Planning. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Move all tasks onto Trello and Burndown Chart. </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -148,10 +154,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Wrote code to dynamically pull dashboard buttons based on training level</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Beging making user page dynamic</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -160,10 +166,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Began updating the site's language to make user roles clearer. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?:Continue updating the user role language across the site.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -172,10 +178,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Unified modal submit buttons & coloring. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Updating footer WSB logo. </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -184,10 +190,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Added misc tasks to the Burndown Chart </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Begin to write code for "are you sure you want to delete?" button </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -197,10 +203,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Started to work on client suggestions.</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Edited color key modal. </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -209,10 +215,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finish user page dynamic elements</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Code starting next training level</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -221,10 +227,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: completed updating the site's language for user roles. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: start drafting activity diagrams for user scenarios.</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -233,10 +239,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: I did not complete any work yesterday. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Reworking the color key pop-up to be easier to read. </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -245,10 +251,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Wrote code for "Are you sure you want to delete?" modal </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Plan activity diagrams </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -258,10 +264,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on developing Data Flow to help further develop database.</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Work on ReadME.</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -270,10 +276,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished training level progression</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Begin offboarding/departing settings.</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -282,10 +288,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on creating activity diagrams for users. </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Finish activity diagrams</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -294,22 +300,22 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Debugged outline border issues with the color key pop-up. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Redesigning dashboard columns into a single, unified table to solve the columns stacking issue. </p>
             </li>
             <li>
-                <p>Any problems?: N/A </p>
+                <p>Any problems?: I'm going to need to refresh on table structures in order to make the changes to the dashboard columns. I'll definitely need to create a separate branch                     to work on to avoid any site-breaking issues. </p>
             </li>
         </ul>
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Finished some activity diagrams with Ethan </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Work on filling out ReadMe, ensure nothing else remains on Burndown </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
