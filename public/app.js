@@ -1649,7 +1649,6 @@ function cancelOffboarding(agentId) {
                 .then(() => {
                   configure_message_bar("Offboarding cancelled.");
                   displayAgentButtons(); // Update the cache of the main dashboard
-                  showUserPage(agentId);
                 });
             });
         }
