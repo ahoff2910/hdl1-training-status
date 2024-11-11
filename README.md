@@ -154,10 +154,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Wrote code to dynamically pull dashboard buttons based on training level</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Beging making user page dynamic</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -215,10 +215,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finish user page dynamic elements</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Code starting next training level</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -276,10 +276,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished training level progression</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Begin offboarding/departing settings.</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
