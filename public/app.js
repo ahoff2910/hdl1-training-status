@@ -1152,7 +1152,7 @@ function showUserPage(agentId) {
           r_e("start-next-training-button").addEventListener(
             "click",
             function () {
-              startNextTraining(agentId).then(() => {
+              startNextTraining(agentId, agent.trainingLevel).then(() => {
                 showUserPage(agentId);
               });
             }
@@ -1197,72 +1197,52 @@ function showUserPage(agentId) {
 
 // Function to finish the current training and update the database
 function finishTraining(agentId, trainingOrder, trainingKey, completedDate) {
-  // Get the agent data to update training level and status
+  const newTrainingLevel = trainingOrder;
+
+  // Update the training level and status in the database
+  const updates = {
+    trainingLevel: newTrainingLevel,
+    trainingStatus: 0,
+    [`training.${trainingKey}.completedDate`]: completedDate,
+  };
+
   db.collection("agents")
     .doc("active")
     .collection("data")
     .doc(agentId)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const agent = doc.data();
-        const newTrainingLevel = trainingOrder;
+    .update(updates)
+    .then(() => {
+      configure_message_bar("Training level and status updated successfully.");
 
-        // Update the training level and status in the database
-        const updates = {
-          trainingLevel: newTrainingLevel,
-          trainingStatus: 0,
-          [`training.${trainingKey}.completedDate`]: completedDate,
-        };
+      // Update trainingLevel and trainingStatus for the agent in the main collection
+      db.collection("agents")
+        .doc("active")
+        .update({
+          [`${agentId}.trainingLevel`]: newTrainingLevel,
+          [`${agentId}.trainingStatus`]: 0,
+        })
+        .then(() => {
+          configure_message_bar(
+            "Agent's training level and status updated in the main collection."
+          );
+          displayAgentButtons(); // Update the cache of the main dashboard
 
-        db.collection("agents")
-          .doc("active")
-          .collection("data")
-          .doc(agentId)
-          .update(updates)
-          .then(() => {
-            configure_message_bar(
-              "Training level and status updated successfully."
-            );
-
-            // Update trainingLevel and trainingStatus for the agent in the main collection
-            db.collection("agents")
-              .doc("active")
-              .update({
-                [`${agentId}.trainingLevel`]: newTrainingLevel,
-                [`${agentId}.trainingStatus`]: 0,
-              })
-              .then(() => {
-                configure_message_bar(
-                  "Agent's training level and status updated in the main collection."
-                );
-                displayAgentButtons(); // Update the cache of the main dashboard
-
-                // Refresh the user page to reflect the changes
-                showUserPage(agentId);
-              })
-              .catch((error) => {
-                console.error(
-                  "Error updating agent's training level and status in the main collection: ",
-                  error
-                );
-                configure_message_bar(
-                  "Error updating agent's training level and status in the main collection."
-                );
-              });
-          })
-          .catch((error) => {
-            console.error("Error updating training level and status: ", error);
-            configure_message_bar("Error updating training level and status.");
-          });
-      } else {
-        console.error("No such document!");
-        configure_message_bar("No such document!");
-      }
+          // Refresh the user page to reflect the changes
+          showUserPage(agentId);
+        })
+        .catch((error) => {
+          console.error(
+            "Error updating agent's training level and status in the main collection: ",
+            error
+          );
+          configure_message_bar(
+            "Error updating agent's training level and status in the main collection."
+          );
+        });
     })
     .catch((error) => {
-      console.error("Error getting agent data: ", error);
-      configure_message_bar("Error getting agent data.");
+      console.error("Error updating training level and status: ", error);
+      configure_message_bar("Error updating training level and status.");
     });
 }
 
@@ -1438,182 +1418,153 @@ function updateLocalFormData(agentId, trainingKey, steps) {
 
 // Function to cancel training and update the database
 function cancelTraining(agentId, trainingKey, trainingOrder) {
-  // Get the agent data to update training level and status
+  const newTrainingLevel = trainingOrder - 1;
+
+  // Remove the training section from the database
+  const updates = {
+    [`training.${trainingKey}`]: firebase.firestore.FieldValue.delete(),
+    trainingLevel: newTrainingLevel,
+    trainingStatus: 0,
+  };
+
   db.collection("agents")
     .doc("active")
     .collection("data")
     .doc(agentId)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const agent = doc.data();
-        const newTrainingLevel = trainingOrder - 1;
+    .update(updates)
+    .then(() => {
+      configure_message_bar(
+        "Training section removed and training level updated."
+      );
 
-        // Remove the training section from the database
-        const updates = {
-          [`training.${trainingKey}`]: firebase.firestore.FieldValue.delete(),
-          trainingLevel: newTrainingLevel,
-          trainingStatus: 0,
-        };
+      // Get main collection data for task removal
+      db.collection("agents")
+        .doc("active")
+        .get()
+        .then((doc) => {
+          let mainUpdates = {
+            [`${agentId}.trainingLevel`]: newTrainingLevel,
+            [`${agentId}.trainingStatus`]: 0,
+          };
 
-        db.collection("agents")
-          .doc("active")
-          .collection("data")
-          .doc(agentId)
-          .update(updates)
-          .then(() => {
-            configure_message_bar(
-              "Training section removed and training level updated."
-            );
+          mainAgentDoc = doc.data()[agentId];
 
-            // Get main collection data for task removal
-            db.collection("agents")
-              .doc("active")
-              .get()
-              .then((doc) => {
-                let mainUpdates = {
-                  [`${agentId}.trainingLevel`]: newTrainingLevel,
-                  [`${agentId}.trainingStatus`]: 0,
-                };
+          // Remove all tasks associated with this training level
+          const tasks = mainAgentDoc.tasks || {};
+          for (const taskId in tasks) {
+            if (taskId.startsWith(`training-${trainingKey}-`)) {
+              mainUpdates[`${agentId}.tasks.${taskId}`] =
+                firebase.firestore.FieldValue.delete();
+            }
+          }
+          // Update trainingLevel and trainingStatus for the agent in the main collection
+          db.collection("agents")
+            .doc("active")
+            .update(mainUpdates)
+            .then(() => {
+              configure_message_bar(
+                "Agent's training level and status updated in the main collection."
+              );
+              displayAgentButtons(); // Update the cache of the main dashboard
 
-                mainAgentDoc = doc.data()[agentId];
-
-                // Remove all tasks associated with this training level
-                const tasks = mainAgentDoc.tasks || {};
-                for (const taskId in tasks) {
-                  if (taskId.startsWith(`training-${trainingKey}-`)) {
-                    mainUpdates[`${agentId}.tasks.${taskId}`] =
-                      firebase.firestore.FieldValue.delete();
-                  }
-                }
-                // Update trainingLevel and trainingStatus for the agent in the main collection
-                db.collection("agents")
-                  .doc("active")
-                  .update(mainUpdates)
-                  .then(() => {
-                    configure_message_bar(
-                      "Agent's training level and status updated in the main collection."
-                    );
-                    displayAgentButtons(); // Update the cache of the main dashboard
-
-                    // Refresh the user page to reflect the changes
-                    showUserPage(agentId);
-                  })
-                  .catch((error) => {
-                    console.error(
-                      "Error updating agent's training level and status in the main collection: ",
-                      error
-                    );
-                    configure_message_bar(
-                      "Error updating agent's training level and status in the main collection."
-                    );
-                  });
-              });
-          })
-          .catch((error) => {
-            console.error("Error removing training section: ", error);
-            configure_message_bar("Error removing training section.");
-          });
-      } else {
-        console.error("No such document!");
-        configure_message_bar("No such document!");
-      }
+              // Refresh the user page to reflect the changes
+              showUserPage(agentId);
+            })
+            .catch((error) => {
+              console.error(
+                "Error updating agent's training level and status in the main collection: ",
+                error
+              );
+              configure_message_bar(
+                "Error updating agent's training level and status in the main collection."
+              );
+            });
+        });
     })
     .catch((error) => {
-      console.error("Error getting agent data: ", error);
-      configure_message_bar("Error getting agent data.");
+      console.error("Error removing training section: ", error);
+      configure_message_bar("Error removing training section.");
     });
 }
 
 // Function to handle starting the next training level
-function startNextTraining(agentId) {
+function startNextTraining(agentId, currentLevel) {
   return new Promise((resolve, reject) => {
-    // Get the agent data to update training level and status
-    db.collection("agents")
-      .doc("active")
-      .collection("data")
-      .doc(agentId)
+    const newTrainingLevel = currentLevel + 1;
+
+    // Get the next training steps from the training collection
+    db.collection("training")
+      .doc("training")
       .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const agent = doc.data();
-          const newTrainingLevel = agent.trainingLevel + 1;
+      .then((trainingDoc) => {
+        if (trainingDoc.exists) {
+          const trainingData = trainingDoc.data();
+          let foundKey = null;
+          let nextTraining = null;
 
-          // Get the next training steps from the training collection
-          db.collection("training")
-            .doc("training")
-            .get()
-            .then((trainingDoc) => {
-              if (trainingDoc.exists) {
-                const trainingData = trainingDoc.data();
-                let foundKey = null;
-                let nextTraining = null;
+          // Find the key and the corresponding training data
+          for (const [key, value] of Object.entries(trainingData)) {
+            if (value.order === newTrainingLevel) {
+              foundKey = key;
+              nextTraining = value;
+              break;
+            }
+          }
 
-                // Find the key and the corresponding training data
-                for (const [key, value] of Object.entries(trainingData)) {
-                  if (value.order === newTrainingLevel) {
-                    foundKey = key;
-                    nextTraining = value;
-                    break;
-                  }
-                }
-
-                if (nextTraining) {
-                  // Process steps to handle "finish" and "schedule" types
-                  nextTraining.steps = nextTraining.steps.flatMap((step) => {
-                    if (step.type === "finish") {
-                      return [
-                        { ...step, type: "date", finish: 1 },
-                        { ...step, type: "checkbox", finish: 1 },
-                      ];
-                    } else if (step.type === "schedule") {
-                      return [
-                        { ...step, type: "date", schedule: 1 },
-                        { ...step, type: "checkbox", schedule: 1 },
-                      ];
-                    } else {
-                      return step;
-                    }
-                  });
-
-                  const updates = {
-                    [`training.${foundKey}`]: {
-                      name: nextTraining.name,
-                      order: nextTraining.order,
-                      steps: nextTraining.steps,
-                    },
-                    trainingStatus: 2,
-                  };
-
-                  // Update Firestore
-                  db.collection("agents")
-                    .doc("active")
-                    .collection("data")
-                    .doc(agentId)
-                    .update(updates)
-                    .then(() => {
-                      configure_message_bar(
-                        "Training level and status updated successfully."
-                      );
-
-                      // Update trainingLevel and trainingStatus for the agent in the main collection
-                      db.collection("agents")
-                        .doc("active")
-                        .update({
-                          [`${agentId}.trainingStatus`]: 2,
-                        })
-                        .then(() => {
-                          configure_message_bar(
-                            "Agent's training level and status updated."
-                          );
-                          displayAgentButtons(); // Update the cache of the main dashboard
-
-                          resolve();
-                        });
-                    });
-                }
+          if (nextTraining) {
+            // Process steps to handle "finish" and "schedule" types
+            nextTraining.steps = nextTraining.steps.flatMap((step) => {
+              if (step.type === "finish") {
+                return [
+                  { ...step, type: "date", finish: 1 },
+                  { ...step, type: "checkbox", finish: 1 },
+                ];
+              } else if (step.type === "schedule") {
+                return [
+                  { ...step, type: "date", schedule: 1 },
+                  { ...step, type: "checkbox", schedule: 1 },
+                ];
+              } else {
+                return step;
               }
             });
+
+            const updates = {
+              [`training.${foundKey}`]: {
+                name: nextTraining.name,
+                order: nextTraining.order,
+                steps: nextTraining.steps,
+              },
+              trainingStatus: 2,
+            };
+
+            // Update Firestore
+            db.collection("agents")
+              .doc("active")
+              .collection("data")
+              .doc(agentId)
+              .update(updates)
+              .then(() => {
+                configure_message_bar(
+                  "Training level and status updated successfully."
+                );
+
+                // Update trainingLevel and trainingStatus for the agent in the main collection
+                db.collection("agents")
+                  .doc("active")
+                  .update({
+                    [`${agentId}.trainingStatus`]: 2,
+                  })
+                  .then(() => {
+                    configure_message_bar(
+                      "Agent's training level and status updated."
+                    );
+                    displayAgentButtons(); // Update the cache of the main dashboard
+
+                    resolve();
+                  });
+              });
+          }
         }
       });
   });
@@ -1621,37 +1572,25 @@ function startNextTraining(agentId) {
 
 function cancelOffboarding(agentId) {
   return new Promise((resolve, reject) => {
+    // Update Firestore
     db.collection("agents")
       .doc("active")
       .collection("data")
       .doc(agentId)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const agent = doc.data();
-
-          // Update Firestore
-          db.collection("agents")
-            .doc("active")
-            .collection("data")
-            .doc(agentId)
-            .update({
-              departing: firebase.firestore.FieldValue.delete(),
-            })
-            .then(() => {
-              // Update  main collection
-              db.collection("agents")
-                .doc("active")
-                .update({
-                  [`${agentId}.departing`]:
-                    firebase.firestore.FieldValue.delete(),
-                })
-                .then(() => {
-                  configure_message_bar("Offboarding cancelled.");
-                  displayAgentButtons(); // Update the cache of the main dashboard
-                });
-            });
-        }
+      .update({
+        departing: firebase.firestore.FieldValue.delete(),
+      })
+      .then(() => {
+        // Update  main collection
+        db.collection("agents")
+          .doc("active")
+          .update({
+            [`${agentId}.departing`]: firebase.firestore.FieldValue.delete(),
+          })
+          .then(() => {
+            configure_message_bar("Offboarding cancelled.");
+            displayAgentButtons(); // Update the cache of the main dashboard
+          });
       });
   });
 }
@@ -1659,89 +1598,77 @@ function cancelOffboarding(agentId) {
 // Function to handle starting the next training level
 function startOffboarding(agentId) {
   return new Promise((resolve, reject) => {
-    // Get the agent data to update training level and status
-    db.collection("agents")
-      .doc("active")
-      .collection("data")
-      .doc(agentId)
+    // Get the next training steps from the training collection
+    db.collection("training")
+      .doc("training")
       .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const agent = doc.data();
+      .then((trainingDoc) => {
+        if (trainingDoc.exists) {
+          const trainingData = trainingDoc.data();
+          let foundKey = null;
+          let nextTraining = null;
 
-          // Get the next training steps from the training collection
-          db.collection("training")
-            .doc("training")
-            .get()
-            .then((trainingDoc) => {
-              if (trainingDoc.exists) {
-                const trainingData = trainingDoc.data();
-                let foundKey = null;
-                let nextTraining = null;
+          // Find the key and the corresponding training data
+          for (const [key, value] of Object.entries(trainingData)) {
+            if (value.order === 6) {
+              foundKey = key;
+              nextTraining = value;
+              break;
+            }
+          }
 
-                // Find the key and the corresponding training data
-                for (const [key, value] of Object.entries(trainingData)) {
-                  if (value.order === 6) {
-                    foundKey = key;
-                    nextTraining = value;
-                    break;
-                  }
-                }
-
-                if (nextTraining) {
-                  // Process steps to handle "finish" and "schedule" types
-                  nextTraining.steps = nextTraining.steps.flatMap((step) => {
-                    if (step.type === "finish") {
-                      return [
-                        { ...step, type: "date", finish: 1 },
-                        { ...step, type: "checkbox", finish: 1 },
-                      ];
-                    } else if (step.type === "schedule") {
-                      return [
-                        { ...step, type: "date", schedule: 1 },
-                        { ...step, type: "checkbox", schedule: 1 },
-                      ];
-                    } else {
-                      return step;
-                    }
-                  });
-
-                  const updates = {
-                    offboarded: 0,
-                    services: 0,
-                    laptop: 0,
-                    steps: nextTraining.steps,
-                  };
-
-                  // Update Firestore
-                  db.collection("agents")
-                    .doc("active")
-                    .collection("data")
-                    .doc(agentId)
-                    .update({ [`departing`]: updates })
-                    .then(() => {
-                      configure_message_bar(
-                        "Training level and status updated successfully."
-                      );
-
-                      // Update trainingLevel and trainingStatus for the agent in the main collection
-                      db.collection("agents")
-                        .doc("active")
-                        .update({
-                          [`${agentId}.departing`]: updates,
-                        })
-                        .then(() => {
-                          configure_message_bar(
-                            "Agent's training level and status updated."
-                          );
-                          displayAgentButtons(); // Update the cache of the main dashboard
-
-                          resolve();
-                        });
-                    });
-                }
+          if (nextTraining) {
+            // Process steps to handle "finish" and "schedule" types
+            nextTraining.steps = nextTraining.steps.flatMap((step) => {
+              if (step.type === "finish") {
+                return [
+                  { ...step, type: "date", finish: 1 },
+                  { ...step, type: "checkbox", finish: 1 },
+                ];
+              } else if (step.type === "schedule") {
+                return [
+                  { ...step, type: "date", schedule: 1 },
+                  { ...step, type: "checkbox", schedule: 1 },
+                ];
+              } else {
+                return step;
               }
             });
+
+            const updates = {
+              offboarded: 0,
+              services: 0,
+              laptop: 0,
+              steps: nextTraining.steps,
+            };
+
+            // Update Firestore
+            db.collection("agents")
+              .doc("active")
+              .collection("data")
+              .doc(agentId)
+              .update({ [`departing`]: updates })
+              .then(() => {
+                configure_message_bar(
+                  "Training level and status updated successfully."
+                );
+
+                // Update trainingLevel and trainingStatus for the agent in the main collection
+                db.collection("agents")
+                  .doc("active")
+                  .update({
+                    [`${agentId}.departing`]: updates,
+                  })
+                  .then(() => {
+                    configure_message_bar(
+                      "Agent's training level and status updated."
+                    );
+                    displayAgentButtons(); // Update the cache of the main dashboard
+
+                    resolve();
+                  });
+              });
+          }
         }
       });
   });
@@ -1829,7 +1756,7 @@ function addEmployee(
         })
         .then(() => {
           // Start next training
-          startNextTraining(agentId).then(() => {
+          startNextTraining(agentId, 0).then(() => {
             // Show user page if required
             if (toshowUserPage) {
               showUserPage(agentId);
