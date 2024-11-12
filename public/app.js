@@ -1969,8 +1969,8 @@ r_e("edit-employee").addEventListener("click", async function (event) {
   const employeeData = {
     hireDate: hireDate,
     graduation: `${gradSemester} ${gradYear}`,
-    slpRole: slpRole,
-    flag: flag,
+    slpRole: Number(slpRole),
+    flag: Number(flag),
   };
 
   try {
@@ -1991,8 +1991,8 @@ r_e("edit-employee").addEventListener("click", async function (event) {
       .update({
         [`${agentId}.hireDate`]: hireDate,
         [`${agentId}.graduation`]: employeeData["graduation"],
-        [`${agentId}.slpRole`]: slpRole,
-        [`${agentId}.flag`]: flag,
+        [`${agentId}.slpRole`]: Number(slpRole),
+        [`${agentId}.flag`]: Number(flag),
       });
 
     // Close the modal
@@ -2001,6 +2001,8 @@ r_e("edit-employee").addEventListener("click", async function (event) {
     // Clear any previous error messages
     r_e("edit-employee-error").textContent = "";
     configure_message_bar("User successfully saved");
+    showUserPage(agentId);
+    displayAgentButtons();
   } catch (error) {
     console.error("Error saving employee data: ", error);
     r_e("edit-employee-error").textContent =
