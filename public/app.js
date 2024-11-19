@@ -1123,9 +1123,6 @@ function showUserPage(agentId) {
           }
         });
 
-        // Reinitialize collapsibles after adding new boxes
-        initializeCollapsibles();
-
         let trainingButtonsHTML = "";
         let nextTrainingButtonActive = false;
 
@@ -1159,39 +1156,155 @@ function showUserPage(agentId) {
           );
         }
 
-        let offboardingdiv = "";
-
         if (!agent.departing) {
-          offboardingdiv += `<button class="button is-danger" id="start-offboarding" type="button">Start Offboarding</button>`;
-        } else {
-          offboardingdiv += `<button class="button is-danger" id="cancel-offboarding" type="button">Cancel Offboarding</button>`;
-        }
-
-        r_e("offboarding-div").innerHTML = offboardingdiv;
-
-        if (!agent.departing) {
+          r_e(
+            "offboarding-div"
+          ).innerHTML = `<button class="button is-danger" id="start-offboarding" type="button">Start Offboarding</button>`;
           r_e("start-offboarding").addEventListener("click", function () {
             startOffboarding(agentId).then(() => {
               showUserPage(agentId);
             });
           });
         } else {
-          r_e("cancel-offboarding").addEventListener("click", function () {
+          const offboardingDiv = r_e("offboarding-div");
+          offboardingDiv.innerHTML = ""; // Clear existing content
+
+          // Create offboarding box
+          const offboardingBox = document.createElement("div");
+          offboardingBox.classList.add("box", "collapsible");
+
+          // Create offboarding header
+          const offboardingHeader = document.createElement("a");
+          offboardingHeader.innerHTML = `
+              <div class="columns is-mobile is-vcentered">
+                <div class="column">
+                  <h2 class="title is-size-5">Services</h2>
+                </div>
+                <div class="column has-text-left">
+                  <h2 class="title is-size-6">
+                    <span class="icon has-text-${
+                      agent.offboardingStatus === 2 ? "warning" : "success"
+                    } is-size-7">
+                      <i class="fas fa-circle"></i>
+                    </span>
+                    ${
+                      agent.offboardingStatus === 2
+                        ? "In Progress"
+                        : `Completed ${
+                            agent.departing.servicesCompleted || "N/A"
+                          }`
+                    }
+                  </h2>
+                </div>
+                <div class="column has-text-right is-one-fifth">
+                  <h2 class="title is-size-5">
+                    <i class="fas fa-caret-down"></i>
+                  </h2>
+                </div>
+              </div>
+            `;
+          offboardingBox.appendChild(offboardingHeader);
+
+          // Create offboarding form
+          const offboardingForm = document.createElement("form");
+          offboardingForm.classList.add("pt-5");
+          offboardingForm.id = "offboardingForm";
+
+          let steps = agent.departing.steps;
+
+          agent.departing.steps.forEach((step) => {
+            const field = document.createElement("div");
+            field.classList.add("field", "is-horizontal");
+
+            const fieldLabel = document.createElement("div");
+            fieldLabel.classList.add("field-label", "is-normal");
+            fieldLabel.style.flexGrow = 4;
+            fieldLabel.innerHTML = `<label class="label is-size-6">${step.name}</label>`;
+            field.appendChild(fieldLabel);
+
+            const fieldBody = document.createElement("div");
+            fieldBody.classList.add("field-body");
+
+            const fieldControl = document.createElement("div");
+            fieldControl.classList.add("field");
+
+            const control = document.createElement("div");
+            control.classList.add("control");
+
+            if (step.finish != 1) {
+              if (step.type === "checkbox") {
+                control.innerHTML = `<input type="checkbox" name="${
+                  step.name
+                }" ${step.value ? "checked" : ""} />`;
+              } else if (step.type === "date") {
+                control.innerHTML = `<input type="date" name="${
+                  step.name
+                }" class="input is-size-6" value="${step.value || ""}" />`;
+              } else if (step.type === "text") {
+                control.innerHTML = `<input type="text" name="${
+                  step.name
+                }" class="input is-size-6" value="${step.value || ""}" />`;
+              }
+            } else {
+              if (step.type === "checkbox") {
+                control.innerHTML = `<input type="checkbox" disabled="true" name="${
+                  step.name
+                }" ${step.value ? "checked" : ""} />`;
+              } else if (step.type === "date") {
+                control.innerHTML = `<input type="date" disabled="true" name="${
+                  step.name
+                }" class="input is-size-6" value="${step.value || ""}" />`;
+              }
+            }
+
+            fieldControl.appendChild(control);
+            fieldBody.appendChild(fieldControl);
+            field.appendChild(fieldBody);
+            offboardingForm.appendChild(field);
+          });
+
+          // Add save buttons
+          offboardingForm.innerHTML += `
+    <button class="button is-success" type="submit">Save Changes</button>
+  `;
+
+          offboardingBox.appendChild(offboardingForm);
+          offboardingDiv.appendChild(offboardingBox);
+
+          // Add event listener for save button
+          offboardingForm
+            .querySelector(".button.is-success")
+            .addEventListener("click", function (event) {
+              event.preventDefault();
+              saveOffboardingUpdates(
+                agentId,
+                offboardingData.key,
+                offboardingForm
+              );
+            });
+
+          // Create the cancel button element
+          const cancelButton = document.createElement("button");
+          cancelButton.className = "button is-danger";
+          cancelButton.id = "cancel-offboarding";
+          cancelButton.type = "button";
+          cancelButton.textContent = "Cancel Offboarding";
+          offboardingDiv.appendChild(cancelButton);
+
+          cancelButton.addEventListener("click", function () {
             cancelOffboarding(agentId).then(() => {
               showUserPage(agentId);
             });
           });
         }
-
-        closeAllModals();
-        r_e("dashboard-div").classList.add("is-hidden");
-        r_e("user-page-div").classList.remove("is-hidden");
-      } else {
-        console.error("No such document!");
       }
-    })
-    .catch((error) => {
-      console.error("Error getting agent data: ", error);
+
+      // Reinitialize collapsibles after adding new boxes
+      initializeCollapsibles();
+
+      closeAllModals();
+      r_e("dashboard-div").classList.add("is-hidden");
+      r_e("user-page-div").classList.remove("is-hidden");
     });
 }
 
@@ -1590,6 +1703,7 @@ function cancelOffboarding(agentId) {
           .then(() => {
             configure_message_bar("Offboarding cancelled.");
             displayAgentButtons(); // Update the cache of the main dashboard
+            resolve();
           });
       });
   });
@@ -1635,11 +1749,29 @@ function startOffboarding(agentId) {
               }
             });
 
-            const updates = {
+            let mainUpdates = {
               offboarded: 0,
               services: 0,
               laptop: 0,
+              lastDay: "",
+              reason: "",
+            };
+
+            let updates = {
+              offboarded: 0,
+              services: 0,
+              laptop: 0,
+              lastDay: "",
+              reason: "",
               steps: nextTraining.steps,
+              device: {
+                serial: "",
+                returnDate: "",
+                incident: "",
+                rtnNova: "",
+                email: "",
+                hold: "",
+              },
             };
 
             // Update Firestore
@@ -1649,20 +1781,14 @@ function startOffboarding(agentId) {
               .doc(agentId)
               .update({ [`departing`]: updates })
               .then(() => {
-                configure_message_bar(
-                  "Training level and status updated successfully."
-                );
-
                 // Update trainingLevel and trainingStatus for the agent in the main collection
                 db.collection("agents")
                   .doc("active")
                   .update({
-                    [`${agentId}.departing`]: updates,
+                    [`${agentId}.departing`]: mainUpdates,
                   })
                   .then(() => {
-                    configure_message_bar(
-                      "Agent's training level and status updated."
-                    );
+                    configure_message_bar("Offboarding process started.");
                     displayAgentButtons(); // Update the cache of the main dashboard
 
                     resolve();
