@@ -939,13 +939,13 @@ function calculateDuration(date) {
 }
 
 // Function to display the user page for a specific agent
-function showUserPage(agentId) {
+function showUserPage(agentId, agentStatus = "active") {
   // Reference to Firestore
   const db = firebase.firestore();
 
   // Get the agent data from Firestore
   db.collection("agents")
-    .doc("active")
+    .doc(agentStatus)
     .collection("data")
     .doc(agentId)
     .get()
@@ -958,6 +958,7 @@ function showUserPage(agentId) {
         r_e("user-page-training-level").textContent =
           trainingLevelNames[agent.trainingLevel] || "Unknown";
         r_e("user-page-slp").textContent = slpNames[agent.slp] || "";
+        r_e("user-page-status").textContent = agent.status || "Unknown";
         r_e("user-page-flag").textContent = flagNames[agent.flag] || "";
         r_e("user-page-hire-date").textContent = agent.hireDate;
         r_e("user-page-graduation").textContent = agent.graduation;
@@ -1110,7 +1111,7 @@ function showUserPage(agentId) {
             .querySelector(".button.is-success")
             .addEventListener("click", function (event) {
               event.preventDefault();
-              saveTrainingUpdates(agentId, trainingData.key, trainingForm);
+              saveTrainingUpdates(agent, trainingData.key, trainingForm);
             });
 
           // Add event listener for cancel button if it exists
@@ -1118,7 +1119,12 @@ function showUserPage(agentId) {
           if (cancelButton) {
             cancelButton.addEventListener("click", function (event) {
               event.preventDefault();
-              cancelTraining(agentId, trainingData.key, trainingData.order);
+              cancelTraining(
+                agentId,
+                trainingData.key,
+                trainingData.order,
+                agent.status
+              );
             });
           }
         });
@@ -1149,8 +1155,12 @@ function showUserPage(agentId) {
           r_e("start-next-training-button").addEventListener(
             "click",
             function () {
-              startNextTraining(agentId, agent.trainingLevel).then(() => {
-                showUserPage(agentId);
+              startNextTraining(
+                agentId,
+                agent.trainingLevel,
+                agent.status
+              ).then(() => {
+                showUserPage(agentId, agentStatus);
               });
             }
           );
@@ -1162,12 +1172,267 @@ function showUserPage(agentId) {
           ).innerHTML = `<button class="button is-danger" id="start-offboarding" type="button">Start Offboarding</button>`;
           r_e("start-offboarding").addEventListener("click", function () {
             startOffboarding(agentId).then(() => {
-              showUserPage(agentId);
+              showUserPage(agentId, agentStatus);
             });
           });
         } else {
           const offboardingDiv = r_e("offboarding-div");
           offboardingDiv.innerHTML = ""; // Clear existing content
+
+          // Create Offboarding box
+          const genoffboardingBox = document.createElement("div");
+          genoffboardingBox.classList.add("box");
+
+          // Create Offboarding form
+          const genoffboardingForm = document.createElement("form");
+          genoffboardingForm.id = "offboardingForm";
+
+          // Add Offboarding fields
+          genoffboardingForm.innerHTML = `
+  <div class="field">
+    <label class="label">Last Day</label>
+    <div class="control">
+      <input class="input" type="date" name="lastDay" value="${
+        agent.departing.lastDay || ""
+      }">
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Reason</label>
+    <div class="control">
+      <div class="select">
+        <select name="reason">
+          <option value="" ${
+            !agent.departing.reason ? "selected" : ""
+          }></option>
+          <option value="Graduation" ${
+            agent.departing.reason === "Graduation" ? "selected" : ""
+          }>Graduation</option>
+          <option value="Resigned" ${
+            agent.departing.reason === "Resigned" ? "selected" : ""
+          }>Resigned</option>
+          <option value="Hiatus" ${
+            agent.departing.reason === "Hiatus" ? "selected" : ""
+          }>Hiatus</option>
+          <option value="Dismissed" ${
+            agent.departing.reason === "Dismissed" ? "selected" : ""
+          }>Dismissed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="field">
+    <label class="checkbox">
+      <input type="checkbox" name="offboarded" ${
+        agent.departing.offboarded ? "checked" : ""
+      }>
+      Offboarded
+    </label>
+  </div>
+  <button class="button is-success" type="submit">Save Changes</button>
+`;
+
+          genoffboardingBox.appendChild(genoffboardingForm);
+          offboardingDiv.appendChild(genoffboardingBox);
+
+          // Add event listener for save button
+          genoffboardingForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            // Extract data from form
+            const lastDay = genoffboardingForm.querySelector(
+              'input[name="lastDay"]'
+            ).value;
+            const reason = genoffboardingForm.querySelector(
+              'select[name="reason"]'
+            ).value;
+            const offboarded = genoffboardingForm.querySelector(
+              'input[name="offboarded"]'
+            ).checked;
+
+            // Update trainingLevel and trainingStatus for the agent in the main collection
+            db.collection("agents")
+              .doc(agentStatus)
+              .update({
+                [`${agentId}.departing.lastDay`]: lastDay,
+                [`${agentId}.departing.reason`]: reason,
+                [`${agentId}.departing.offboarded`]: offboarded,
+              })
+              .then(() => {
+                db.collection("agents")
+                  .doc(agentStatus)
+                  .collection("data")
+                  .doc(agentId)
+                  .update({
+                    [`departing.lastDay`]: lastDay,
+                    [`departing.reason`]: reason,
+                    [`departing.offboarded`]: offboarded,
+                  })
+                  .then(() => {
+                    // Check changes in `offboarded` state and run appropriate function
+                    if (!agent.departing.offboarded && offboarded) {
+                      if (agent.departing.laptop && agent.departing.services) {
+                        // If offboarded was not checked and now is checked
+                        agentStatusChange(
+                          agent.agent,
+                          agent.status,
+                          "inactive"
+                        ).then(() => {
+                          configure_message_bar("Agent made inactive.");
+                          showUserPage(agent.agent, "inactive");
+                          displayAgentButtons();
+                        });
+                      } else {
+                        // If offboarded was not checked and now is checked
+                        agentStatusChange(
+                          agent.agent,
+                          agent.status,
+                          "departing"
+                        ).then(() => {
+                          configure_message_bar("Agent made departing.");
+                          showUserPage(agent.agent, "departing");
+                          displayAgentButtons();
+                        });
+                      }
+                    } else if (agent.departing.offboarded && !offboarded) {
+                      // If offboarded was checked and now is unchecked
+                      agentStatusChange(
+                        agent.agent,
+                        agent.status,
+                        "active"
+                      ).then(() => {
+                        configure_message_bar("Agent made active.");
+                        showUserPage(agent.agent, "active");
+                        displayAgentButtons();
+                      });
+                    } else {
+                      configure_message_bar("Offboarding data saved.");
+                    }
+                  });
+              });
+          });
+
+          // Create Laptop box
+          const laptopBox = document.createElement("div");
+          laptopBox.classList.add("box", "collapsible");
+
+          // Create laptop header
+          const laptopHeader = document.createElement("a");
+          laptopHeader.innerHTML = `
+              <div class="columns is-mobile is-vcentered">
+                <div class="column">
+                  <h2 class="title is-size-5">Laptop</h2>
+                </div>
+                <div class="column has-text-left">
+                  <h2 class="title is-size-6">
+                    <span class="icon has-text-${
+                      agent.departing.laptop == 0 ? "warning" : "success"
+                    } is-size-7">
+                      <i class="fas fa-circle"></i>
+                    </span>
+                    ${
+                      agent.departing.laptop == 0
+                        ? "In Progress"
+                        : `Completed ${
+                            agent.departing.device.returnDate || "N/A"
+                          }`
+                    }
+                  </h2>
+                </div>
+                <div class="column has-text-right is-one-fifth">
+                  <h2 class="title is-size-5">
+                    <i class="fas fa-caret-down"></i>
+                  </h2>
+                </div>
+              </div>
+            `;
+          laptopBox.appendChild(laptopHeader);
+
+          // Create Laptop form
+          const laptopForm = document.createElement("form");
+          laptopForm.classList.add("pt-5");
+          laptopForm.id = "laptopForm";
+
+          // Add Laptop fields
+          laptopForm.innerHTML = `
+            <div class="field">
+              <label class="label">Serial Number</label>
+              <div class="control">
+                <input class="input" type="text" name="serialNumber">
+              </div>
+            </div>
+            <div class="field">
+              <label class="checkbox">
+                <input type="checkbox" name="returned">
+                Returned?
+              </label>
+            </div>
+            <div class="field">
+              <label class="label">Return Date</label>
+              <div class="control">
+                <input class="input" type="date" name="returnDate">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Incident</label>
+              <div class="control">
+                <input class="input" type="text" name="incident">
+              </div>
+            </div>
+            <div class="field">
+              <label class="checkbox">
+                <input type="checkbox" name="returnedInNOVA">
+                Returned in NOVA
+              </label>
+            </div>
+            <div class="field" id="emailedField" style="display: none;">
+              <label class="checkbox">
+                <input type="checkbox" name="emailed">
+                Emailed?
+              </label>
+            </div>
+            <div class="field" id="holdPlacedField" style="display: none;">
+              <label class="checkbox">
+                <input type="checkbox" name="holdPlaced">
+                Hold Placed?
+              </label>
+            </div>
+            <button class="button is-success" type="submit">Save Changes</button>
+          `;
+
+          laptopBox.appendChild(laptopForm);
+          offboardingDiv.appendChild(laptopBox);
+
+          // Function to toggle field visibility based on checkbox state
+          function toggleFields() {
+            const checkbox = laptopForm.querySelector('input[name="returned"]');
+            const isChecked = checkbox.checked; // Use `checked` to determine checkbox state
+            const emailedField = laptopForm.querySelector("#emailedField");
+            const holdPlacedField =
+              laptopForm.querySelector("#holdPlacedField");
+
+            if (isChecked) {
+              emailedField.style.display = "none";
+              holdPlacedField.style.display = "none";
+            } else {
+              emailedField.style.display = "block";
+              holdPlacedField.style.display = "block";
+            }
+          }
+          toggleFields();
+
+          // Attach event listener
+          laptopForm
+            .querySelector('input[name="returned"]')
+            .addEventListener("change", toggleFields);
+
+          // Add event listener for save button
+          laptopForm
+            .querySelector(".button.is-success")
+            .addEventListener("click", function (event) {
+              event.preventDefault();
+              saveLaptopUpdates(agentId, laptopData.key, laptopForm);
+            });
 
           // Create offboarding box
           const offboardingBox = document.createElement("div");
@@ -1183,12 +1448,12 @@ function showUserPage(agentId) {
                 <div class="column has-text-left">
                   <h2 class="title is-size-6">
                     <span class="icon has-text-${
-                      agent.offboardingStatus === 2 ? "warning" : "success"
+                      agent.departing.services === 0 ? "warning" : "success"
                     } is-size-7">
                       <i class="fas fa-circle"></i>
                     </span>
                     ${
-                      agent.offboardingStatus === 2
+                      agent.departing.services === 0
                         ? "In Progress"
                         : `Completed ${
                             agent.departing.servicesCompleted || "N/A"
@@ -1292,8 +1557,8 @@ function showUserPage(agentId) {
           offboardingDiv.appendChild(cancelButton);
 
           cancelButton.addEventListener("click", function () {
-            cancelOffboarding(agentId).then(() => {
-              showUserPage(agentId);
+            cancelOffboarding(agentId, agentStatus).then(() => {
+              showUserPage(agentId, agentStatus);
             });
           });
         }
@@ -1309,7 +1574,13 @@ function showUserPage(agentId) {
 }
 
 // Function to finish the current training and update the database
-function finishTraining(agentId, trainingOrder, trainingKey, completedDate) {
+function finishTraining(
+  agentId,
+  trainingOrder,
+  trainingKey,
+  completedDate,
+  agentStatus = "active"
+) {
   const newTrainingLevel = trainingOrder;
 
   // Update the training level and status in the database
@@ -1319,21 +1590,19 @@ function finishTraining(agentId, trainingOrder, trainingKey, completedDate) {
     [`training.${trainingKey}.completedDate`]: completedDate,
   };
 
+  // Update trainingLevel and trainingStatus for the agent in the main collection
   db.collection("agents")
-    .doc("active")
-    .collection("data")
-    .doc(agentId)
-    .update(updates)
+    .doc(agentStatus)
+    .update({
+      [`${agentId}.trainingLevel`]: newTrainingLevel,
+      [`${agentId}.trainingStatus`]: 0,
+    })
     .then(() => {
-      configure_message_bar("Training level and status updated successfully.");
-
-      // Update trainingLevel and trainingStatus for the agent in the main collection
       db.collection("agents")
-        .doc("active")
-        .update({
-          [`${agentId}.trainingLevel`]: newTrainingLevel,
-          [`${agentId}.trainingStatus`]: 0,
-        })
+        .doc(agentStatus)
+        .collection("data")
+        .doc(agentId)
+        .update(updates)
         .then(() => {
           configure_message_bar(
             "Agent's training level and status updated in the main collection."
@@ -1341,7 +1610,7 @@ function finishTraining(agentId, trainingOrder, trainingKey, completedDate) {
           displayAgentButtons(); // Update the cache of the main dashboard
 
           // Refresh the user page to reflect the changes
-          showUserPage(agentId);
+          showUserPage(agentId, agentStatus);
         })
         .catch((error) => {
           console.error(
@@ -1360,8 +1629,7 @@ function finishTraining(agentId, trainingOrder, trainingKey, completedDate) {
 }
 
 // Function to save training updates to the database
-function saveTrainingUpdates(agentId, trainingKey, form) {
-  const db = firebase.firestore();
+function saveTrainingUpdates(agent, trainingKey, form) {
   const updates = {};
 
   // Collect form data
@@ -1384,9 +1652,9 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
 
   // Read the current steps array
   db.collection("agents")
-    .doc("active")
+    .doc(agent.status)
     .collection("data")
-    .doc(agentId)
+    .doc(agent.agent)
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -1418,6 +1686,9 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
               // Use the updates object to check the submitted values
               const checkboxValue = updates[stepIndex + 1];
 
+              agentId = agent.agent;
+              agentStatus = agent.status;
+
               if (value && !checkboxValue) {
                 tasksToAdd.push({
                   agentId,
@@ -1442,7 +1713,8 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
                     agentId,
                     data.training[trainingKey].order,
                     trainingKey,
-                    value
+                    value,
+                    agentStatus
                   ); // Pass the finish date value here
                 } else {
                   // If the user cancels, uncheck the checkbox
@@ -1457,7 +1729,7 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
 
         // Write the updated steps array back to Firestore
         db.collection("agents")
-          .doc("active")
+          .doc(agent.status)
           .collection("data")
           .doc(agentId)
           .update({
@@ -1471,6 +1743,7 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
             tasksToAdd.forEach((task) => {
               addTask(
                 task.agentId,
+                agent.status,
                 task.taskId,
                 task.taskSource,
                 task.taskName,
@@ -1481,7 +1754,7 @@ function saveTrainingUpdates(agentId, trainingKey, form) {
 
             // Process tasks to remove
             tasksToRemove.forEach((task) => {
-              removeTask(task.agentId, task.taskId);
+              removeTask(task.agentId, agent.status, task.taskId);
             });
 
             // Update the local form data without refreshing
@@ -1530,7 +1803,7 @@ function updateLocalFormData(agentId, trainingKey, steps) {
 }
 
 // Function to cancel training and update the database
-function cancelTraining(agentId, trainingKey, trainingOrder) {
+function cancelTraining(agentId, trainingKey, trainingOrder, agentStatus) {
   const newTrainingLevel = trainingOrder - 1;
 
   // Remove the training section from the database
@@ -1541,18 +1814,14 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
   };
 
   db.collection("agents")
-    .doc("active")
+    .doc(agentStatus)
     .collection("data")
     .doc(agentId)
     .update(updates)
     .then(() => {
-      configure_message_bar(
-        "Training section removed and training level updated."
-      );
-
       // Get main collection data for task removal
       db.collection("agents")
-        .doc("active")
+        .doc(agentStatus)
         .get()
         .then((doc) => {
           let mainUpdates = {
@@ -1572,7 +1841,7 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
           }
           // Update trainingLevel and trainingStatus for the agent in the main collection
           db.collection("agents")
-            .doc("active")
+            .doc(agentStatus)
             .update(mainUpdates)
             .then(() => {
               configure_message_bar(
@@ -1581,7 +1850,7 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
               displayAgentButtons(); // Update the cache of the main dashboard
 
               // Refresh the user page to reflect the changes
-              showUserPage(agentId);
+              showUserPage(agentId, agentStatus);
             })
             .catch((error) => {
               console.error(
@@ -1601,7 +1870,7 @@ function cancelTraining(agentId, trainingKey, trainingOrder) {
 }
 
 // Function to handle starting the next training level
-function startNextTraining(agentId, currentLevel) {
+function startNextTraining(agentId, currentLevel, agentStatus) {
   return new Promise((resolve, reject) => {
     const newTrainingLevel = currentLevel + 1;
 
@@ -1653,7 +1922,7 @@ function startNextTraining(agentId, currentLevel) {
 
             // Update Firestore
             db.collection("agents")
-              .doc("active")
+              .doc(agentStatus)
               .collection("data")
               .doc(agentId)
               .update(updates)
@@ -1664,7 +1933,7 @@ function startNextTraining(agentId, currentLevel) {
 
                 // Update trainingLevel and trainingStatus for the agent in the main collection
                 db.collection("agents")
-                  .doc("active")
+                  .doc(agentStatus)
                   .update({
                     [`${agentId}.trainingStatus`]: 2,
                   })
@@ -1683,11 +1952,11 @@ function startNextTraining(agentId, currentLevel) {
   });
 }
 
-function cancelOffboarding(agentId) {
+function cancelOffboarding(agentId, agentStatus) {
   return new Promise((resolve, reject) => {
     // Update Firestore
     db.collection("agents")
-      .doc("active")
+      .doc(agentStatus)
       .collection("data")
       .doc(agentId)
       .update({
@@ -1696,7 +1965,7 @@ function cancelOffboarding(agentId) {
       .then(() => {
         // Update  main collection
         db.collection("agents")
-          .doc("active")
+          .doc(agentStatus)
           .update({
             [`${agentId}.departing`]: firebase.firestore.FieldValue.delete(),
           })
@@ -1750,17 +2019,17 @@ function startOffboarding(agentId) {
             });
 
             let mainUpdates = {
-              offboarded: 0,
-              services: 0,
-              laptop: 0,
+              offboarded: false,
+              services: false,
+              laptop: false,
               lastDay: "",
               reason: "",
             };
 
             let updates = {
-              offboarded: 0,
-              services: 0,
-              laptop: 0,
+              offboarded: false,
+              services: false,
+              laptop: false,
               lastDay: "",
               reason: "",
               steps: nextTraining.steps,
@@ -1823,7 +2092,15 @@ async function repairAgentData() {
   }
 }
 
-function addTask(agentId, taskId, taskSource, taskName, taskDate, manager) {
+function addTask(
+  agentId,
+  agentStatus,
+  taskId,
+  taskSource,
+  taskName,
+  taskDate,
+  manager
+) {
   let task = {
     name: taskName,
     date: taskDate,
@@ -1832,15 +2109,15 @@ function addTask(agentId, taskId, taskSource, taskName, taskDate, manager) {
   };
 
   db.collection("agents")
-    .doc("active")
+    .doc(agentStatus)
     .update({
       [`${agentId}.tasks.${taskId}`]: task,
     });
 }
 
-function removeTask(agentId, taskId) {
+function removeTask(agentId, agentStatus, taskId) {
   db.collection("agents")
-    .doc("active")
+    .doc(agentStatus)
     .update({
       [`${agentId}.tasks.${taskId}`]: firebase.firestore.FieldValue.delete(),
     });
@@ -1861,6 +2138,7 @@ function addEmployee(
     graduation: `${expGradSem} ${expGradYear}`,
     trainingLevel: 0,
     trainingStatus: 2,
+    status: "active",
   };
 
   // Add employee data to Firestore
@@ -1879,10 +2157,11 @@ function addEmployee(
           [`${agentId}.graduation`]: newEmployeeData["graduation"],
           [`${agentId}.trainingLevel`]: 0,
           [`${agentId}.trainingStatus`]: 0,
+          [`${agentId}.status`]: "active",
         })
         .then(() => {
           // Start next training
-          startNextTraining(agentId, 0).then(() => {
+          startNextTraining(agentId, 0, "active").then(() => {
             // Show user page if required
             if (toshowUserPage) {
               showUserPage(agentId);
@@ -1935,19 +2214,20 @@ r_e("add-employee-new").addEventListener("click", (event) => {
 r_e("user-page-delete-button").addEventListener("click", () => {
   // Get the agentId of the open user
   const agentId = r_e("user-page-agent-name").innerHTML;
+  const agentStatus = r_e("user-page-status").innerHTML;
 
   if (agentId) {
     // Confirm deletion
     if (confirm("Are you sure you want to delete this user?")) {
       // Delete the user document from Firestore
       db.collection("agents")
-        .doc("active")
+        .doc(agentStatus)
         .collection("data")
         .doc(agentId)
         .delete()
         .then(() => {
           db.collection("agents")
-            .doc("active")
+            .doc(agentStatus)
             .update({ [agentId]: firebase.firestore.FieldValue.delete() })
             .then(() => {
               configure_message_bar("User successfully deleted");
@@ -2011,6 +2291,7 @@ r_e("edit-employee").addEventListener("click", async function (event) {
   const gradSemester = r_e("exp-grad-sem-edit").querySelector("select").value;
   const slpRole = r_e("slp-role-edit").querySelector("select").value;
   const flag = r_e("flag-edit").querySelector("select").value;
+  const agentStatus = r_e("user-page-status").textContent;
 
   // Validate the form data (optional)
   if (!hireDate || !gradYear || !gradSemester) {
@@ -2032,7 +2313,7 @@ r_e("edit-employee").addEventListener("click", async function (event) {
     // Save the data to Firestore
     await db
       .collection("agents")
-      .doc("active")
+      .doc(agentStatus)
       .collection("data")
       .doc(agentId)
       .update(employeeData);
@@ -2040,7 +2321,7 @@ r_e("edit-employee").addEventListener("click", async function (event) {
     // Update additional fields
     await db
       .collection("agents")
-      .doc("active")
+      .doc(agentStatus)
       .update({
         [`${agentId}.hireDate`]: hireDate,
         [`${agentId}.graduation`]: employeeData["graduation"],
@@ -2062,3 +2343,51 @@ r_e("edit-employee").addEventListener("click", async function (event) {
       "Error saving data. Please try again.";
   }
 });
+
+function agentStatusChange(agentID, currentStatus, newStatus) {
+  return new Promise((resolve, reject) => {
+    db.collection("agents")
+      .doc(currentStatus)
+      .collection("data")
+      .doc(agentID)
+      .get()
+      .then((doc) => {
+        data = doc.data();
+        data.status = newStatus;
+        db.collection("agents")
+          .doc(newStatus)
+          .collection("data")
+          .doc(agentID)
+          .set(data)
+          .then(() => {
+            db.collection("agents")
+              .doc(currentStatus)
+              .collection("data")
+              .doc(agentID)
+              .delete()
+              .then(() => {
+                db.collection("agents")
+                  .doc(currentStatus)
+                  .get()
+                  .then((doc) => {
+                    data = doc.data()[agentID];
+                    data.status = newStatus;
+                    db.collection("agents")
+                      .doc(newStatus)
+                      .update({ [agentID]: data })
+                      .then(() => {
+                        db.collection("agents")
+                          .doc(currentStatus)
+                          .update({
+                            [agentID]: firebase.firestore.FieldValue.delete(),
+                          })
+                          .then(() => {
+                            resolve();
+                          });
+                      });
+                  });
+              });
+          });
+      });
+  });
+}
