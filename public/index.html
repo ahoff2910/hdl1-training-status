@@ -267,40 +267,45 @@
                     <th>Laptop</th>
                   </tr>
                 </thead>
-                <tbody id="departed-agents-table">
-                  <tr class="agent-depart-row">
-                    <td>ABCD</td>
-                    <td class="is-warning">10/31/2024</td>
-                    <td><input type="checkbox" disabled /></td>
-                    <td>
-                      <input type="checkbox" disabled />
-                    </td>
-                    <td><input type="checkbox" disabled /></td>
-                  </tr>
-                  <tr class="agent-depart-row">
-                    <td>IJKL</td>
-                    <td>09/22/2024</td>
-                    <td><input type="checkbox" checked disabled /></td>
-                    <td class="is-danger">
-                      <input type="checkbox" disabled />
-                    </td>
-                    <td><input type="checkbox" checked disabled /></td>
-                  </tr>
-                  <tr class="agent-depart-row">
-                    <td>EFGH</td>
-                    <td>09/15/2024</td>
-                    <td class="is-danger">
-                      <input type="checkbox" disabled />
-                    </td>
-                    <td><input type="checkbox" disabled /></td>
-                    <td><input type="checkbox" disabled /></td>
-                  </tr>
-                </tbody>
+                <tbody id="departed-agents-table"></tbody>
               </table>
             </div>
             <button class="button is-info" id="show-all-departed">
               Show Fully Departed
             </button>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+      </div>
+
+      <!-- View Inactive Modal -->
+      <div class="modal has-text-centered" id="inactivemodal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <h1 class="is-size-4 has-text-centered pb-3 has-text-black">
+              Fully Departed Agents
+            </h1>
+            <input
+              id="searchinactiveInput"
+              class="input"
+              type="text"
+              placeholder="Search agents..."
+            />
+            <div class="table-container">
+              <table class="table is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Agent</th>
+                    <th>Last Day</th>
+                    <th>Offboarded</th>
+                    <th>Services</th>
+                    <th>Laptop</th>
+                  </tr>
+                </thead>
+                <tbody id="inactive-agents-table"></tbody>
+              </table>
+            </div>
           </div>
         </div>
         <button class="modal-close is-large" aria-label="close"></button>

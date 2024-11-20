@@ -20,7 +20,222 @@ r_e("edit-training-button").addEventListener("click", () => {
 
 // open departed
 r_e("open-departed-button").addEventListener("click", () => {
-  r_e("departedmodal").classList.add("is-active");
+  const tableBody = document.getElementById("departed-agents-table");
+  const searchInput = document.getElementById("searchDepartedInput");
+  const cache = []; // Cache for storing fetched data
+
+  // Fetch agents data from Firestore
+  db.collection("agents")
+    .doc("departing")
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        cache.push(...Object.values(data)); // Store data in the cache
+        populateTable(cache);
+        searchInput.value = "";
+        r_e("departedmodal").classList.add("is-active");
+      } else {
+        console.error("No such document!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting document:", error);
+    });
+
+  // Populate table with sorted data
+  function populateTable(data) {
+    // Sort data by lastDay, with most recent date at the top
+    const sortedData = data.sort((a, b) => {
+      const dateA = new Date(a.departing?.lastDay || "1970-01-01");
+      const dateB = new Date(b.departing?.lastDay || "1970-01-01");
+      return dateB - dateA; // Descending order
+    });
+
+    // Clear existing rows
+    tableBody.innerHTML = "";
+
+    // Current date for comparison
+    const today = new Date();
+
+    // Create rows for each agent
+    sortedData.forEach((agent) => {
+      // Parse the `lastDay` as a Date object
+      const lastDay = new Date(agent.departing?.lastDay || "1970-01-01");
+      const today = new Date();
+
+      // Retrieve boolean values for conditional checks
+      const laptop = agent.departing?.laptop || false;
+      const services = agent.departing?.services || false;
+      const offboarded = agent.departing?.offboarded || false;
+
+      const row = document.createElement("tr");
+      row.classList.add("agent-depart-row");
+
+      // Add conditional formatting
+      const isPastLastDay = lastDay < today;
+
+      const lastDayCell = `<td>${agent.departing?.lastDay || "N/A"}</td>`;
+      const offboardingCell = `
+    <td class="${isPastLastDay && !offboarded ? "is-danger" : ""}">
+      <input type="checkbox" ${offboarded ? "checked" : ""} disabled />
+    </td>`;
+      const servicesCell = `
+    <td class="${
+      isPastLastDay && offboarded && !services
+        ? "is-danger"
+        : isPastLastDay && !offboarded
+        ? "is-warning"
+        : ""
+    }">
+      <input type="checkbox" ${services ? "checked" : ""} disabled />
+    </td>`;
+      const laptopCell = `
+    <td class="${
+      isPastLastDay && offboarded && !laptop
+        ? "is-danger"
+        : isPastLastDay && !offboarded
+        ? "is-warning"
+        : ""
+    }">
+      <input type="checkbox" ${laptop ? "checked" : ""} disabled />
+    </td>`;
+
+      row.innerHTML = `
+        <td>${agent.agent || "N/A"}</td>
+        ${lastDayCell}
+        ${offboardingCell}
+        ${servicesCell}
+        ${laptopCell}
+      `;
+
+      // Add click event listener to row
+      row.addEventListener("click", () => {
+        showUserPage(agent.agent, "departing");
+      });
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Filter and display data based on search input
+  searchInput.addEventListener("input", (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const filteredData = cache.filter((agent) =>
+      (agent.agent || "").toLowerCase().includes(searchTerm)
+    );
+    populateTable(filteredData);
+  });
+});
+
+// open inactive
+r_e("show-all-departed").addEventListener("click", () => {
+  const tableBody = document.getElementById("inactive-agents-table");
+  const searchInput = document.getElementById("searchinactiveInput");
+  const cache = []; // Cache for storing fetched data
+
+  // Fetch agents data from Firestore
+  db.collection("agents")
+    .doc("inactive")
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        cache.push(...Object.values(data)); // Store data in the cache
+        populateTable(cache);
+        searchInput.value = "";
+        r_e("inactivemodal").classList.add("is-active");
+      } else {
+        console.error("No such document!");
+      }
+    })
+    .catch((error) => {
+      console.error("Error getting document:", error);
+    });
+
+  // Populate table with sorted data
+  function populateTable(data) {
+    // Sort data by lastDay, with most recent date at the top
+    const sortedData = data.sort((a, b) => {
+      const dateA = new Date(a.departing?.lastDay || "1970-01-01");
+      const dateB = new Date(b.departing?.lastDay || "1970-01-01");
+      return dateB - dateA; // Descending order
+    });
+
+    // Clear existing rows
+    tableBody.innerHTML = "";
+
+    // Current date for comparison
+    const today = new Date();
+
+    // Create rows for each agent
+    sortedData.forEach((agent) => {
+      // Parse the `lastDay` as a Date object
+      const lastDay = new Date(agent.departing?.lastDay || "1970-01-01");
+      const today = new Date();
+
+      // Retrieve boolean values for conditional checks
+      const laptop = agent.departing?.laptop || false;
+      const services = agent.departing?.services || false;
+      const offboarded = agent.departing?.offboarded || false;
+
+      const row = document.createElement("tr");
+      row.classList.add("agent-depart-row");
+
+      // Add conditional formatting
+      const isPastLastDay = lastDay < today;
+
+      const lastDayCell = `<td>${agent.departing?.lastDay || "N/A"}</td>`;
+      const offboardingCell = `
+    <td class="${isPastLastDay && !offboarded ? "is-danger" : ""}">
+      <input type="checkbox" ${offboarded ? "checked" : ""} disabled />
+    </td>`;
+      const servicesCell = `
+    <td class="${
+      isPastLastDay && offboarded && !services
+        ? "is-danger"
+        : isPastLastDay && !offboarded
+        ? "is-warning"
+        : ""
+    }">
+      <input type="checkbox" ${services ? "checked" : ""} disabled />
+    </td>`;
+      const laptopCell = `
+    <td class="${
+      isPastLastDay && offboarded && !laptop
+        ? "is-danger"
+        : isPastLastDay && !offboarded
+        ? "is-warning"
+        : ""
+    }">
+      <input type="checkbox" ${laptop ? "checked" : ""} disabled />
+    </td>`;
+
+      row.innerHTML = `
+        <td>${agent.agent || "N/A"}</td>
+        ${lastDayCell}
+        ${offboardingCell}
+        ${servicesCell}
+        ${laptopCell}
+      `;
+
+      // Add click event listener to row
+      row.addEventListener("click", () => {
+        showUserPage(agent.agent, "inactive");
+      });
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Filter and display data based on search input
+  searchInput.addEventListener("input", (event) => {
+    const searchTerm = event.target.value.toLowerCase();
+    const filteredData = cache.filter((agent) =>
+      (agent.agent || "").toLowerCase().includes(searchTerm)
+    );
+    populateTable(filteredData);
+  });
 });
 
 document.querySelectorAll(".tabs ul li").forEach((tab, index) => {
