@@ -24,6 +24,10 @@
   cursor: pointer;
 }
 
+.has-background-review {
+  background-color: #c9daf8;
+}
+
 /* Color Key Modal CSS */
 /* Color Modal (background) */
 .colormodal {

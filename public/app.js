@@ -1089,7 +1089,7 @@ function displayAgentButtons() {
             const timeDiff = currentDate - lastReviewedDate;
             const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
             if (daysDiff < 60) {
-              button.classList.add("has-background-info-light");
+              button.classList.add("has-background-review");
             }
           }
 
