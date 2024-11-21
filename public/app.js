@@ -2007,8 +2007,6 @@ function finishTraining(
           configure_message_bar(
             "Agent's training level and status updated in the main collection."
           );
-          displayAgentButtons(); // Update the cache of the main dashboard
-
           // Refresh the user page to reflect the changes
           showUserPage(agentId, agentStatus, "Training");
         })
