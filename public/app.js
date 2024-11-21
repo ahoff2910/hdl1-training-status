@@ -253,6 +253,26 @@ document.querySelectorAll(".tabs ul li").forEach((tab, index) => {
   });
 });
 
+function activateTab(tabId) {
+  // Get all tabs and tab content elements
+  const tabs = document.querySelectorAll(".tabs ul li");
+  const tabContents = document.querySelectorAll("#tab-content > div");
+
+  // Loop through all tabs to deactivate them
+  tabs.forEach((tab, index) => {
+    const content = tabContents[index];
+    if (tab.textContent.trim().toLowerCase() === tabId.toLowerCase()) {
+      // Activate the matching tab and its content
+      tab.classList.add("is-active");
+      content.style.display = "block";
+    } else {
+      // Deactivate other tabs and their contents
+      tab.classList.remove("is-active");
+      content.style.display = "none";
+    }
+  });
+}
+
 // Animated Color Key Modal
 // Get the modal
 var colormodal = r_e("colormodal");
@@ -1154,10 +1174,7 @@ function calculateDuration(date) {
 }
 
 // Function to display the user page for a specific agent
-function showUserPage(agentId, agentStatus = "active") {
-  // Reference to Firestore
-  const db = firebase.firestore();
-
+function showUserPage(agentId, agentStatus = "active", tab = "") {
   // Get the agent data from Firestore
   db.collection("agents")
     .doc(agentStatus)
@@ -1167,12 +1184,21 @@ function showUserPage(agentId, agentStatus = "active") {
     .then((doc) => {
       if (doc.exists) {
         const agent = doc.data();
+        if (tab == "") {
+          if (!agent.departing) {
+            activateTab("Training");
+          } else {
+            activateTab("Offboarding");
+          }
+        } else if (!(tab == "Keep")) {
+          activateTab(tab);
+        }
 
         // Populate user page elements with agent data
         r_e("user-page-agent-name").textContent = agent.agent;
         r_e("user-page-training-level").textContent =
           trainingLevelNames[agent.trainingLevel] || "Unknown";
-        r_e("user-page-slp").textContent = slpNames[agent.slp] || "";
+        r_e("user-page-slp").textContent = slpNames[agent.slpRole] || "";
         r_e("user-page-status").textContent = agent.status || "Unknown";
         r_e("user-page-flag").textContent = flagNames[agent.flag] || "";
         r_e("user-page-hire-date").textContent = agent.hireDate;
@@ -1375,7 +1401,7 @@ function showUserPage(agentId, agentStatus = "active") {
                 agent.trainingLevel,
                 agent.status
               ).then(() => {
-                showUserPage(agentId, agentStatus);
+                showUserPage(agentId, agentStatus, "Training");
               });
             }
           );
@@ -1387,7 +1413,7 @@ function showUserPage(agentId, agentStatus = "active") {
           ).innerHTML = `<button class="button is-danger" id="start-offboarding" type="button">Start Offboarding</button>`;
           r_e("start-offboarding").addEventListener("click", function () {
             startOffboarding(agentId).then(() => {
-              showUserPage(agentId, agentStatus);
+              showUserPage(agentId, agentStatus, "Offboarding");
             });
           });
         } else {
@@ -1494,7 +1520,7 @@ function showUserPage(agentId, agentStatus = "active") {
                           "inactive"
                         ).then(() => {
                           configure_message_bar("Agent made inactive.");
-                          showUserPage(agent.agent, "inactive");
+                          showUserPage(agent.agent, "inactive", "Offboarding");
                           displayAgentButtons();
                         });
                       } else {
@@ -1505,7 +1531,7 @@ function showUserPage(agentId, agentStatus = "active") {
                           "departing"
                         ).then(() => {
                           configure_message_bar("Agent made departing.");
-                          showUserPage(agent.agent, "departing");
+                          showUserPage(agent.agent, "departing", "Offboarding");
                           displayAgentButtons();
                         });
                       }
@@ -1517,7 +1543,7 @@ function showUserPage(agentId, agentStatus = "active") {
                         "active"
                       ).then(() => {
                         configure_message_bar("Agent made active.");
-                        showUserPage(agent.agent, "active");
+                        showUserPage(agent.agent, "active", "Offboarding");
                         displayAgentButtons();
                       });
                     } else {
@@ -1541,14 +1567,14 @@ function showUserPage(agentId, agentStatus = "active") {
                 <div class="column has-text-left">
                   <h2 class="title is-size-6">
                     <span class="icon has-text-${
-                      agent.departing.laptop == 0 ? "warning" : "success"
+                      agent.departing.laptop == 0 ? "danger" : "success"
                     } is-size-7">
                       <i class="fas fa-circle"></i>
                     </span>
                     ${
                       agent.departing.laptop == 0
-                        ? "In Progress"
-                        : `Completed ${
+                        ? "Not Returned"
+                        : `Returned ${
                             agent.departing.device.returnDate || "N/A"
                           }`
                     }
@@ -1573,42 +1599,56 @@ function showUserPage(agentId, agentStatus = "active") {
             <div class="field">
               <label class="label">Serial Number</label>
               <div class="control">
-                <input class="input" type="text" name="serialNumber">
+                <input class="input" type="text" name="serialNumber" value="${
+                  agent.departing.device.serial || ""
+                }">
               </div>
             </div>
             <div class="field">
               <label class="checkbox">
-                <input type="checkbox" name="returned">
+                <input type="checkbox" name="returned" ${
+                  agent.departing.laptop ? "checked" : ""
+                }>
                 Returned?
               </label>
             </div>
             <div class="field">
               <label class="label">Return Date</label>
               <div class="control">
-                <input class="input" type="date" name="returnDate">
+                <input class="input" type="date" name="returnDate"  value="${
+                  agent.departing.device.returnDate || ""
+                }">
               </div>
             </div>
             <div class="field">
               <label class="label">Incident</label>
               <div class="control">
-                <input class="input" type="text" name="incident">
+                <input class="input" type="text" name="incident"  value="${
+                  agent.departing.device.incident || ""
+                }">
               </div>
             </div>
             <div class="field">
               <label class="checkbox">
-                <input type="checkbox" name="returnedInNOVA">
+                <input type="checkbox" name="returnedInNOVA"  ${
+                  agent.departing.device.rtnNova ? "checked" : ""
+                }>
                 Returned in NOVA
               </label>
             </div>
             <div class="field" id="emailedField" style="display: none;">
               <label class="checkbox">
-                <input type="checkbox" name="emailed">
+                <input type="checkbox" name="emailed"  ${
+                  agent.departing.device.email ? "checked" : ""
+                }>
                 Emailed?
               </label>
             </div>
             <div class="field" id="holdPlacedField" style="display: none;">
               <label class="checkbox">
-                <input type="checkbox" name="holdPlaced">
+                <input type="checkbox" name="holdPlaced" ${
+                  agent.departing.device.hold ? "checked" : ""
+                }>
                 Hold Placed?
               </label>
             </div>
@@ -1642,12 +1682,92 @@ function showUserPage(agentId, agentStatus = "active") {
             .addEventListener("change", toggleFields);
 
           // Add event listener for save button
-          laptopForm
-            .querySelector(".button.is-success")
-            .addEventListener("click", function (event) {
-              event.preventDefault();
-              saveLaptopUpdates(agentId, laptopData.key, laptopForm);
-            });
+
+          // Add event listener for save button
+          laptopForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            // Extract data from form
+            const serialNumber = laptopForm.querySelector(
+              'input[name="serialNumber"]'
+            ).value;
+            const returned = laptopForm.querySelector(
+              'input[name="returned"]'
+            ).checked;
+            const returnDate = laptopForm.querySelector(
+              'input[name="returnDate"]'
+            ).value;
+            const incident = laptopForm.querySelector(
+              'input[name="incident"]'
+            ).value;
+            const returnedInNOVA = laptopForm.querySelector(
+              'input[name="returnedInNOVA"]'
+            ).checked;
+            const emailed = laptopForm.querySelector(
+              'input[name="emailed"]'
+            ).checked;
+            const holdPlaced = laptopForm.querySelector(
+              'input[name="holdPlaced"]'
+            ).checked;
+
+            // Update trainingLevel and trainingStatus for the agent in the main collection
+            db.collection("agents")
+              .doc(agentStatus)
+              .update({
+                [`${agentId}.departing.laptop`]: returned,
+              })
+              .then(() => {
+                db.collection("agents")
+                  .doc(agentStatus)
+                  .collection("data")
+                  .doc(agentId)
+                  .update({
+                    [`departing.laptop`]: returned,
+                    [`departing.device.serial`]: serialNumber,
+                    [`departing.device.returnDate`]: returnDate,
+                    [`departing.device.incident`]: incident,
+                    [`departing.device.rtnNova`]: returnedInNOVA,
+                    [`departing.device.email`]: emailed,
+                    [`departing.device.hold`]: holdPlaced,
+                  })
+                  .then(() => {
+                    if (
+                      agent.status == "departing" &&
+                      agent.departing.services &&
+                      agent.departing.offboarded &&
+                      returned
+                    ) {
+                      agentStatusChange(
+                        agent.agent,
+                        agent.status,
+                        "inactive"
+                      ).then(() => {
+                        configure_message_bar("Agent made inactive.");
+                        showUserPage(agent.agent, "inactive", "Offboarding");
+                        displayAgentButtons();
+                      });
+                    } else if (agent.status == "inactive" && !returned) {
+                      agentStatusChange(
+                        agent.agent,
+                        agent.status,
+                        "departing"
+                      ).then(() => {
+                        configure_message_bar("Agent made departing.");
+                        showUserPage(agent.agent, "departing", "Offboarding");
+                        displayAgentButtons();
+                      });
+                    } else if (
+                      (!agent.departing.laptop && returned) ||
+                      (agent.departing.laptop && !returned)
+                    ) {
+                      showUserPage(agent.agent, agent.status, "Offboarding");
+                      configure_message_bar("Offboarding data saved.");
+                    } else {
+                      configure_message_bar("Offboarding data saved.");
+                    }
+                  });
+              });
+          });
 
           // Create offboarding box
           const offboardingBox = document.createElement("div");
@@ -1663,17 +1783,11 @@ function showUserPage(agentId, agentStatus = "active") {
                 <div class="column has-text-left">
                   <h2 class="title is-size-6">
                     <span class="icon has-text-${
-                      agent.departing.services === 0 ? "warning" : "success"
+                      !agent.departing.services ? "danger" : "success"
                     } is-size-7">
                       <i class="fas fa-circle"></i>
                     </span>
-                    ${
-                      agent.departing.services === 0
-                        ? "In Progress"
-                        : `Completed ${
-                            agent.departing.servicesCompleted || "N/A"
-                          }`
-                    }
+                    ${!agent.departing.services ? "Not Completed" : "Completed"}
                   </h2>
                 </div>
                 <div class="column has-text-right is-one-fifth">
@@ -1688,58 +1802,53 @@ function showUserPage(agentId, agentStatus = "active") {
           // Create offboarding form
           const offboardingForm = document.createElement("form");
           offboardingForm.classList.add("pt-5");
+          offboardingForm.classList.add("pl-5");
           offboardingForm.id = "offboardingForm";
 
-          let steps = agent.departing.steps;
-
-          agent.departing.steps.forEach((step) => {
+          // Dynamically generate the form based on agent.departing.steps
+          agent.departing.steps.forEach((step, index) => {
             const field = document.createElement("div");
-            field.classList.add("field", "is-horizontal");
+            field.classList.add("field");
 
-            const fieldLabel = document.createElement("div");
-            fieldLabel.classList.add("field-label", "is-normal");
-            fieldLabel.style.flexGrow = 4;
-            fieldLabel.innerHTML = `<label class="label is-size-6">${step.name}</label>`;
-            field.appendChild(fieldLabel);
+            if (step.type === "checkbox") {
+              // Create a checkbox-style field
+              const label = document.createElement("label");
+              label.classList.add("checkbox");
 
-            const fieldBody = document.createElement("div");
-            fieldBody.classList.add("field-body");
+              const input = document.createElement("input");
+              input.type = "checkbox";
+              input.name = step.name; // Use step name as the field name
+              input.dataset.index = index; // Include the step's index
 
-            const fieldControl = document.createElement("div");
-            fieldControl.classList.add("field");
-
-            const control = document.createElement("div");
-            control.classList.add("control");
-
-            if (step.finish != 1) {
-              if (step.type === "checkbox") {
-                control.innerHTML = `<input type="checkbox" name="${
-                  step.name
-                }" ${step.value ? "checked" : ""} />`;
-              } else if (step.type === "date") {
-                control.innerHTML = `<input type="date" name="${
-                  step.name
-                }" class="input is-size-6" value="${step.value || ""}" />`;
-              } else if (step.type === "text") {
-                control.innerHTML = `<input type="text" name="${
-                  step.name
-                }" class="input is-size-6" value="${step.value || ""}" />`;
+              if (step.value) {
+                input.setAttribute("checked", "checked"); // Set the "checked" attribute for HTML
               }
+
+              label.appendChild(input);
+              label.append(` ${step.name}`); // Add step name as label text
+              field.appendChild(label);
             } else {
-              if (step.type === "checkbox") {
-                control.innerHTML = `<input type="checkbox" disabled="true" name="${
-                  step.name
-                }" ${step.value ? "checked" : ""} />`;
-              } else if (step.type === "date") {
-                control.innerHTML = `<input type="date" disabled="true" name="${
-                  step.name
-                }" class="input is-size-6" value="${step.value || ""}" />`;
-              }
+              // Create a label and input-style field
+              const label = document.createElement("label");
+              label.classList.add("label");
+              label.textContent = step.name;
+
+              const control = document.createElement("div");
+              control.classList.add("control");
+
+              const input = document.createElement("input");
+              input.classList.add("input");
+              input.type = step.type === "date" ? "date" : "text"; // Determine input type
+              input.name = step.name; // Use step name as the field name
+              input.dataset.index = index; // Include the step's index
+              input.value = step.value || ""; // Use the value field for the input value
+
+              control.appendChild(input);
+              field.appendChild(label);
+              field.appendChild(control);
             }
 
-            fieldControl.appendChild(control);
-            fieldBody.appendChild(fieldControl);
-            field.appendChild(fieldBody);
+            // Append the field to the form
             offboardingForm.appendChild(field);
           });
 
@@ -1756,11 +1865,87 @@ function showUserPage(agentId, agentStatus = "active") {
             .querySelector(".button.is-success")
             .addEventListener("click", function (event) {
               event.preventDefault();
-              saveOffboardingUpdates(
-                agentId,
-                offboardingData.key,
-                offboardingForm
-              );
+
+              // Prepare data for updating Firestore
+              const updateData = { "departing.steps": [] }; // Initialize steps array in departing map
+              let finished = true;
+              offboardingForm.querySelectorAll(".field").forEach((field) => {
+                const input = field.querySelector("input");
+                if (input) {
+                  const name = input.name;
+                  const index = input.dataset.index;
+
+                  if (
+                    !(input.type === "checkbox" ? input.checked : input.value)
+                  ) {
+                    finished = false;
+                  }
+                  // Handle steps array data
+                  const stepValue = {
+                    name,
+                    type: input.type === "checkbox" ? "checkbox" : input.type,
+                    value:
+                      input.type === "checkbox" ? input.checked : input.value,
+                  };
+                  updateData["departing.steps"][index] = stepValue;
+                }
+              });
+
+              // update main collection and sub collection if change to finished
+              if (
+                (!agent.departing.services && finished) ||
+                (agent.departing.services && !finished)
+              ) {
+                updateData["departing.services"] = finished;
+                db.collection("agents")
+                  .doc(agentStatus)
+                  .update({
+                    [`${agentId}.departing.services`]: finished,
+                  });
+              }
+
+              // Update the Firestore document
+              db.collection("agents")
+                .doc(agentStatus)
+                .collection("data")
+                .doc(agentId)
+                .update(updateData)
+                .then(() => {
+                  if (
+                    agent.status == "departing" &&
+                    agent.departing.laptop &&
+                    agent.departing.offboarded &&
+                    finished
+                  ) {
+                    agentStatusChange(
+                      agent.agent,
+                      agent.status,
+                      "inactive"
+                    ).then(() => {
+                      configure_message_bar("Agent made inactive.");
+                      showUserPage(agent.agent, "inactive", "Offboarding");
+                      displayAgentButtons();
+                    });
+                  } else if (agent.status == "inactive" && !finished) {
+                    agentStatusChange(
+                      agent.agent,
+                      agent.status,
+                      "departing"
+                    ).then(() => {
+                      configure_message_bar("Agent made departing.");
+                      showUserPage(agent.agent, "departing", "Offboarding");
+                      displayAgentButtons();
+                    });
+                  } else if (
+                    (!agent.departing.services && finished) ||
+                    (agent.departing.services && !finished)
+                  ) {
+                    showUserPage(agent.agent, agent.status, "Offboarding");
+                    configure_message_bar("Offboarding data saved.");
+                  } else {
+                    configure_message_bar("Offboarding data saved.");
+                  }
+                });
             });
 
           // Create the cancel button element
@@ -1773,7 +1958,7 @@ function showUserPage(agentId, agentStatus = "active") {
 
           cancelButton.addEventListener("click", function () {
             cancelOffboarding(agentId, agentStatus).then(() => {
-              showUserPage(agentId, agentStatus);
+              showUserPage(agentId, agentStatus, "Offboarding");
             });
           });
         }
@@ -1825,7 +2010,7 @@ function finishTraining(
           displayAgentButtons(); // Update the cache of the main dashboard
 
           // Refresh the user page to reflect the changes
-          showUserPage(agentId, agentStatus);
+          showUserPage(agentId, agentStatus, "Training");
         })
         .catch((error) => {
           console.error(
@@ -1865,128 +2050,111 @@ function saveTrainingUpdates(agent, trainingKey, form) {
     }
   });
 
-  // Read the current steps array
+  const data = agent;
+  const steps = data.training[trainingKey].steps || [];
+
+  // Track tasks to add or remove
+  const tasksToAdd = [];
+  const tasksToRemove = [];
+
+  // Update the steps array
+  Object.keys(updates).forEach((index) => {
+    const stepIndex = parseInt(index, 10);
+    const step = steps[stepIndex];
+    const value = updates[index];
+
+    if (step) {
+      step.value = value;
+
+      // Handle task creation for "scheduled" and "finish" steps
+      if (
+        (step.type === "date" && step.schedule) ||
+        (step.type === "date" && step.finish)
+      ) {
+        const checkboxStep = steps[stepIndex + 1]; // Assuming the checkbox step follows the date step
+        const taskId = `training-${trainingKey}-${stepIndex}`;
+        const manager = firebase.auth().currentUser.email;
+
+        // Use the updates object to check the submitted values
+        const checkboxValue = updates[stepIndex + 1];
+
+        agentId = agent.agent;
+        agentStatus = agent.status;
+
+        if (value && !checkboxValue) {
+          tasksToAdd.push({
+            agentId,
+            taskId,
+            taskSource: "training",
+            taskName: step.name,
+            taskDate: value,
+            manager,
+          });
+        } else if (checkboxValue) {
+          tasksToRemove.push({ agentId, taskId });
+        }
+
+        if (step.finish && checkboxValue) {
+          // Prompt the user for confirmation before finishing training
+          if (
+            confirm(
+              "Are you sure you want to finish this training? Training Completed date will not be able to be updated."
+            )
+          ) {
+            finishTraining(
+              agentId,
+              data.training[trainingKey].order,
+              trainingKey,
+              value,
+              agentStatus
+            ); // Pass the finish date value here
+          } else {
+            // If the user cancels, uncheck the checkbox
+            checkboxStep.value = "";
+          }
+        }
+      }
+    } else {
+      steps[stepIndex] = { value };
+    }
+  });
+
+  // Write the updated steps array back to Firestore
   db.collection("agents")
     .doc(agent.status)
     .collection("data")
-    .doc(agent.agent)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const data = doc.data();
-        const steps = data.training[trainingKey].steps || [];
+    .doc(agentId)
+    .update({
+      [`training.${trainingKey}.steps`]: steps,
+    })
+    .then(() => {
+      configure_message_bar("Training updates saved successfully.");
+      displayAgentButtons(); // Update the cache of the main dashboard
 
-        // Track tasks to add or remove
-        const tasksToAdd = [];
-        const tasksToRemove = [];
+      // Process tasks to add
+      tasksToAdd.forEach((task) => {
+        addTask(
+          task.agentId,
+          agent.status,
+          task.taskId,
+          task.taskSource,
+          task.taskName,
+          task.taskDate,
+          task.manager
+        );
+      });
 
-        // Update the steps array
-        Object.keys(updates).forEach((index) => {
-          const stepIndex = parseInt(index, 10);
-          const step = steps[stepIndex];
-          const value = updates[index];
+      // Process tasks to remove
+      tasksToRemove.forEach((task) => {
+        removeTask(task.agentId, agent.status, task.taskId);
+      });
 
-          if (step) {
-            step.value = value;
-
-            // Handle task creation for "scheduled" and "finish" steps
-            if (
-              (step.type === "date" && step.schedule) ||
-              (step.type === "date" && step.finish)
-            ) {
-              const checkboxStep = steps[stepIndex + 1]; // Assuming the checkbox step follows the date step
-              const taskId = `training-${trainingKey}-${stepIndex}`;
-              const manager = firebase.auth().currentUser.email;
-
-              // Use the updates object to check the submitted values
-              const checkboxValue = updates[stepIndex + 1];
-
-              agentId = agent.agent;
-              agentStatus = agent.status;
-
-              if (value && !checkboxValue) {
-                tasksToAdd.push({
-                  agentId,
-                  taskId,
-                  taskSource: "training",
-                  taskName: step.name,
-                  taskDate: value,
-                  manager,
-                });
-              } else if (checkboxValue) {
-                tasksToRemove.push({ agentId, taskId });
-              }
-
-              if (step.finish && checkboxValue) {
-                // Prompt the user for confirmation before finishing training
-                if (
-                  confirm(
-                    "Are you sure you want to finish this training? Training Completed date will not be able to be updated."
-                  )
-                ) {
-                  finishTraining(
-                    agentId,
-                    data.training[trainingKey].order,
-                    trainingKey,
-                    value,
-                    agentStatus
-                  ); // Pass the finish date value here
-                } else {
-                  // If the user cancels, uncheck the checkbox
-                  checkboxStep.value = "";
-                }
-              }
-            }
-          } else {
-            steps[stepIndex] = { value };
-          }
-        });
-
-        // Write the updated steps array back to Firestore
-        db.collection("agents")
-          .doc(agent.status)
-          .collection("data")
-          .doc(agentId)
-          .update({
-            [`training.${trainingKey}.steps`]: steps,
-          })
-          .then(() => {
-            configure_message_bar("Training updates saved successfully.");
-            displayAgentButtons(); // Update the cache of the main dashboard
-
-            // Process tasks to add
-            tasksToAdd.forEach((task) => {
-              addTask(
-                task.agentId,
-                agent.status,
-                task.taskId,
-                task.taskSource,
-                task.taskName,
-                task.taskDate,
-                task.manager
-              );
-            });
-
-            // Process tasks to remove
-            tasksToRemove.forEach((task) => {
-              removeTask(task.agentId, agent.status, task.taskId);
-            });
-
-            // Update the local form data without refreshing
-            updateLocalFormData(agentId, trainingKey, steps);
-          })
-          .catch((error) => {
-            console.error("Error saving training updates: ", error);
-            configure_message_bar("Error saving training updates.");
-          });
-      } else {
-        console.error("No such document!");
-        configure_message_bar("Error: No such document.");
-      }
+      // Update the local form data without refreshing
+      updateLocalFormData(agentId, trainingKey, steps);
     })
     .catch((error) => {
-      console.error("Error getting document: ", error);
-      configure_message_bar("Error getting document.");
+      console.error("Error saving training updates: ", error);
+      configure_message_bar("Error saving training updates.");
     });
 }
 
@@ -2065,7 +2233,7 @@ function cancelTraining(agentId, trainingKey, trainingOrder, agentStatus) {
               displayAgentButtons(); // Update the cache of the main dashboard
 
               // Refresh the user page to reflect the changes
-              showUserPage(agentId, agentStatus);
+              showUserPage(agentId, agentStatus, "Training");
             })
             .catch((error) => {
               console.error(
@@ -2176,6 +2344,7 @@ function cancelOffboarding(agentId, agentStatus) {
       .doc(agentId)
       .update({
         departing: firebase.firestore.FieldValue.delete(),
+        status: "active",
       })
       .then(() => {
         // Update  main collection
@@ -2183,6 +2352,7 @@ function cancelOffboarding(agentId, agentStatus) {
           .doc(agentStatus)
           .update({
             [`${agentId}.departing`]: firebase.firestore.FieldValue.delete(),
+            status: "active",
           })
           .then(() => {
             configure_message_bar("Offboarding cancelled.");
@@ -2550,7 +2720,7 @@ r_e("edit-employee").addEventListener("click", async function (event) {
     // Clear any previous error messages
     r_e("edit-employee-error").textContent = "";
     configure_message_bar("User successfully saved");
-    showUserPage(agentId);
+    showUserPage(agentId, agentStatus, "Keep");
     displayAgentButtons();
   } catch (error) {
     console.error("Error saving employee data: ", error);
