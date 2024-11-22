@@ -11,9 +11,9 @@
 <h3>Trello Board</h3>
 <p><a src="https://trello.com/invite/b/673a2aeaea1a26f82d2ed095/ATTI9e26b43a4331db648656e332e17b6ef0CCD501E8/sprint-4">Link to Trello Board</a></p>
 <h3>Burndown Charts</h3>
-<h6>Day 2</h6>
-<h6>Day 5</h6>
-<h6>Day 7</h6>
+<h4>Day 2</h4>
+<h4>Day 5</h4>
+<h4>Day 7</h4>
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
