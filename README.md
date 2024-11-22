@@ -93,10 +93,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Sprint Planning</p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Update Trello and Burndown charts </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -154,10 +154,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Created ReadME</p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Manage sprint progress and came up with tasks from client feedback </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -215,10 +215,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked more on ReadME and fished off tasks </p>
             </li>
             <li>
-                <p>What are you planning to do today?:  </p>
+                <p>What are you planning to do today?: Finish ReadME </p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
