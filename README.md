@@ -105,10 +105,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Started setting up database structure for departing and offboarding employees</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continuing to design and build test documents for the departing and offboarding employees</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -166,13 +166,13 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Finished dynamic offboarding tab so it pulls data from the database</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Start offboarding step logic</p>
             </li>
             <li>
-                <p>Any problems?: None</p>
+                <p>Any problems?: Realized that moving agents between different documents breaks other functions in the code.  Will need to be addressed ASAP</p>
             </li>
         </ul>
         <p>Ethan:</p>
@@ -227,10 +227,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:</p>
+                <p>What did you do yesterday?: Finished offboarding step logic</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Work on adjusting other functions to know which document the agent is in (departing, inactive, or active)</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
