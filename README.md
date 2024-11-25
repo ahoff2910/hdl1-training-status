@@ -131,10 +131,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Sprint planning </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Starting work on color key rework (again) </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -192,10 +192,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: I did not complete any work yesterday </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Finalized & tested color key rework </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -253,10 +253,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Final testing for draggable buttons. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Added burndown charts, extra formatting to ReadMe </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
