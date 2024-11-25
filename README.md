@@ -143,10 +143,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Helped plan for rest of sprint with Max </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Reveiw work and to see if there are user issues. </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -204,10 +204,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Continued to see if I can break the website </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Track down any unknown issues on the website and report them to team </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -265,10 +265,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Testing buttons for dynamic draggin capability</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Finish the ReadMe</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
