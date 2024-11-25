@@ -87,6 +87,7 @@
 <h4>Day 2</h4>
 <img src="images/Screen Shot 2024-11-19 at 12.53.17 PM.png">
 <h4>Day 5</h4>
+<img src="images/Screen Shot 2024-11-24 at 11.24.24 PM.png">
 <h4>Day 7</h4>
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
