@@ -119,10 +119,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: Researching and tested draggable buttons with using element id.</p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: test eventlisteners for dragging buttons</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -180,10 +180,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: outlined database connections that will be tied to each column of table that can be dragged to </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: testing dragging to same column and out of table</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -241,10 +241,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?:  </p>
+                <p>What did you do yesterday?: further test draggable buttons on table </p>
             </li>
             <li>
-                <p>What are you planning to do today?:</p>
+                <p>What are you planning to do today?: Optimize results of dragging on site and database</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
