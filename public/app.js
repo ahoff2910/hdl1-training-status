@@ -1373,7 +1373,7 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
         let trainingButtonsHTML = "";
         let nextTrainingButtonActive = false;
 
-        if (agent.trainingStatus === 0 && agent.trainingLevel !== 5) {
+        if (agent.trainingStatus !== 2 && agent.trainingLevel !== 5) {
           nextTrainingButtonActive = true;
           trainingButtonsHTML += `
             <button
