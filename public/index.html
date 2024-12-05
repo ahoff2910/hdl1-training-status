@@ -689,8 +689,24 @@
         role="navigation"
         aria-label="main navigation"
       >
-        <div class="navbar-menu">
-          <div class="m-auto">
+        <!-- Navbar brand for the burger icon -->
+        <div class="navbar-brand">
+          <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarMenu"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <!-- Navbar menu -->
+        <div id="navbarMenu" class="navbar-menu">
+          <div class="navbar-end m-auto">
             <a
               id="add-employee-button"
               class="navbar-item button mx-1 has-background-danger-dark has-text-white is-link has-text-weight-bold is-inline"

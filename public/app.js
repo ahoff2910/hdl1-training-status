@@ -253,6 +253,19 @@ document.querySelectorAll(".tabs ul li").forEach((tab, index) => {
   });
 });
 
+// add a burger
+document.addEventListener("DOMContentLoaded", () => {
+  const burger = document.querySelector(".navbar-burger");
+  const menu = document.querySelector(".navbar-menu");
+
+  if (burger && menu) {
+    burger.addEventListener("click", () => {
+      burger.classList.toggle("is-active");
+      menu.classList.toggle("is-active");
+    });
+  }
+});
+
 function activateTab(tabId) {
   // Get all tabs and tab content elements
   const tabs = document.querySelectorAll(".tabs ul li");
