@@ -7,6 +7,106 @@
 <p>3. As a user I want my site to be secure. </p>
 <p>4. As a user I want to store all my inactive and offboarding users in the database so that I can manage their offboarding process. </p>
 <h3>Tasks</h3>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Corresponding Story Number</th>
+                <th>Duration (hours)</th>
+                <th>Priority<br>scale 1 (low) - 10 (high)</th>
+                <th>Complexity</th>
+                <th>Lead Person</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Meet With Client to show current progress and receive feedback</td>
+                <td>1</td>
+                <td>1</td>
+                <td>5</td>
+                <td>low</td>
+                <td>Alex</td>
+            </tr>
+            <tr>
+                <td>Make changes that customer suggests</td>
+                <td>1</td>
+                <td>2</td>
+                <td>6</td>
+                <td>medium</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Implement bulma to create more cohesive styling</td>
+                <td>2</td>
+                <td>3</td>
+                <td>5</td>
+                <td>medium</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Finalize security rules</td>
+                <td>3</td>
+                <td>1</td>
+                <td>7</td>
+                <td>medium</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Add inactive users to the database</td>
+                <td>4</td>
+                <td>1</td>
+                <td>4</td>
+                <td>medium</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Add offboarding users to the database</td>
+                <td>4</td>
+                <td>1</td>
+                <td>4</td>
+                <td>medium</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Finalize "Ready" columns on main page</td>
+                <td>2</td>
+                <td>3</td>
+                <td>5</td>
+                <td>Medium</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Start Testing how the site works</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>high</td>
+                <td>All</td>
+            </tr>
+        </tbody>
+    </table>
 <h3>Trello Board</h3>
 <p><a href="https://trello.com/invite/b/674cc4b80cadfe821a93fd0e/ATTI8496d95bb698d0b3681df95282dc7bc17C7B0DF7/sprint-5
 ">Link to Trello Board</p>
