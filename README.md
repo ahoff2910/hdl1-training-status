@@ -300,4 +300,9 @@
                 <p>Any problems?: None</p>
             </li>
         </ul>
-
+<h3>Sprint Review</h3>
+<p>1. What did we learn: We learned the importance of testing. This is the first sprint that we included testing in and it would have been valuable to implement testing documents into our earlier sprints.</p>
+<p>2. What went well: We were able to get all that we wanted to done. We also were able to basically complete our project which is good because we are also close to milestone 4 being due.</p>
+<p>3. What didn't go well: We didn't stick to the recommeneded burndown rate. We did more work during the end of the sprint, this was mainly due to our busy schedules and finals approaching. </p>
+<p>4. How we can make things better: In the future when we utilize Scrum we will try to be more exact on when we will completeing each task so that we can make sure that we stay more true to the burndown rate.</p>
+<p>5. Are we satisfied with our work: As a group we are very happy with what we have accomplished. Our client is also happy with our work and believes that it wil add value to their day to day operations. </p>
