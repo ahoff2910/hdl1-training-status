@@ -7,27 +7,6 @@
 <p>3. As a user I want my site to be secure. </p>
 <p>4. As a user I want to store all my inactive and offboarding users in the database so that I can manage their offboarding process. </p>
 <h3>Tasks</h3>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Table</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            text-align: center;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
-</head>
 <body>
     <table>
         <thead>
