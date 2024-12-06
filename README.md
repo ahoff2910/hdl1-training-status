@@ -100,10 +100,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Sprint Planning</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Add tasks to Trello</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -161,10 +161,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Meet with client</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Discuss with group client feedback</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -222,10 +222,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finish up tasks</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Complete readme</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
