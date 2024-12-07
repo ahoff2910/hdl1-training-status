@@ -2623,7 +2623,6 @@ function cancelOffboarding(agentId, agentStatus) {
       .doc(agentId)
       .update({
         departing: firebase.firestore.FieldValue.delete(),
-        status: "active",
       })
       .then(() => {
         // Update  main collection
@@ -2631,12 +2630,14 @@ function cancelOffboarding(agentId, agentStatus) {
           .doc(agentStatus)
           .update({
             [`${agentId}.departing`]: firebase.firestore.FieldValue.delete(),
-            status: "active",
           })
           .then(() => {
-            configure_message_bar("Offboarding cancelled.");
-            displayAgentButtons(); // Update the cache of the main dashboard
-            resolve();
+            agentStatusChange(agentId, agentStatus, "active").then(() => {
+              showUserPage(agentId);
+              configure_message_bar("Offboarding cancelled.");
+              displayAgentButtons(); // Update the cache of the main dashboard
+              resolve();
+            });
           });
       });
   });
