@@ -7,27 +7,6 @@
 <p>3. As a user I want my site to be secure. </p>
 <p>4. As a user I want to store all my inactive and offboarding users in the database so that I can manage their offboarding process. </p>
 <h3>Tasks</h3>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Table</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            text-align: center;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
-</head>
 <body>
     <table>
         <thead>
@@ -114,16 +93,17 @@
 <h5>Day 2</h5>
 <img src = "images/Screen Shot 2024-12-03 at 7.30.32 PM.png">
 <h5>Day 5</h5>
+  <img src = "images/Screen Shot 2024-12-06 at 12.43.20 PM.png">
 <h5>Day 7</h5>
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Sprint Planning</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Add tasks to Trello</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -181,10 +161,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Meet with client</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Discuss with group client feedback</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -242,10 +222,10 @@
         <p>Hannah:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finish up tasks</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Complete readme</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -299,4 +279,9 @@
                 <p>Any problems?: None</p>
             </li>
         </ul>
-
+<h3>Sprint Review</h3>
+<p>1. What did we learn: We learned the importance of testing. This is the first sprint that we included testing in and it would have been valuable to implement testing documents into our earlier sprints.</p>
+<p>2. What went well: We were able to get all that we wanted to done. We also were able to basically complete our project which is good because we are also close to milestone 4 being due.</p>
+<p>3. What didn't go well: We didn't stick to the recommeneded burndown rate. We did more work during the end of the sprint, this was mainly due to our busy schedules and finals approaching. </p>
+<p>4. How we can make things better: In the future when we utilize Scrum we will try to be more exact on when we will completeing each task so that we can make sure that we stay more true to the burndown rate.</p>
+<p>5. Are we satisfied with our work: As a group we are very happy with what we have accomplished. Our client is also happy with our work and believes that it wil add value to their day to day operations. </p>
