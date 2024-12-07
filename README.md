@@ -112,10 +112,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Fixed some residual database problems from testing and code adjustments</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Start coding notes tab and database connection</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -173,10 +173,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished notes tab programming</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Start case reviews tab coding</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -234,10 +234,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished case review saving</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Update case review saving to update lastReviewed date and test everything</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
