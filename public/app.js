@@ -1229,7 +1229,9 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
         r_e("user-page-last-reviewed").textContent =
           agent.lastReviewed || "Never";
         r_e("user-page-last-reviewed-duration").textContent =
-          calculateDuration(agent.lastReviewed) || "∞";
+          agent.lastReviewed === null
+            ? "∞"
+            : calculateDuration(agent.lastReviewed) || "∞";
 
         // Fetch and display training steps
         const trainingDiv = document.querySelector(".training-div");
@@ -1506,10 +1508,35 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
             statusChanged = true;
           }
 
+          let maxDate = null;
+
+          try {
+            // get max date
+            let maxTimestamp = reviews.reduce((max, item) => {
+              const currentDate = new Date(item.Date);
+              return currentDate > max ? currentDate : max;
+            }, new Date(reviews[0].Date));
+
+            // Convert the Date object back to the original format
+            maxDate = maxTimestamp.toISOString().split("T")[0];
+          } catch (error) {}
+
+          if (maxDate != agent.lastReviewed) {
+            agent.lastReviewed = maxDate;
+            statusChanged = true;
+            r_e("user-page-last-reviewed").textContent =
+              agent.lastReviewed || "Never";
+            r_e("user-page-last-reviewed-duration").textContent =
+              agent.lastReviewed === null
+                ? "∞"
+                : calculateDuration(agent.lastReviewed) || "∞";
+          }
+
           try {
             const dataToSave = {
               reviews,
               trainingStatus: agent.trainingStatus,
+              lastReviewed: agent.lastReviewed,
             };
 
             // Save to the database
@@ -1526,6 +1553,7 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
                 .doc(agentStatus)
                 .update({
                   [`${agent.agent}.trainingStatus`]: agent.trainingStatus,
+                  [`${agent.agent}.lastReviewed`]: agent.lastReviewed,
                 });
               displayAgentButtons();
               configure_message_bar(
