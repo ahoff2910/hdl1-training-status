@@ -1206,10 +1206,12 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
       if (doc.exists) {
         const agent = doc.data();
         if (tab == "") {
-          if (!agent.departing) {
-            activateTab("Training");
-          } else {
+          if (agent.departing) {
             activateTab("Offboarding");
+          } else if (agent.trainingStatus == 0) {
+            activateTab("Case Reviews");
+          } else {
+            activateTab("Training");
           }
         } else if (!(tab == "Keep")) {
           activateTab(tab);
@@ -1473,6 +1475,216 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
         notesDiv.appendChild(saveButton);
 
         // End Notes Tab
+
+        // Start Review Tab
+
+        async function saveCaseReview(agent, reviews) {
+          // Determine if trainingStatus needs to be updated
+          let statusChanged = false;
+
+          if (
+            agent.trainingStatus == 0 &&
+            reviews.some(
+              (item) =>
+                item.ReviewFor ===
+                  (trainingLevelNames[agent.trainingLevel + 1] || "Unknown") &&
+                item.TrainUp === "Yes"
+            )
+          ) {
+            agent.trainingStatus = 1;
+            statusChanged = true;
+          } else if (
+            agent.trainingStatus == 1 &&
+            !reviews.some(
+              (item) =>
+                item.ReviewFor ===
+                  (trainingLevelNames[agent.trainingLevel + 1] || "Unknown") &&
+                item.TrainUp === "Yes"
+            )
+          ) {
+            agent.trainingStatus = 0;
+            statusChanged = true;
+          }
+
+          try {
+            const dataToSave = {
+              reviews,
+              trainingStatus: agent.trainingStatus,
+            };
+
+            // Save to the database
+            await db
+              .collection("agents")
+              .doc(agent.status)
+              .collection("data")
+              .doc(agent.agent)
+              .set(dataToSave, { merge: true });
+
+            if (statusChanged) {
+              await db
+                .collection("agents")
+                .doc(agentStatus)
+                .update({
+                  [`${agent.agent}.trainingStatus`]: agent.trainingStatus,
+                });
+              displayAgentButtons();
+              configure_message_bar(
+                "Case reviews saved and training status updated."
+              );
+            } else {
+              configure_message_bar("Case reviews saved.");
+            }
+          } catch (error) {
+            console.error("Error saving case reviews: ", error);
+            configure_message_bar(
+              "Failed to save case reviews. Please try again."
+            );
+          }
+        }
+
+        function renderCaseReviewTable(agent) {
+          const caseReviewDiv = document.getElementById("case-review-div");
+          caseReviewDiv.innerHTML = ""; // Clear the div before rendering
+
+          const table = document.createElement("table");
+          table.className = "table is-fullwidth is-striped";
+
+          const thead = document.createElement("thead");
+          const headerRow = document.createElement("tr");
+          ["Date", "Review For", "Train Up", "Notes", "Actions"].forEach(
+            (header) => {
+              const th = document.createElement("th");
+              th.textContent = header;
+              headerRow.appendChild(th);
+            }
+          );
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
+
+          const tbody = document.createElement("tbody");
+          table.appendChild(tbody);
+          caseReviewDiv.appendChild(table);
+
+          const reviews = agent.reviews || [];
+
+          // Function to sort reviews
+          function sortReviews() {
+            reviews.sort((a, b) => {
+              const dateA = a.Date ? new Date(a.Date) : null;
+              const dateB = b.Date ? new Date(b.Date) : null;
+
+              if (!dateA && !dateB) return 0; // Both dates are null
+              if (!dateA) return 1; // Place null dates after valid dates
+              if (!dateB) return -1; // Place valid dates before null dates
+
+              return dateA - dateB; // Ascending order
+            });
+          }
+
+          function addRowToTable(review = {}, index = reviews.length) {
+            const row = document.createElement("tr");
+
+            ["Date", "ReviewFor", "TrainUp", "Notes"].forEach((key) => {
+              const td = document.createElement("td");
+              if (key === "TrainUp" || key === "ReviewFor") {
+                const selectWrapper = document.createElement("div");
+                selectWrapper.className = "select";
+                const select = document.createElement("select");
+                const blankOption = document.createElement("option");
+                blankOption.value = "";
+                blankOption.textContent = "";
+                select.appendChild(blankOption);
+
+                const options =
+                  key === "TrainUp"
+                    ? ["Yes", "No"]
+                    : [
+                        "Advanced Phones",
+                        "Chat/Email",
+                        "Onsite",
+                        "HDQA",
+                        "Performance Evaluation",
+                      ];
+
+                options.forEach((option) => {
+                  const opt = document.createElement("option");
+                  opt.value = option;
+                  opt.textContent = option;
+                  if (review[key] === option) {
+                    opt.selected = true;
+                  }
+                  select.appendChild(opt);
+                });
+
+                select.addEventListener("change", (e) => {
+                  review[key] = e.target.value; // Update review object
+                });
+
+                selectWrapper.appendChild(select);
+                td.appendChild(selectWrapper);
+              } else {
+                const input = document.createElement("input");
+                input.type = key === "Date" ? "date" : "text";
+                input.value = review[key] || ""; // Default to empty if undefined
+                input.className = "input";
+                input.addEventListener("change", (e) => {
+                  review[key] = e.target.value; // Update review object
+                });
+                td.appendChild(input);
+              }
+              row.appendChild(td);
+            });
+
+            const actionsTd = document.createElement("td");
+            const deleteButton = document.createElement("button");
+            deleteButton.className = "button is-small is-danger";
+            deleteButton.textContent = "Delete";
+            deleteButton.addEventListener("click", () => {
+              reviews.splice(index, 1);
+              renderCaseReviewTable(agent); // Re-render the table to maintain order
+              saveCaseReview(agent, reviews);
+            });
+            actionsTd.appendChild(deleteButton);
+            row.appendChild(actionsTd);
+            tbody.appendChild(row);
+
+            // Add to reviews array if it's a new review
+            if (!review.added) {
+              review.added = true; // Mark this as an added row
+              reviews.push(review);
+            }
+          }
+
+          sortReviews(); // Sort the reviews before rendering
+
+          reviews.forEach((review, index) => addRowToTable(review, index));
+
+          const buttonContainer = document.createElement("div");
+          buttonContainer.className = "buttons";
+
+          const newReviewButton = document.createElement("button");
+          newReviewButton.className = "button is-primary";
+          newReviewButton.textContent = "New Review";
+          newReviewButton.addEventListener("click", () => {
+            addRowToTable(); // Add a blank row to the table
+          });
+          buttonContainer.appendChild(newReviewButton);
+
+          const saveAllButton = document.createElement("button");
+          saveAllButton.id = "save-all-button";
+          saveAllButton.className = "button is-success";
+          saveAllButton.textContent = "Save";
+          saveAllButton.addEventListener("click", async () => {
+            await saveCaseReview(agent, reviews); // Save all reviews
+          });
+          buttonContainer.appendChild(saveAllButton);
+
+          caseReviewDiv.appendChild(buttonContainer);
+        }
+
+        renderCaseReviewTable(agent);
+
+        // End Review Tab
 
         // Start Departing Tab
 
