@@ -253,17 +253,25 @@ document.querySelectorAll(".tabs ul li").forEach((tab, index) => {
   });
 });
 
-// add a burger
 document.addEventListener("DOMContentLoaded", () => {
-  const burger = document.querySelector(".navbar-burger");
-  const menu = document.querySelector(".navbar-menu");
+  // Get all "navbar-burger" elements
+  const $navbarBurgers = Array.prototype.slice.call(
+    document.querySelectorAll(".navbar-burger"),
+    0
+  );
 
-  if (burger && menu) {
-    burger.addEventListener("click", () => {
-      burger.classList.toggle("is-active");
-      menu.classList.toggle("is-active");
+  // Add a click event on each of them
+  $navbarBurgers.forEach((el) => {
+    el.addEventListener("click", () => {
+      // Get the target from the "data-target" attribute
+      const target = el.dataset.target;
+      const $target = document.getElementById(target);
+
+      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+      el.classList.toggle("is-active");
+      $target.classList.toggle("is-active");
     });
-  }
+  });
 });
 
 function activateTab(tabId) {
@@ -1419,6 +1427,54 @@ function showUserPage(agentId, agentStatus = "active", tab = "") {
             }
           );
         }
+
+        // End Training Tab
+
+        // Start Notes Tab
+        async function saveNote(agent) {
+          const noteTextArea = document.getElementById("note-textarea");
+          const updatedNote = noteTextArea.value;
+          try {
+            await db
+              .collection("agents")
+              .doc(agent.status)
+              .collection("data")
+              .doc(agent.agent)
+              .set({ notes: [updatedNote] }, { merge: true });
+            agent.notes = [updatedNote];
+            configure_message_bar("Note saved.");
+          } catch (error) {
+            console.error("Error saving note: ", error);
+            configure_message_bar("Failed to save note. Please try again.");
+          }
+        }
+
+        if (!agent.notes || agent.notes.length === 0) {
+          agent.notes = []; // Ensure agent.notes is initialized as an empty array
+        }
+
+        const notesDiv = r_e("notes-div");
+        notesDiv.innerHTML = ""; // Clear the div before rendering
+
+        const noteTextArea = document.createElement("textarea");
+        noteTextArea.id = "note-textarea";
+        noteTextArea.className = "textarea";
+        noteTextArea.style.width = "100%";
+        noteTextArea.style.height = "200px";
+        noteTextArea.placeholder = "Enter your notes here...";
+        noteTextArea.value = agent.notes.length ? agent.notes[0] : "";
+        notesDiv.appendChild(noteTextArea);
+
+        const saveButton = document.createElement("button");
+        saveButton.className = "button is-success save-button";
+        saveButton.textContent = "Save";
+        saveButton.style.marginTop = "10px";
+        saveButton.addEventListener("click", () => saveNote(agent));
+        notesDiv.appendChild(saveButton);
+
+        // End Notes Tab
+
+        // Start Departing Tab
 
         if (!agent.departing) {
           r_e(
