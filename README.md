@@ -95,6 +95,7 @@
 <h5>Day 5</h5>
   <img src = "images/Screen Shot 2024-12-06 at 12.43.20 PM.png">
 <h5>Day 7</h5>
+    <img src ="images/Screen Shot 2024-12-08 at 10.24.13 AM.png">
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
