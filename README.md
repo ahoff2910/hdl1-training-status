@@ -137,10 +137,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: I did not complete any work yesterday </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Worked on some small bulma styling changes </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -165,7 +165,7 @@
                 <p>What did you do yesterday?: Meet with client</p>
             </li>
             <li>
-                <p>What are you planning to do today?: Discuss with group client feedback</p>
+                <p>What are you planning to do today?: Updated group on client feedback</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -198,10 +198,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Met with client </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Discussed client feedback with the group </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -259,10 +259,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on final stress testing of system functionalities. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Work on presentation slides and structure </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
