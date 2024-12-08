@@ -149,10 +149,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Updated user stories, talked with client one more time. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Look at final website </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -210,10 +210,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Began to review final version of the website </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continuing review of final version </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -271,10 +271,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Begin presentation work </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Complete README </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
