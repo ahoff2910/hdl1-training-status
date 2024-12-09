@@ -125,10 +125,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Work on plans for testing on our published website</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Begin creation of testing files</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -186,10 +186,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on testing files</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continue working on creating test files</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -247,10 +247,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Run testing and made changes as necessary</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Finalize testing files</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
