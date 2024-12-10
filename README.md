@@ -95,6 +95,7 @@
 <h5>Day 5</h5>
   <img src = "images/Screen Shot 2024-12-06 at 12.43.20 PM.png">
 <h5>Day 7</h5>
+    <img src ="images/Screen Shot 2024-12-08 at 10.24.13 AM.png">
 <h3>Daily Scrum meetings</h3>
 <h4>Day 2: Daily Scrum Meeting</h4>
         <p>Hannah:</p>
@@ -112,10 +113,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Fixed some residual database problems from testing and code adjustments</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Start coding notes tab and database connection</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -124,10 +125,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Work on plans for testing on our published website</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Begin creation of testing files</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -136,10 +137,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: I did not complete any work yesterday </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Worked on some small bulma styling changes </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -148,10 +149,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Updated user stories, talked with client one more time. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Look at final website </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -164,7 +165,7 @@
                 <p>What did you do yesterday?: Meet with client</p>
             </li>
             <li>
-                <p>What are you planning to do today?: Discuss with group client feedback</p>
+                <p>What are you planning to do today?: Updated group on client feedback</p>
             </li>
             <li>
                 <p>Any problems?: none.</p>
@@ -173,10 +174,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished notes tab programming</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Start case reviews tab coding</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -185,10 +186,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on testing files</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continue working on creating test files</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -197,10 +198,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Met with client </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Discussed client feedback with the group </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -209,10 +210,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Began to review final version of the website </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Continuing review of final version </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -234,10 +235,10 @@
         <p>Alex:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Finished case review saving</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Update case review saving to update lastReviewed date and test everything</p>
             </li>
             <li>
                 <p>Any problems?: None</p>
@@ -246,10 +247,10 @@
         <p>Ethan:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Run testing and made changes as necessary</p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Finalize testing files</p>
             </li>
             <li>
                 <p>Any problems?:N/A</p>
@@ -258,10 +259,10 @@
         <p>Max:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Worked on final stress testing of system functionalities. </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Work on presentation slides and structure </p>
             </li>
             <li>
                 <p>Any problems?: N/A </p>
@@ -270,10 +271,10 @@
         <p>Nico:</p>
         <ul>
             <li>
-                <p>What did you do yesterday?: </p>
+                <p>What did you do yesterday?: Begin presentation work </p>
             </li>
             <li>
-                <p>What are you planning to do today?: </p>
+                <p>What are you planning to do today?: Complete README </p>
             </li>
             <li>
                 <p>Any problems?: None</p>
